@@ -1,0 +1,67 @@
+package fr.sf.once.test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import fr.sf.once.Code;
+import fr.sf.once.Localisation;
+import fr.sf.once.ManagerToken;
+import fr.sf.once.Token;
+import fr.sf.once.Token.Type;
+
+public final class UtilsToken {
+
+    private static final Logger LOG = Logger.getLogger(UtilsToken.class);
+    
+    private UtilsToken() {
+        
+    }
+    
+    /**
+     * Création d'une liste de token.
+     * 
+     * @param tokenValueList
+     * @return
+     */
+    public static ArrayList<Token> createTokenList(String... tokenValueList) {
+        ArrayList<Token> tokenList = new ArrayList<Token>();
+        int ligne = 1;
+        for (String tokenValue : tokenValueList) {
+            tokenList.add(new Token(new Localisation("", ligne, 0), tokenValue, Type.VALEUR));
+            ligne++;
+        }
+        return tokenList;
+    }
+    
+    public static void afficher(List<Token> tokenList, List<Integer> positionList) {
+        for (Integer tokenPosition : positionList) {
+            LOG.info(tokenList.get(tokenPosition).getValeurToken());
+            LOG.info(tokenPosition);
+        }
+    }
+
+    /**
+     * Création d'une liste de positions.
+     * Il s'agit d'un tableau contenant les valeurs 0, 1, 2, ....
+     * @param positionListSize
+     * @return
+     */
+    public static List<Integer> createPositionList(int positionListSize) {
+        List<Integer> positionList = new ArrayList<Integer>();
+        for (int i = 0; i < positionListSize; i++) {
+            positionList.add(i);
+        }
+        return positionList;
+    }
+    
+    public static ManagerToken createManagerToken(final List<Token> tokenList) {
+        return new ManagerToken(tokenList);
+    }
+    
+    public static ManagerToken createManagerToken(String... tokenValueList) {
+        return createManagerToken(createTokenList(tokenValueList));
+    }
+    
+}
