@@ -99,21 +99,21 @@ public class Launcher {
         // SimpleLayout(), "fichierSortie.txt", false));
         // Logger.getLogger("RESULTAT").setLevel(Level.INFO);
 
-        Reporting.LOG_CSV.addAppender(new FileAppender(new PatternLayout("%m\n"), "result/fichierSortie.csv", false));
+        //Reporting.LOG_CSV.addAppender(new FileAppender(new PatternLayout("%m\n"), "result/fichierSortie.csv", false));
         // Logger.getLogger("RESULTAT").setLevel(Level.INFO);
-        activeLog(Reporting.LOG_RESULTAT, Level.INFO, "result/fichierSortie.txt");
-        activeLog(Reporting.TRACE_TOKEN, Level.INFO, "result/listeToken.txt");
-        activeLog(LOG, Level.INFO, "result/token.txt");
-        activeComparateurLog(Level.INFO, "result/comparator.txt");
+        activeLog(Reporting.LOG_RESULTAT, Level.INFO, "result/once.txt");
+        //activeLog(Reporting.TRACE_TOKEN, Level.INFO, "result/listeToken.txt");
+        //activeLog(LOG, Level.INFO, "result/token.txt");
+        //activeComparateurLog(Level.INFO, "result/comparator.txt");
 
         // activeLog(ComparateurAvecSubstitution.LOG, Level.DEBUG, null);
         LOG.addAppender(new ConsoleAppender(new SimpleLayout()));
 
         Launcher launchMyAppli = new Launcher();
 
-        ManagerToken.LOG.addAppender(new FileAppender(new SimpleLayout(), "result/sortedList.txt", false));
-        ManagerToken.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
-        ManagerToken.LOG.setLevel(Level.INFO);
+//        ManagerToken.LOG.addAppender(new FileAppender(new SimpleLayout(), "result/sortedList.txt", false));
+//        ManagerToken.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
+//        ManagerToken.LOG.setLevel(Level.INFO);
 
         MyFileVisitor myFileVisitor = new MyFileVisitor();
         ManagerToken manager = new ManagerToken(myFileVisitor.getTokenList());
@@ -129,10 +129,10 @@ public class Launcher {
                         .withTailleMin(20));
 
         LOG.info("Affichage des resultats...");
-        //reporting.afficherRedondance(manager.getTokenList(), 20, listeRedondance);
-        for (Redondance redondance : listeRedondance) {
-            reporting.afficherMethodeDupliqueAvecSubtitution(manager.getTokenList(), redondance);
-        }
+        reporting.afficherRedondance(manager.getTokenList(), 20, listeRedondance);
+//        for (Redondance redondance : listeRedondance) {
+//            reporting.afficherMethodeDupliqueAvecSubtitution(manager.getTokenList(), redondance);
+//        }
 
         LOG.info("Fin");
 
@@ -148,7 +148,7 @@ public class Launcher {
         if (filename == null) {
             log.addAppender(new ConsoleAppender(new SimpleLayout()));
         } else {
-            log.addAppender(new FileAppender(new SimpleLayout(), filename, false));
+            log.addAppender(new FileAppender(new PatternLayout(), filename, false));
         }
         log.setLevel(level);
 
