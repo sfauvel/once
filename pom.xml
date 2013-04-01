@@ -59,7 +59,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>fr.sf.once.Launch</mainClass>
+							<mainClass>fr.sf.once.Launcher</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
