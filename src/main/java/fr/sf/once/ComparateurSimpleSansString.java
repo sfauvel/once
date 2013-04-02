@@ -5,7 +5,8 @@ package fr.sf.once;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.Token.Type;
+import fr.sf.ast.TypeJava;
+
 
 /**
  * TODO Gérer les types différement pour permettre l'extension
@@ -13,9 +14,7 @@ import fr.sf.once.Token.Type;
  * Une chaîne peut être remplacé par n'importe quoi.
  */
 public class ComparateurSimpleSansString extends Comparateur {
-    
-    public static final Type STRING = new Type();
-    
+        
     public static final Logger LOG = Logger.getLogger(ComparateurSimpleSansString.class);
     
     public ComparateurSimpleSansString(Code code) {
@@ -24,7 +23,7 @@ public class ComparateurSimpleSansString extends Comparateur {
     
     @Override
     public int compareTokenValue(Token token1, Token token2) {
-        if (token1.getType() == STRING && token2.getType() == STRING) {
+        if (token1.getType().is(TypeJava.STRING) && token2.getType().is(TypeJava.STRING)) {
             return 0;
         }
         return token1.getValeurToken().compareTo(token2.getValeurToken());

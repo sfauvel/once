@@ -14,12 +14,6 @@ public class Token {
 		}
 		
 	}
-	public static class Type {
-	    public static final Type VALEUR = new Type();
-	    public static final Type BREAK = new Type(); // Valeur coupant la redonance même si le caractère est identique..
-	    public static final Type NON_SIGNIFICATIF = new Type();
-	}
-	
 	private final String valeurToken;
 	private final Type type;
 	private final Localisation localisation;
@@ -47,9 +41,5 @@ public class Token {
     }
     public Integer getColonneDebut() {
         return localisation.getColonne();
-    }
-
-    public boolean isType(Type value) {
-        return type.equals(value);
     }
 }

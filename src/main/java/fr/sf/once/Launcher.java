@@ -112,8 +112,8 @@ public class Launcher {
         Launcher launchMyAppli = new Launcher();
 
 //        ManagerToken.LOG.addAppender(new FileAppender(new SimpleLayout(), "result/sortedList.txt", false));
-//        ManagerToken.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
-//        ManagerToken.LOG.setLevel(Level.INFO);
+        ManagerToken.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
+        ManagerToken.LOG.setLevel(Level.DEBUG);
 
         MyFileVisitor myFileVisitor = new MyFileVisitor();
         ManagerToken manager = new ManagerToken(myFileVisitor.getTokenList());
@@ -125,7 +125,7 @@ public class Launcher {
         reporting.display(manager);
 
         List<Redondance> listeRedondance = manager.getRedondance(
-                new Configuration(ComparateurAvecSubstitution.class)
+                new Configuration(ComparateurSimpleSansString.class)
                         .withTailleMin(20));
 
         LOG.info("Affichage des resultats...");

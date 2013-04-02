@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.Token.Type;
 
 public class ManagerToken extends Code {
 

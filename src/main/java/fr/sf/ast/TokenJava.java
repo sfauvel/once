@@ -2,10 +2,13 @@ package fr.sf.ast;
 
 import fr.sf.once.Localisation;
 import fr.sf.once.Token;
+import fr.sf.once.Type;
 
 
 public class TokenJava extends Token {
 
+    
+    
     public static final TokenJava ACCOLADE_OUVRANTE = new TokenJava("{", Type.VALEUR);
     public static final TokenJava ACCOLADE_FERMANTE = new TokenJava("}", Type.VALEUR);
     public static final TokenJava PARENTHESE_OUVRANTE = new TokenJava("(", Type.NON_SIGNIFICATIF);

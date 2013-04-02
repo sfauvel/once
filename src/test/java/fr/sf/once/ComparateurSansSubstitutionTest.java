@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.sf.once.Token.Type;
 import fr.sf.once.test.UtilsToken;
 
 public class ComparateurSansSubstitutionTest extends AbstractComparateurTest {

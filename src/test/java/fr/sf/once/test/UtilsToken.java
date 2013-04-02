@@ -9,7 +9,7 @@ import fr.sf.once.Code;
 import fr.sf.once.Localisation;
 import fr.sf.once.ManagerToken;
 import fr.sf.once.Token;
-import fr.sf.once.Token.Type;
+import fr.sf.once.Type;
 
 public final class UtilsToken {
 

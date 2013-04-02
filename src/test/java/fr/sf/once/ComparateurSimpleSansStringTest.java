@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import fr.sf.once.Token.Type;
+import fr.sf.ast.TypeJava;
+
 
 public class ComparateurSimpleSansStringTest {
     /**
@@ -17,9 +18,9 @@ public class ComparateurSimpleSansStringTest {
         ArrayList<Token> tokenList = new ArrayList<Token>();
         tokenList.add(new Token(null, "A", Type.VALEUR));
         tokenList.add(new Token(null, "B", Type.VALEUR));
-        tokenList.add(new Token(null, "A", ComparateurSimpleSansString.STRING));
+        tokenList.add(new Token(null, "A", TypeJava.STRING));
         tokenList.add(new Token(null, ";", Type.BREAK));
-        tokenList.add(new Token(null, "B", ComparateurSimpleSansString.STRING));
+        tokenList.add(new Token(null, "B", TypeJava.STRING));
         tokenList.add(new Token(null, ";", Type.BREAK));
         
         ComparateurSimpleSansString comparator = new ComparateurSimpleSansString(new Code(tokenList));

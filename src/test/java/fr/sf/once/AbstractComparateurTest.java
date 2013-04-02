@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.sf.once.Token.Type;
 import fr.sf.once.test.UtilsToken;
 
 public abstract class AbstractComparateurTest {

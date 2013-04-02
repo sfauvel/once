@@ -854,7 +854,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(StringLiteralExpr n, List<Token> arg) {
         genericVisit(n, arg);
-        addToken(n, "\"" + n.getValue() + "\"", arg);
+        addToken(n, "\"" + n.getValue() + "\"", TypeJava.STRING, arg);
 
     }
 
@@ -1103,19 +1103,15 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         return addIfTrue(new Position(line, column), token, arg, condition);
     }
 
-    private int currentLine = 0;
-    private int currentColumn = 0;
-
     private void addToken(int beginLine, int beginColumn, TokenJava token, List<Token> arg) {
         addToken(beginLine, beginColumn, token.getValeurToken(), token.getType(), arg);
     }
 
     private void addToken(int beginLine, int beginColumn, String token, List<Token> arg) {
-        addToken(beginLine, beginColumn, token, fr.sf.once.Token.Type.VALEUR, arg);
+        addToken(beginLine, beginColumn, token, fr.sf.once.Type.VALEUR, arg);
     }
 
-    protected void addToken(int beginLine, int beginColumn, String token, fr.sf.once.Token.Type type, List<Token> arg) {
-        currentLine = beginLine;
+    protected void addToken(int beginLine, int beginColumn, String token, fr.sf.once.Type type, List<Token> arg) {
         Token token2 = new Token(new Localisation(fileName, beginLine, beginColumn), token, type);
         arg.add(token2);
     }
@@ -1124,6 +1120,10 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(n.getBeginLine(), n.getBeginColumn(), token, arg);
     }
 
+    private void addToken(Node n, String token, fr.sf.once.Type type, List<Token> arg) {
+        addToken(n.getBeginLine(), n.getBeginColumn(), token, type, arg);
+    }
+    
     private void addToken(Node n, TokenJava token, List<Token> arg) {
         addToken(n.getBeginLine(), n.getBeginColumn(), token, arg);
     }

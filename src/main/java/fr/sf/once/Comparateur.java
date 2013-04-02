@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.Token.Type;
 
 public abstract class Comparateur implements Comparator<Integer> {
     public static final Logger LOG = Logger.getLogger(Comparateur.class);
@@ -73,7 +72,7 @@ public abstract class Comparateur implements Comparator<Integer> {
         Token token1 = code.getToken(position1);
         Token token2 = code.getToken(position2);
 
-        if (token1.isType(Type.BREAK) || token2.isType(Type.BREAK)) {
+        if (token1.getType().is(Type.BREAK) || token2.getType().is(Type.BREAK)) {
             return breakReturn(token1, token2);
         }
         int result = compareTokenValue(token1, token2);
@@ -105,8 +104,8 @@ public abstract class Comparateur implements Comparator<Integer> {
         if (LOG.isDebugEnabled()) {
             traceDebug.append(profondeur + ":" + token1.getType() + "<>" + token2.getType() + " ");
         }
-        if (token1.isType(Type.BREAK)) {
-            if (token2.isType(Type.BREAK)) {
+        if (token1.getType().is(Type.BREAK)) {
+            if (token2.getType().is(Type.BREAK)) {
                 return 0;
             } else {
                 return -1;

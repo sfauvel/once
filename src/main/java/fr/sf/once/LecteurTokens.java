@@ -3,7 +3,6 @@ package fr.sf.once;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.sf.once.Token.Type;
 
 public class LecteurTokens extends Lecteur {
 	

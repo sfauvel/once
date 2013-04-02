@@ -12,7 +12,6 @@ import org.apache.log4j.SimpleLayout;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import fr.sf.once.Token.Type;
 import fr.sf.once.test.LogRule;
 import fr.sf.once.test.UtilsToken;
 
