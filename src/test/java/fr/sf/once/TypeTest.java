@@ -21,14 +21,14 @@ public class TypeTest {
    
    @Test
    public void testIsWithExtendedType() {
-       final Type EXTENDED_TYPE = new Type();
+       final Type EXTENDED_TYPE = new Type("Extended type");
        assertFalse(Type.VALEUR.is(EXTENDED_TYPE));
        assertTrue(EXTENDED_TYPE.is(EXTENDED_TYPE));
    }
    
    @Test
    public void testIsWithExtendedExistingType() {
-       final Type EXTENDED_TYPE = new Type(Type.VALEUR);
+       final Type EXTENDED_TYPE = new Type("Extended type", Type.VALEUR);
        assertFalse(Type.BREAK.is(EXTENDED_TYPE));
        assertFalse(Type.VALEUR.is(EXTENDED_TYPE));
        assertTrue(EXTENDED_TYPE.is(Type.VALEUR));

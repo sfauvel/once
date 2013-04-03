@@ -54,22 +54,8 @@ public class ProgSpike {
         // C'est un cas intéressant pour fair eun calcule de redondance global d'une méthode.
         FileInputStream in = new FileInputStream("./src/test/resources/RetourConsulterAction.java");
 
-        CompilationUnit cu;
-        try {
-            // parse the file
-            cu = JavaParser.parse(in);
-        } finally {
-            in.close();
-        }
-
-        TokenVisitor tokenVisitor = new TokenVisitor() {
-            public void genericVisit(Node n, List<Token> arg) {
-                logSortie.debug("                          " + n.getClass().getName());
-            }
-        };
-
-        List<Token> listeToken = new ArrayList<Token>();
-        tokenVisitor.visit(cu, listeToken);
+        ParcoursAst parcoursAst = new ParcoursAst();
+        List<Token> listeToken = parcoursAst.extraireToken(in, new TokenVisitor());
         for (Token token : listeToken) {
             System.out.println(token.getValeurToken());
         }

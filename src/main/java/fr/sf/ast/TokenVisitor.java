@@ -101,6 +101,7 @@ import fr.sf.once.Token;
 public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     static final Logger logSortie = Logger.getLogger("SORTIE");
+    static final Logger LOG = Logger.getLogger(TokenVisitor.class);
     private final String fileName;
     private final List<MethodLocalisation> methodList;
 
@@ -117,7 +118,11 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         this.methodList = methodList;
     }
 
-    public void genericVisit(Node n, List<Token> arg) {
+    final public void genericVisit(Node n, List<Token> arg) {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("     " + n.getClass().getName());
+        }
+        LOG.trace("");
     }
 
     public void visit(AnnotationDeclaration n, List<Token> arg) {
@@ -324,7 +329,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         if (n.getScope() != null) {
             n.getScope().accept(this, arg);
         }
-        addToken(n, n.getName(), arg);
+        addToken(n, n.getName(), TypeJava.CLASS, arg);
         if (n.getTypeArgs() != null) {
 
             addToken(n, TokenJava.GENERIQUE_OUVRANTE, arg);
@@ -668,7 +673,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             currentPosition = new Position(currentPosition.line, currentPosition.column + 1);
         }
 
-        addToken(currentPosition, n.getName(), arg);
+        addToken(currentPosition, n.getName(), TypeJava.METHOD, arg);
         currentPosition = new Position(currentPosition.line, currentPosition.column + n.getName().length());
 
         addToken(currentPosition, TokenJava.PARENTHESE_OUVRANTE, arg);
@@ -984,7 +989,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(VariableDeclaratorId n, List<Token> arg) {
         genericVisit(n, arg);
-        addToken(n, n.getName(), arg);
+        addToken(n, n.getName(), TypeJava.VARIABLE, arg);
     }
 
     public void visit(VoidType n, List<Token> arg) {
@@ -1136,6 +1141,10 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(position.line, position.column, token, arg);
     }
 
+    private void addToken(Position position, String token, fr.sf.once.Type type, List<Token> arg) {
+        addToken(position.line, position.column, token, type, arg);
+    }
+    
     private void addModifier(Node n, int modifier, List<Token> arg) {
         if (modifier != 0) {
             addToken(n, Modifier.toString(modifier), arg);

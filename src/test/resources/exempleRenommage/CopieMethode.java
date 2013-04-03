@@ -22,12 +22,4 @@ public class CopieMethode {
         return resultList;
     }
     
-    public List<String> methodWithAVariableNamedLikeAMethod(String string) {
-        String[] split = string.split(",");
-        List<String> resultList = new ArrayList<String>();
-        for (int index = 0; index < split.length; index++) {
-            resultList.add(split[index].trim());
-        }
-        return resultList;
-    }
 }

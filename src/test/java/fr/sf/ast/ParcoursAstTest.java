@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import fr.sf.once.Localisation;
 import fr.sf.once.Token;
+import fr.sf.once.Type;
 
 public class ParcoursAstTest {
 
@@ -28,6 +29,10 @@ public class ParcoursAstTest {
         Logger logger = Logger.getLogger(ParcoursAst.class);
         logger.addAppender(new ConsoleAppender(new PatternLayout("%m\n")));
         logger.setLevel(Level.DEBUG);
+        
+
+        TokenVisitor.LOG.addAppender(new ConsoleAppender(new PatternLayout()));
+        TokenVisitor.LOG.setLevel(Level.TRACE);
     }
 
     @Test
@@ -125,13 +130,25 @@ public class ParcoursAstTest {
             return assertToken(currentPosition, token, line, column);
         }
 
-        public AssertToken assertToken(int position, String token, int line, int column) {
+        public AssertToken assertNextToken(String token, Type type, int line, int column) {
+            currentPosition++;
+            return assertToken(currentPosition, token, type, line, column);
+        }
+        
+        public AssertToken assertToken(int position, String token, Type type, int line, int column) {
             currentPosition = position;
             Token tokenJava = tokenList.get(position);
             assertEquals(token, tokenJava.getValeurToken());
+            if (type != null) {
+                assertEquals(type, tokenJava.getType());
+            }
             assertEquals(line, tokenJava.getlocalisation().getLigne());
             assertEquals(column, tokenJava.getlocalisation().getColonne());
             return this;
+        }
+        
+        public AssertToken assertToken(int position, String token, int line, int column) {
+            return assertToken(position, token, null, line, column);
         }
 
     }
@@ -1032,6 +1049,13 @@ public class ParcoursAstTest {
                 "class", "MaClasse", "{",
                 "String", "chaine", "=", "\"valeur\"", ";",
                 "}");
+        
+
+        assertListToken(listToken)
+                .assertToken(3, "String", TypeJava.CLASS, 1, 19)
+                .assertNextToken("chaine", TypeJava.VARIABLE, 1, 26)
+                .assertNextToken("=", 1, 32)
+                .assertNextToken("\"valeur\"", 1, 35);
     }
 
     @Test
@@ -1218,7 +1242,7 @@ public class ParcoursAstTest {
 
         try {
             ParcoursAst parcoursAst = new ParcoursAst();
-            listToken = parcoursAst.extraireToken(input);
+            listToken = parcoursAst.extraireToken(input, new TokenVisitor());
         } catch (Error t) {
             t.printStackTrace();
             fail(t.getMessage());

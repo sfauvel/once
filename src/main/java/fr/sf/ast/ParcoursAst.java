@@ -48,44 +48,15 @@ public class ParcoursAst {
         // creates an input stream for the file to be parsed
         FileInputStream in = new FileInputStream("./src/main/java/fr/sf/ast/PageTestAst.java");
 
-        CompilationUnit cu;
-        try {
-            // parse the file
-            cu = JavaParser.parse(in);
-        } finally {
-            in.close();
-        }
-
-        // // prints the resulting compilation unit to default system output
-        // logger.debug(cu.toString());
-
-        // visit and print the methods names
-
-        new MethodVisitor().visit(cu, new ArrayList<MethodLocalisation>());
+        ParcoursAst parcoursAst = new ParcoursAst();
+        List<Token> listeToken = parcoursAst.extraireToken(in, new TokenVisitor());
         
-        List<Token> listeToken = new ArrayList<Token>() {
-
-            @Override
-            public boolean add(Token e) {
-                OUTPUT_LOG.info(e);
-                return super.add(e);
-            }
-            
-        };
-        TokenVisitor tokenVisitor = new TokenVisitor() {
-            public void genericVisit(Node n, List<Token> arg) { 
-                logSortie.debug("                          " + n.getClass().getName());
-            }
-        };
-        
-        tokenVisitor.visit(cu, listeToken);
-
         for (Token token : listeToken) {
             FILE_LOG.info(token.getValeurToken());
         }
     }
 
-    public List<Token> extraireToken(InputStream input) {
+    public List<Token> extraireToken(InputStream input, TokenVisitor tokenVisitor) {
         CompilationUnit cu = null;
         try {
             cu = JavaParser.parse(input);
@@ -96,14 +67,10 @@ public class ParcoursAst {
         List<Token> listeToken = new ArrayList<Token>() {
             @Override
             public boolean add(Token e) {
-                LOG.debug(e.getValeurToken());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getValeurToken());
+                }
                 return super.add(e);
-            }
-        };
-        
-        TokenVisitor tokenVisitor = new TokenVisitor() {
-            public void genericVisit(Node n, List<Token> arg) { 
-                LOG.debug("-----" + n.getClass().getName());
             }
         };
         
