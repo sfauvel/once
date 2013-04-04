@@ -48,11 +48,13 @@ public class Launcher {
 
     public static class MyFileVisitor implements FileVisitor {
         private final List<Token> tokenList = new ArrayList<Token>();
-        private ArrayList<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
+        private List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
         private String rootPath;
+
         public MyFileVisitor() {
             this("");
         }
+
         public MyFileVisitor(String rootPath) {
             this.rootPath = rootPath.replaceAll("/", "\\\\") + "\\";
         }
@@ -88,7 +90,7 @@ public class Launcher {
             return tokenList;
         }
 
-        public ArrayList<MethodLocalisation> getMethodList() {
+        public List<MethodLocalisation> getMethodList() {
             return methodList;
         }
     }
@@ -101,26 +103,21 @@ public class Launcher {
 
         Logger.getRootLogger().setLevel(Level.INFO);
 
-        // Logger.getLogger("RESULTAT").addAppender(new FileAppender(new
-        // SimpleLayout(), "fichierSortie.txt", false));
-        // Logger.getLogger("RESULTAT").setLevel(Level.INFO);
+        if (args.length > 1 && args[1].equals("verbose")) {
+            Reporting.LOG_CSV.addAppender(new FileAppender(new PatternLayout("%m\n"), "result/fichierSortie.csv", false));
+            activeLog(Reporting.TRACE_TOKEN, Level.INFO, "result/listeToken.txt");
+            activeLog(LOG, Level.INFO, "result/token.txt");
+            activeComparateurLog(Level.INFO, "result/comparator.txt");
+            activeLog(ComparateurAvecSubstitution.LOG, Level.DEBUG, null);
 
-        //Reporting.LOG_CSV.addAppender(new FileAppender(new PatternLayout("%m\n"), "result/fichierSortie.csv", false));
-        // Logger.getLogger("RESULTAT").setLevel(Level.INFO);
+            ManagerToken.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
+            ManagerToken.LOG.setLevel(Level.INFO);
+        }
         activeLog(Reporting.LOG_RESULTAT, Level.INFO, "result/once.txt");
-        //activeLog(Reporting.TRACE_TOKEN, Level.INFO, "result/listeToken.txt");
-        //activeLog(LOG, Level.INFO, "result/token.txt");
-        //activeComparateurLog(Level.INFO, "result/comparator.txt");
-
-        // activeLog(ComparateurAvecSubstitution.LOG, Level.DEBUG, null);
-        LOG.addAppender(new ConsoleAppender(new SimpleLayout()));
-        LOG.setLevel(Level.INFO);
-
+        activeLog(ManagerToken.LOG, Level.INFO, null);
+        activeLog(LOG, Level.INFO, null);
+        
         Launcher launchMyAppli = new Launcher();
-
-//        ManagerToken.LOG.addAppender(new FileAppender(new SimpleLayout(), "result/sortedList.txt", false));
-        ManagerToken.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
-        ManagerToken.LOG.setLevel(Level.INFO);
 
         String dir = args[0];
         MyFileVisitor myFileVisitor = new MyFileVisitor(dir);
@@ -137,10 +134,6 @@ public class Launcher {
 
         LOG.info("Affichage des resultats...");
         reporting.afficherRedondance(manager.getTokenList(), 20, listeRedondance);
-//        for (Redondance redondance : listeRedondance) {
-//            reporting.afficherMethodeDupliqueAvecSubtitution(manager.getTokenList(), redondance);
-//        }
-
         LOG.info("Fin");
 
     }

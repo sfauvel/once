@@ -11,9 +11,9 @@ import org.apache.commons.lang.StringUtils;
 
 public class ReportingImpl implements Reporting {
 
-    private ArrayList<MethodLocalisation> methodList;
+    private List<MethodLocalisation> methodList;
 
-    public ReportingImpl(ArrayList<MethodLocalisation> methodList) {
+    public ReportingImpl(List<MethodLocalisation> methodList) {
         this.methodList = methodList;
     }
 

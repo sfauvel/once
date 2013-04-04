@@ -1016,11 +1016,6 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
-    private void addOperator(Node n, List<Token> arg, BinaryExpr.Operator operator) {
-        SymboleOperator symbole = SymboleOperator.valueOf(operator.toString());
-        addToken(n, symbole.toString(), arg);
-    }
-
     private void addOperator(Position position, List<Token> arg, BinaryExpr.Operator operator) {
         SymboleOperator symbole = SymboleOperator.valueOf(operator.toString());
         addToken(position, symbole.toString(), arg);
@@ -1186,10 +1181,6 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     private Position finToken(Node n, Token token) {
         return new Position(n.getBeginLine(), n.getBeginColumn() + token.getValeurToken().length());
-    }
-
-    private Position finToken(Node n, String tokenValue) {
-        return new Position(n.getBeginLine(), n.getBeginColumn() + tokenValue.length());
     }
 
     private Position avantToken(Node n, Token token) {
