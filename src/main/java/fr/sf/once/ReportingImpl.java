@@ -30,36 +30,45 @@ public class ReportingImpl implements Reporting {
             List<Integer> firstTokenList = redondance.getFirstTokenList();
             Integer positionPremierToken = firstTokenList.get(0);
             if (isNombreLigneSuperieurA(tokenList, positionPremierToken, redondance.getDuplicatedTokenNumber(), 0)) {
-
-                int redundancyNumber = firstTokenList.size();
                 long duplicationScore = computeScore(redondance);
                 if (redondance.getDuplicatedTokenNumber() > 5 && duplicationScore > tailleMin) {
-                    StringBuffer bufferCsv = new StringBuffer();
-
-                    bufferCsv.append(redondance.getDuplicatedTokenNumber())
-                            .append(";")
-                            .append(redundancyNumber)
-                            .append(";")
-                            .append(duplicationScore)
-                            .append(";");
-                    for (Integer firstTokenPosition : firstTokenList) {
-                        Localisation localisationDebut = tokenList.get(firstTokenPosition).getlocalisation();
-                        Localisation localisationFin = tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation();
-
-                        bufferCsv.append(localisationDebut.getNomFichier())
-                                .append("(")
-                                .append(localisationDebut.getLigne())
-                                .append("/")
-                                .append(localisationFin.getLigne())
-                                .append(") ");
-                    }
-                    LOG_CSV.info(bufferCsv.toString());
-
+                    displayCsvRedundancy(tokenList, redondance, duplicationScore);
                     afficherCodeRedondant(tokenList, redondance);
                 }
             }
         }
         // displayMethod(tokenList, listeTokenTrie, listeRedondance);
+    }
+
+    private void displayCsvRedundancy(final List<Token> tokenList, Redondance redondance, long duplicationScore) {
+        if (LOG_CSV.isInfoEnabled()) {
+            StringBuffer bufferCsv = new StringBuffer();
+            appendCsvInformation(bufferCsv, tokenList, redondance, duplicationScore);
+            LOG_CSV.info(bufferCsv.toString());
+        }
+    }
+
+    private void appendCsvInformation(StringBuffer bufferCsv, final List<Token> tokenList, Redondance redondance, long duplicationScore) {
+        List<Integer> firstTokenList = redondance.getFirstTokenList();
+        int redundancyNumber = redondance.getRedundancyNumber();
+
+        bufferCsv.append(redondance.getDuplicatedTokenNumber())
+                .append(";")
+                .append(redundancyNumber)
+                .append(";")
+                .append(duplicationScore)
+                .append(";");
+        for (Integer firstTokenPosition : firstTokenList) {
+            Localisation localisationDebut = tokenList.get(firstTokenPosition).getlocalisation();
+            Localisation localisationFin = tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation();
+
+            bufferCsv.append(localisationDebut.getNomFichier())
+                    .append("(")
+                    .append(localisationDebut.getLigne())
+                    .append("/")
+                    .append(localisationFin.getLigne())
+                    .append(") ");
+        }
     }
 
     private int computeScore(Redondance redondance) {
@@ -141,7 +150,7 @@ public class ReportingImpl implements Reporting {
                     firstToken.getlocalisation().appendLocalisation(buffer);
                     buffer.append(" <-> ");
                     lastToken.getlocalisation().appendLocalisation(buffer);
-                    
+
                     buffer.append(" ")
                             .append(method.getMethodName())
                             .append("(")
@@ -167,7 +176,7 @@ public class ReportingImpl implements Reporting {
                 LOG_RESULTAT.info("  " + buffer.toString());
 
             }
-
+            Collections.sort(substitutionList);
             for (String substitution : substitutionList) {
                 LOG_RESULTAT.info("  " + substitution);
             }
@@ -244,7 +253,7 @@ public class ReportingImpl implements Reporting {
             lastColumn = currentColumn;
         }
     }
-    
+
     public void display(final Token token) {
         if (TRACE_TOKEN.isInfoEnabled()) {
             TRACE_TOKEN.info(token.format());

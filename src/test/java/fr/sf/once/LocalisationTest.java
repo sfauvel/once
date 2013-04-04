@@ -11,7 +11,7 @@ public class LocalisationTest {
         StringBuffer buffer = new StringBuffer();
         Localisation localisation = new Localisation("fichier.java", 12, 3);
         localisation.appendLocalisation(buffer);
-        assertEquals("(fichier.java:12)", buffer.toString());
+        assertEquals("(fichier.java:12/3)", buffer.toString());
 
     }
 }

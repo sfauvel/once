@@ -26,9 +26,11 @@ public class Localisation {
     public void appendLocalisation(StringBuffer buffer) {
         
         buffer.append("(")
-                .append(getNomFichier())
+                .append(nomFichier)
                 .append(":")
-                .append(getLigne())
+                .append(ligne)
+                .append("/")
+                .append(colonne)
                 .append(")");
     }
 
