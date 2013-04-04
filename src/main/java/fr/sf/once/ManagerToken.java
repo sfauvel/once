@@ -2,10 +2,10 @@ package fr.sf.once;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
 
 public class ManagerToken extends Code {
 
@@ -32,11 +32,27 @@ public class ManagerToken extends Code {
 
         LOG.info("Calcul des redondances...");
         List<Redondance> listeRedondance = calculerRedondance(positionList, redundancySize, configuration.getTailleMin());
+        LOG.info("Suppression des chevauchements...");
+        listeRedondance = removeOverlap(listeRedondance);
         LOG.info("Suppression des doublons...");
         listeRedondance = supprimerDoublon(listeRedondance);
         LOG.info("Fin du traitement");
         return listeRedondance;
 
+    }
+
+    private List<Redondance> removeOverlap(List<Redondance> redundancyList) {
+        LOG.info("Nombre de redondance avant suppression des chevauchements: " + redundancyList.size());
+        for (Iterator<Redondance> iterator = redundancyList.iterator(); iterator.hasNext();) {
+            Redondance redondance = iterator.next();
+            redondance.removeOverlapRedundancy();
+            if (redondance.getFirstTokenList().size() <= 1) {
+                iterator.remove();
+            }
+        }
+        LOG.info("Nombre de redondance après suppression des chevauchements: " + redundancyList.size());
+
+        return redundancyList;
     }
 
     /**

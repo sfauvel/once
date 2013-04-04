@@ -153,6 +153,45 @@ public class RedondanceTest {
         
     }
     
+    @Test
+    public void testRemoveOverlapRedundancyWithNoOverlap() {
+        Redondance redundancy = createRedundancy(5, 2, 12);
+        assertEquals(2, redundancy.getFirstTokenList().size());
+        redundancy.removeOverlapRedundancy();
+        assertEquals(2, redundancy.getFirstTokenList().size());
+    }
+    
+    @Test
+    public void testRemoveOverlapRedundancyWithOneOverlap() {
+        Redondance redundancy = createRedundancy(5, 2, 4);
+        assertEquals(2, redundancy.getFirstTokenList().size());
+        redundancy.removeOverlapRedundancy();
+        assertEquals(1, redundancy.getFirstTokenList().size());
+        assertEquals(4, redundancy.getFirstTokenList().get(0).intValue());
+    }
+    
+    @Test
+    public void testRemoveOverlapRedundancyWithSeveralOverlap() {
+        Redondance redundancy = createRedundancy(5, 2, 4, 8, 11, 14);
+        assertEquals(5, redundancy.getFirstTokenList().size());
+        redundancy.removeOverlapRedundancy();
+        assertEquals(3, redundancy.getFirstTokenList().size());
+        assertEquals(2, redundancy.getFirstTokenList().get(0).intValue());
+        assertEquals(8, redundancy.getFirstTokenList().get(1).intValue());
+        assertEquals(14, redundancy.getFirstTokenList().get(2).intValue());
+    }
+    
+    @Test
+    public void testRemoveOverlapRedundancyLimit() {
+        Redondance redundancyWithOverlap = createRedundancy(5, 2, 6);
+        redundancyWithOverlap.removeOverlapRedundancy();
+        assertEquals(1, redundancyWithOverlap.getFirstTokenList().size());
+        
+        Redondance redundancyWithoutOverlap = createRedundancy(5, 2, 7);
+        redundancyWithoutOverlap.removeOverlapRedundancy();
+        assertEquals(2, redundancyWithoutOverlap.getFirstTokenList().size());
+    }
+    
     private Redondance createRedundancyThatContains(final int redundancySize, final int indentifiedRedundancy) {
         return new Redondance(redundancySize) {
             @Override

@@ -110,4 +110,22 @@ public class Redondance {
         return buffer.toString();
     }
 
+    /**
+     * Remove duplication starting before the end of the last one.
+     */
+    public void removeOverlapRedundancy() {
+        // TODO The first token list should be always sorted.
+        Collections.sort(firstTokenList, Collections.reverseOrder());
+        int lastFirstValue = Integer.MAX_VALUE;
+        for (Iterator<Integer> tokenIterator = firstTokenList.iterator(); tokenIterator.hasNext();) {
+            Integer tokenPosition = tokenIterator.next();            
+            if (tokenPosition + duplicatedTokenNumber > lastFirstValue) {
+                tokenIterator.remove();
+            } else {
+                lastFirstValue = tokenPosition;
+            }
+        }
+        Collections.sort(firstTokenList);
+    }
+
 }

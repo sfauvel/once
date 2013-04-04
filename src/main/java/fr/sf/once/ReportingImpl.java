@@ -127,8 +127,9 @@ public class ReportingImpl implements Reporting {
 
                     buffer.append(pourcentage)
                             .append("% ")
-                            .append(method.getLocalisationFin().getLigne() - method.getLocalisationDebut().getLigne())
-                            .append(" lignes");
+                            .append(ligneFin - ligneDebut)
+                            .append(" lignes sur ")
+                            .append(method.getLocalisationFin().getLigne() - method.getLocalisationDebut().getLigne());
 
                     String nomFichier = method.getLocalisationDebut().getNomFichier();
                     appendFile(buffer, nomFichier, ligneDebut);

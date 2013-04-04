@@ -49,6 +49,13 @@ public class Launcher {
     public static class MyFileVisitor implements FileVisitor {
         private final List<Token> tokenList = new ArrayList<Token>();
         private ArrayList<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
+        private String rootPath;
+        public MyFileVisitor() {
+            this("");
+        }
+        public MyFileVisitor(String rootPath) {
+            this.rootPath = rootPath.replaceAll("/", "\\\\") + "\\";
+        }
 
         public void visit(final File file) {
             String fileName = file.getName();
@@ -57,8 +64,7 @@ public class Launcher {
                 try {
                     in = new FileInputStream(file);
                     CompilationUnit cu = JavaParser.parse(in, "iso8859-1");
-
-                    TokenVisitor tokenVisitor = new TokenVisitorInMethod(fileName, methodList);
+                    TokenVisitor tokenVisitor = new TokenVisitorInMethod(file.getPath().replace(rootPath, ""), methodList);
                     tokenVisitor.visit(cu, tokenList);
                     LOG.info(fileName + ": " + tokenList.size());
                 } catch (FileNotFoundException e) {
@@ -115,11 +121,11 @@ public class Launcher {
 //        ManagerToken.LOG.addAppender(new FileAppender(new SimpleLayout(), "result/sortedList.txt", false));
         ManagerToken.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
         ManagerToken.LOG.setLevel(Level.INFO);
-        
-        MyFileVisitor myFileVisitor = new MyFileVisitor();
-        ManagerToken manager = new ManagerToken(myFileVisitor.getTokenList());
 
         String dir = args[0];
+        MyFileVisitor myFileVisitor = new MyFileVisitor(dir);
+        ManagerToken manager = new ManagerToken(myFileVisitor.getTokenList());
+
         launchMyAppli.visitFile(dir, myFileVisitor);
 
         ReportingImpl reporting = new ReportingImpl(myFileVisitor.methodList);
@@ -127,7 +133,7 @@ public class Launcher {
 
         List<Redondance> listeRedondance = manager.getRedondance(
                 new Configuration(ComparateurAvecSubstitutionEtType.class)
-                        .withTailleMin(20));
+                        .withTailleMin(30));
 
         LOG.info("Affichage des resultats...");
         reporting.afficherRedondance(manager.getTokenList(), 20, listeRedondance);
