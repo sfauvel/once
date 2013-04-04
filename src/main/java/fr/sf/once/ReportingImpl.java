@@ -3,11 +3,8 @@ package fr.sf.once;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -138,7 +135,14 @@ public class ReportingImpl implements Reporting {
                     buffer.append(" <-> ");
                     appendFile(buffer, nomFichier, ligneFin);
 
-                    buffer.append(getStringMethod(method));
+                    buffer.append(" ")
+                            .append(method.getMethodName())
+                            .append("(")
+                            .append(method.getLocalisationDebut().getLigne())
+                            .append(" <-> ")
+                            .append(method.getLocalisationFin().getLigne())
+                            .append(")")
+                            .append(" ");
                     displayVisualRedondance(method, ligneDebut, ligneFin);
                 } else {
                     buffer.append(" No method ");
@@ -282,69 +286,4 @@ public class ReportingImpl implements Reporting {
                 .append(")");
     }
 
-    class Synthese {
-        Redondance redondance;
-        int firstToken;
-        int lastToken;
-    }
-
-    public void displayMethodRedondancy(List<Token> tokenList, List<Redondance> listeRedondance) {
-        Map<String, List<Synthese>> stringMethodList = new HashMap<String, List<Synthese>>();
-        for (MethodLocalisation method : methodList) {
-            String stringMethod = getStringMethod(method);
-            stringMethodList.put(stringMethod, new ArrayList<Synthese>());
-        }
-
-        Map<Integer, String> localisationMethod = new HashMap<Integer, String>();
-        // method => method + liste (redondance + firstTokne)
-        for (Redondance redondance : listeRedondance) {
-            if (redondance.getDuplicatedTokenNumber() > 20) {
-                List<Integer> firstTokenList = redondance.getFirstTokenList();
-                for (Integer firstTokenPosition : firstTokenList) {
-                    Token lastToken = tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber() - 1);
-                    MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
-                    if (method != null) {
-                        String stringMethod = getStringMethod(method);
-                        localisationMethod.put(firstTokenPosition, stringMethod);
-                        Synthese synthese = new Synthese();
-                        synthese.redondance = redondance;
-                        synthese.firstToken = firstTokenPosition;
-                        synthese.lastToken = firstTokenPosition + redondance.getDuplicatedTokenNumber();
-
-                        stringMethodList.get(stringMethod).add(synthese);
-                    }
-                }
-            }
-        }
-
-        for (Entry<String, List<Synthese>> method : stringMethodList.entrySet()) {
-            LOG_RESULTAT.info(method);
-            for (Synthese synthese : method.getValue()) {
-                List<Integer> firstTokenList = synthese.redondance.getFirstTokenList();
-                for (Integer firstTokenPosition : firstTokenList) {
-                    Token lastToken = tokenList.get(firstTokenPosition + synthese.redondance.getDuplicatedTokenNumber() - 1);
-                    MethodLocalisation methodWithDuplication = MethodLocalisation.findMethod(methodList, lastToken);
-                    if (methodWithDuplication != null) {
-                        LOG_RESULTAT.info(methodWithDuplication.getMethodName() + ":" + synthese.firstToken + "/" + synthese.lastToken);
-
-                    }   
-                    
-                }
-            }
-        }
-    }
-
-    private String getStringMethod(MethodLocalisation method) {
-
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(" ")
-                .append(method.getMethodName())
-                .append("(")
-                .append(method.getLocalisationDebut().getLigne())
-                .append(" <-> ")
-                .append(method.getLocalisationFin().getLigne())
-                .append(")")
-                .append(" ");
-        return buffer.toString();
-    }
 }

@@ -135,7 +135,6 @@ public class Launcher {
 //            reporting.afficherMethodeDupliqueAvecSubtitution(manager.getTokenList(), redondance);
 //        }
 
-//        reporting.displayMethodRedondancy(manager.getTokenList(), listeRedondance);
         LOG.info("Fin");
 
     }
