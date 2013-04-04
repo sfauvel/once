@@ -129,4 +129,8 @@ public class Redondance {
         Collections.sort(firstTokenList);
     }
 
+    public int getRedundancyNumber() {
+        return firstTokenList.size();
+    }
+
 }

@@ -114,6 +114,14 @@ public class RedondanceTest {
     }
     
     @Test
+    public void testGetRedundancyNumber() {
+        final int SIZE = 2;
+        assertEquals(0, createRedundancy(SIZE).getRedundancyNumber());
+        assertEquals(1, createRedundancy(SIZE, 3).getRedundancyNumber());
+        assertEquals(4, createRedundancy(SIZE, 6, 8, 9, 34).getRedundancyNumber());
+    }
+    
+    @Test
     public void testRemoveDuplicatedRedundancy() {
 
         List<Redondance> redundancyList = new ArrayList<Redondance>();

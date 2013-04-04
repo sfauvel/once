@@ -32,7 +32,7 @@ public class ReportingImpl implements Reporting {
             if (isNombreLigneSuperieurA(tokenList, positionPremierToken, redondance.getDuplicatedTokenNumber(), 0)) {
 
                 int redundancyNumber = firstTokenList.size();
-                long duplicationScore = redundancyNumber * redondance.getDuplicatedTokenNumber();
+                long duplicationScore = computeScore(redondance);
                 if (redondance.getDuplicatedTokenNumber() > 5 && duplicationScore > tailleMin) {
                     StringBuffer bufferCsv = new StringBuffer();
 
@@ -60,6 +60,11 @@ public class ReportingImpl implements Reporting {
             }
         }
         // displayMethod(tokenList, listeTokenTrie, listeRedondance);
+    }
+
+    private int computeScore(Redondance redondance) {
+        int redundancyNumber = redondance.getRedundancyNumber();
+        return redundancyNumber * redondance.getDuplicatedTokenNumber();
     }
 
     private List<String> getSubstitution(final List<Token> tokenList, Redondance redondance) {
