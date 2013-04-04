@@ -113,7 +113,8 @@ public class ReportingImpl implements Reporting {
 
                 StringBuffer buffer = new StringBuffer();
 
-                Integer ligneDebut = tokenList.get(firstTokenPosition).getLigneDebut();
+                Token firstToken = tokenList.get(firstTokenPosition);
+                Integer ligneDebut = firstToken.getLigneDebut();
                 Token lastToken = tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber() - 1);
                 Integer ligneFin = lastToken.getLigneDebut();
                 if (LOG_RESULTAT.isTraceEnabled()) {
@@ -132,11 +133,10 @@ public class ReportingImpl implements Reporting {
                             .append(" lignes sur ")
                             .append(methodLineNumber);
 
-                    String nomFichier = method.getLocalisationDebut().getNomFichier();
-                    appendFile(buffer, nomFichier, ligneDebut);
+                    firstToken.getlocalisation().appendLocalisation(buffer);
                     buffer.append(" <-> ");
-                    appendFile(buffer, nomFichier, ligneFin);
-
+                    lastToken.getlocalisation().appendLocalisation(buffer);
+                    
                     buffer.append(" ")
                             .append(method.getMethodName())
                             .append("(")
@@ -239,20 +239,10 @@ public class ReportingImpl implements Reporting {
             lastColumn = currentColumn;
         }
     }
-
+    
     public void display(final Token token) {
         if (TRACE_TOKEN.isInfoEnabled()) {
-            Localisation localisation = token.getlocalisation();
-
-            StringBuffer buffer = new StringBuffer();
-            buffer.append(StringUtils.rightPad(token.getValeurToken(), 25));
-            appendFile(buffer, localisation.getNomFichier(), localisation.getLigne());
-            buffer.append(" col:")
-                    // .append(localisation.getColonne())
-                    .append(StringUtils.rightPad(Integer.toString(localisation.getColonne()), 5))
-                    .append(" type:")
-                    .append(token.getType().toString());
-            TRACE_TOKEN.info(buffer.toString());
+            TRACE_TOKEN.info(token.format());
         }
     }
 
@@ -278,14 +268,6 @@ public class ReportingImpl implements Reporting {
             lastLine = currentLine;
             lastColumn = currentColumn;
         }
-    }
-
-    public void appendFile(StringBuffer buffer, String fileName, int line) {
-        buffer.append("(")
-                .append(fileName)
-                .append(":")
-                .append(line)
-                .append(")");
     }
 
 }

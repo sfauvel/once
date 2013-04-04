@@ -3,6 +3,8 @@
  */
 package fr.sf.once;
 
+import org.apache.commons.lang.StringUtils;
+
 
 public class Token {
 	
@@ -33,5 +35,22 @@ public class Token {
     }
     public Integer getColonneDebut() {
         return localisation.getColonne();
+    }
+    
+    public String format() {
+
+        StringBuffer buffer = new StringBuffer();
+        appendToken(buffer);
+        return buffer.toString();
+    }
+
+    public void appendToken(StringBuffer buffer) {
+        Localisation localisation = getlocalisation();
+        buffer.append(StringUtils.rightPad(getValeurToken(), 25));
+        localisation.appendLocalisation(buffer);
+        buffer.append(" col:")
+                .append(StringUtils.rightPad(Integer.toString(localisation.getColonne()), 5))
+                .append(" type:")
+                .append(getType().toString());
     }
 }

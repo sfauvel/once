@@ -22,5 +22,14 @@ public class Localisation {
     public int getColonne() {
         return colonne;
     }
+    
+    public void appendLocalisation(StringBuffer buffer) {
+        
+        buffer.append("(")
+                .append(getNomFichier())
+                .append(":")
+                .append(getLigne())
+                .append(")");
+    }
 
 }
