@@ -122,14 +122,15 @@ public class ReportingImpl implements Reporting {
                 MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
                 if (method != null) {
                     method.getRedondanceList().add(redondance);
-                    int methodSize = method.getLocalisationFin().getLigne() - method.getLocalisationDebut().getLigne();
-                    int pourcentage = computePourcentage(ligneFin - ligneDebut, methodSize);
+                    int methodLineNumber = method.getLocalisationFin().getLigne() - method.getLocalisationDebut().getLigne();
+                    int redundancyLineNumber = ligneFin - ligneDebut;
+                    int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
 
                     buffer.append(pourcentage)
                             .append("% ")
-                            .append(ligneFin - ligneDebut)
+                            .append(redundancyLineNumber)
                             .append(" lignes sur ")
-                            .append(method.getLocalisationFin().getLigne() - method.getLocalisationDebut().getLigne());
+                            .append(methodLineNumber);
 
                     String nomFichier = method.getLocalisationDebut().getNomFichier();
                     appendFile(buffer, nomFichier, ligneDebut);

@@ -1,9 +1,5 @@
 package fr.sf.once;
 
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
-import japa.parser.ast.CompilationUnit;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

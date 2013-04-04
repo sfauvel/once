@@ -2,12 +2,10 @@ package fr.sf.ast;
 
 import japa.parser.ast.body.MethodDeclaration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import fr.sf.once.MethodLocalisation;
 import fr.sf.once.Token;
-import fr.sf.once.Type;
 
 /**
  * Visiteur ne retenant que les token à l'intérieur d'une méthode.

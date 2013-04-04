@@ -14,7 +14,8 @@ import fr.sf.once.Token;
 
 public class ParcoursAst {
     public static final Logger LOG = Logger.getLogger(ParcoursAst.class);
-    public final String sourceEncoding;
+    
+    private final String sourceEncoding;
     
     public ParcoursAst() {
         this(null);

@@ -35,18 +35,7 @@ public class MethodLocalisation {
     public void setRedondanceList(Set<Redondance> redondanceList) {
         this.redondanceList = redondanceList;
     }
-    
-//    public static MethodLocalisation findMethod(List<MethodLocalisation> methodList, int line) {
-//        for (MethodLocalisation methodLocalisation : methodList) {            
-//            if (methodLocalisation.getLocalisationDebut().ligne<= line 
-//                    && methodLocalisation.getLocalisationFin().ligne>= line) {
-//                return methodLocalisation;
-//            }
-//                    
-//        }
-//        return null;
-//    }
-    
+       
     public static MethodLocalisation findMethod(List<MethodLocalisation> methodList, Token token) {
         for (MethodLocalisation methodLocalisation : methodList) {            
             if (methodLocalisation.localisationDebut.getNomFichier().equals(token.getlocalisation().getNomFichier())
@@ -59,7 +48,5 @@ public class MethodLocalisation {
         return null;
     }
     
-    
-
 }
  

@@ -3,17 +3,9 @@
  */
 package fr.sf.once;
 
-import java.util.Comparator;
 
 public class Token {
 	
-	static class ComparateurValeurToken implements Comparator<Token> {
-		@Override
-		public int compare(Token token1, Token token2) {
-			return token1.getValeurToken().compareTo(token2.getValeurToken());
-		}
-		
-	}
 	private final String valeurToken;
 	private final Type type;
 	private final Localisation localisation;

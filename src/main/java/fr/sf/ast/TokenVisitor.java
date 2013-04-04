@@ -118,7 +118,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         this.methodList = methodList;
     }
 
-    final public void genericVisit(Node n, List<Token> arg) {
+    public void genericVisit(Node n, List<Token> arg) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("     " + n.getClass().getName());
         }
@@ -1023,7 +1023,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     private boolean isPostOperator(UnaryExpr.Operator operator) {
         SymboleUnaryExpr symbole = SymboleUnaryExpr.valueOf(operator.toString());
-        return symbole.isPost;
+        return symbole.isPost();
     }
 
     private void addUnaryExpr(Position position, List<Token> arg, UnaryExpr.Operator operator) {
@@ -1086,6 +1086,9 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             return symbole;
         }
 
+        public boolean isPost() {
+            return isPost;
+        }
     }
 
     private boolean addIfTrue(Node n, TokenJava token, List<Token> arg, boolean condition) {
@@ -1156,10 +1159,10 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
-    class Position {
+    static class Position {
 
-        final int line;
-        final int column;
+        private final int line;
+        private final int column;
 
         public Position(int line, int column) {
             this.line = line;

@@ -104,7 +104,8 @@ public class Redondance {
         List<Integer> lastTokenList = new ArrayList<Integer>(redondance.firstTokenList);
         StringBuffer buffer = new StringBuffer();
         for (Integer value : lastTokenList) {
-            buffer.append(value + redondance.getDuplicatedTokenNumber());
+            int tokenEndPosition = value + redondance.getDuplicatedTokenNumber();
+            buffer.append(tokenEndPosition);
             buffer.append(",");
         }
         return buffer.toString();
