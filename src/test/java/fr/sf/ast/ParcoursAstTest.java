@@ -26,11 +26,6 @@ public class ParcoursAstTest {
 
     @BeforeClass
     static public void initTrace() {
-        Logger logger = Logger.getLogger(ParcoursAst.class);
-        logger.addAppender(new ConsoleAppender(new PatternLayout("%m\n")));
-        logger.setLevel(Level.DEBUG);
-        
-
         TokenVisitor.LOG.addAppender(new ConsoleAppender(new PatternLayout()));
         TokenVisitor.LOG.setLevel(Level.TRACE);
     }

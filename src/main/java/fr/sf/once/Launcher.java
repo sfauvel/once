@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.SimpleLayout;
 
+import fr.sf.ast.ParcoursAst;
 import fr.sf.ast.TokenVisitor;
 import fr.sf.ast.TokenVisitorInMethod;
 
@@ -46,16 +47,17 @@ public class Launcher {
         void visit(File file);
     }
 
-    public static class MyFileVisitor implements FileVisitor {
+    public static class MyFileVisitor extends ParcoursAst implements FileVisitor {
         private final List<Token> tokenList = new ArrayList<Token>();
         private List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
         private String rootPath;
 
         public MyFileVisitor() {
-            this("");
+            this("", null);
         }
 
-        public MyFileVisitor(String rootPath) {
+        public MyFileVisitor(String rootPath, String sourceEncoding) {
+            super(sourceEncoding);
             this.rootPath = rootPath.replaceAll("/", "\\\\") + "\\";
         }
 
@@ -65,14 +67,13 @@ public class Launcher {
                 FileInputStream in = null;
                 try {
                     in = new FileInputStream(file);
-                    CompilationUnit cu = JavaParser.parse(in, "iso8859-1");
                     TokenVisitor tokenVisitor = new TokenVisitorInMethod(file.getPath().replace(rootPath, ""), methodList);
-                    tokenVisitor.visit(cu, tokenList);
+                    tokenList.addAll(extraireToken(in, tokenVisitor));
                     LOG.info(fileName + ": " + tokenList.size());
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     LOG.error("Erreur de lecture du fichier " + fileName, e);
-                } catch (ParseException e) {
+                } catch (Error e) {
                     LOG.error("Erreur de parsing du fichier " + fileName, e);
                 } finally {
                     try {
@@ -120,7 +121,7 @@ public class Launcher {
         Launcher launchMyAppli = new Launcher();
 
         String dir = args[0];
-        MyFileVisitor myFileVisitor = new MyFileVisitor(dir);
+        MyFileVisitor myFileVisitor = new MyFileVisitor(dir, "iso8859-1");
         ManagerToken manager = new ManagerToken(myFileVisitor.getTokenList());
 
         launchMyAppli.visitFile(dir, myFileVisitor);
