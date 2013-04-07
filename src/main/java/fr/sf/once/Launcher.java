@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
@@ -17,33 +18,22 @@ import org.apache.log4j.SimpleLayout;
 import fr.sf.ast.ParcoursAst;
 import fr.sf.ast.TokenVisitor;
 import fr.sf.ast.TokenVisitorInMethod;
+import fr.sf.commons.Files;
 
 public class Launcher {
 
+    public static class OnceProperties {
+        private OnceProperties() {
+            
+        }
+        public static final String SRC_DIR = "once.sourceDir";
+        public static final String SRC_ENCODING = "once.sourceEncoding";
+    }
+    private static final String ONCE_PROPERTY = "once.properties";
+    
     public static final Logger LOG = Logger.getLogger(Launcher.class);
 
-    protected void visitFile(String dir, FileVisitor visitor) {
-        File file = new File(dir);
-        File[] files = file.listFiles();
-        if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                visitor.visit(files[i]);
-                if (files[i].isFile()) {
-                    LOG.debug("Fichier: " + files[i].getName());
-                } else if (files[i].isDirectory()) {
-                    LOG.debug("Répertoire: " + files[i].getName());
-                    visitFile(files[i].getAbsolutePath(), visitor);
-                    LOG.debug("Fin de répertoire: " + files[i].getName());
-                }
-            }
-        }
-    }
-
-    public interface FileVisitor {
-        void visit(File file);
-    }
-
-    public static class MyFileVisitor extends ParcoursAst implements FileVisitor {
+    public static class MyFileVisitor extends ParcoursAst implements Files.FileVisitor {
         private final List<Token> tokenList = new ArrayList<Token>();
         private List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
         private String rootPath;
@@ -97,6 +87,12 @@ public class Launcher {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+        Properties applicationProperties = new Properties();
+        applicationProperties.load(Launcher.class.getClassLoader().getResourceAsStream(ONCE_PROPERTY));
+        Properties applicationProps = new Properties(applicationProperties);
+
+        String sourceDir = applicationProps.getProperty(OnceProperties.SRC_DIR, args[0]);
+        String sourceEncoding = applicationProps.getProperty(OnceProperties.SRC_ENCODING, "iso8859-1");
 
         Logger.getRootLogger().setLevel(Level.INFO);
 
@@ -116,12 +112,12 @@ public class Launcher {
         
         Launcher launchMyAppli = new Launcher();
 
-        String dir = args[0];
-        MyFileVisitor myFileVisitor = new MyFileVisitor(dir, "iso8859-1");
+      //  String dir = args[0];
+        MyFileVisitor myFileVisitor = new MyFileVisitor(sourceDir, sourceEncoding);
         ManagerToken manager = new ManagerToken(myFileVisitor.getTokenList());
 
-        launchMyAppli.visitFile(dir, myFileVisitor);
-
+        Files.visitFile(sourceDir, myFileVisitor);
+        
         ReportingImpl reporting = new ReportingImpl(myFileVisitor.methodList);
         reporting.display(manager);
 
