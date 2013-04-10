@@ -12,6 +12,13 @@ import org.apache.log4j.SimpleLayout;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import fr.sf.once.comparator.Comparateur;
+import fr.sf.once.comparator.ComparateurAvecSubstitution;
+import fr.sf.once.core.ManagerToken;
+import fr.sf.once.model.Code;
+import fr.sf.once.model.Localisation;
+import fr.sf.once.model.Token;
+import fr.sf.once.model.Type;
 import fr.sf.once.test.LogRule;
 import fr.sf.once.test.UtilsToken;
 

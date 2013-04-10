@@ -5,6 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.sf.once.comparator.ComparateurAvecSubstitution;
+import fr.sf.once.model.Code;
+import fr.sf.once.model.Localisation;
+import fr.sf.once.model.Token;
+import fr.sf.once.model.Type;
 import fr.sf.once.test.UtilsToken;
 
 public abstract class AbstractComparateurTest {

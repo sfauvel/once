@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.Code;
-import fr.sf.once.Localisation;
-import fr.sf.once.ManagerToken;
-import fr.sf.once.Token;
-import fr.sf.once.Type;
+import fr.sf.once.core.ManagerToken;
+import fr.sf.once.model.Code;
+import fr.sf.once.model.Localisation;
+import fr.sf.once.model.Token;
+import fr.sf.once.model.Type;
 
 public final class UtilsToken {
 

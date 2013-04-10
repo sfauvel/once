@@ -49,17 +49,25 @@
 				</configuration>
 			</plugin>
 			<plugin>
-			<!-- Pour construire le jar, mvn compile assembly:single -->
+				<!-- Pour construire le jar, mvn compile assembly:single -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2.2</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>fr.sf.once.Launcher</mainClass>
+							<mainClass>fr.sf.once.launcher.Launcher</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
