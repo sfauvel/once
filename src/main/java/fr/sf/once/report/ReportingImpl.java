@@ -267,11 +267,15 @@ public class ReportingImpl implements Reporting {
     }
 
     public void display(final Code code) {
-        for (Token token : code.getTokenList()) {
+        display(code.getTokenList());
+    }
+
+    public void display(final List<Token> tokenList) {
+        for (Token token : tokenList) {
             display(token);
         }
     }
-
+    
     public void checkLocalisation(final Code code) {
         int lastLine = 0;
         int lastColumn = 0;

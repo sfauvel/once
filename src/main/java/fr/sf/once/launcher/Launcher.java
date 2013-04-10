@@ -1,10 +1,6 @@
 package fr.sf.once.launcher;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -15,9 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.SimpleLayout;
 
-import fr.sf.once.ast.ParcoursAst;
-import fr.sf.once.ast.TokenVisitor;
-import fr.sf.once.ast.TokenVisitorInMethod;
+import fr.sf.once.ast.ExtractTokenFileVisitor;
 import fr.sf.once.comparator.Comparateur;
 import fr.sf.once.comparator.ComparateurAvecSubstitution;
 import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
@@ -25,9 +19,7 @@ import fr.sf.once.comparator.ComparateurSansSubstitution;
 import fr.sf.once.comparator.ComparateurSimpleSansString;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.ManagerToken;
-import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Redondance;
-import fr.sf.once.model.Token;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingImpl;
 import fr.sf.commons.Files;
@@ -44,55 +36,6 @@ public class Launcher {
     private static final String ONCE_PROPERTY = "once.properties";
     
     public static final Logger LOG = Logger.getLogger(Launcher.class);
-
-    public static class MyFileVisitor extends ParcoursAst implements Files.FileVisitor {
-        private final List<Token> tokenList = new ArrayList<Token>();
-        private List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
-        private String rootPath;
-
-        public MyFileVisitor() {
-            this("", null);
-        }
-
-        public MyFileVisitor(String rootPath, String sourceEncoding) {
-            super(sourceEncoding);
-            this.rootPath = rootPath.replaceAll("/", "\\\\") + "\\";
-        }
-
-        public void visit(final File file) {
-            String fileName = file.getName();
-            if (file.isFile() && fileName.endsWith(".java")) {
-                FileInputStream in = null;
-                try {
-                    in = new FileInputStream(file);
-                    TokenVisitor tokenVisitor = new TokenVisitorInMethod(file.getPath().replace(rootPath, ""), methodList);
-                    tokenList.addAll(extraireToken(in, tokenVisitor));
-                    LOG.info(fileName + ": " + tokenList.size());
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    LOG.error("Erreur de lecture du fichier " + fileName, e);
-                } catch (Error e) {
-                    LOG.error("Erreur de parsing du fichier " + fileName, e);
-                } finally {
-                    try {
-                        if (in != null) {
-                            in.close();
-                        }
-                    } catch (IOException e) {
-                        LOG.error("Erreur de fermeture du fichier " + fileName, e);
-                    }
-                }
-            }
-        }
-
-        public List<Token> getTokenList() {
-            return tokenList;
-        }
-
-        public List<MethodLocalisation> getMethodList() {
-            return methodList;
-        }
-    }
 
     /**
      * @param args
@@ -125,14 +68,13 @@ public class Launcher {
         Launcher launchMyAppli = new Launcher();
 
       //  String dir = args[0];
-        MyFileVisitor myFileVisitor = new MyFileVisitor(sourceDir, sourceEncoding);
-        ManagerToken manager = new ManagerToken(myFileVisitor.getTokenList());
-
-        Files.visitFile(sourceDir, myFileVisitor);
+        ExtractTokenFileVisitor extractToken = new ExtractTokenFileVisitor(sourceDir, sourceEncoding);
+        Files.visitFile(sourceDir, extractToken);
         
-        ReportingImpl reporting = new ReportingImpl(myFileVisitor.methodList);
-        reporting.display(manager);
-
+      ReportingImpl reporting = new ReportingImpl(extractToken.getMethodList());
+      reporting.display(extractToken.getTokenList());
+        
+        ManagerToken manager = new ManagerToken(extractToken.getTokenList());
         List<Redondance> listeRedondance = manager.getRedondance(
                 new Configuration(ComparateurAvecSubstitutionEtType.class)
                         .withTailleMin(30));
