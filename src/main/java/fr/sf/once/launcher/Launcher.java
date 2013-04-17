@@ -1,6 +1,7 @@
 package fr.sf.once.launcher;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
@@ -47,14 +48,18 @@ public class Launcher {
      */
     public static void main(String[] args) throws IOException {
         Properties applicationProperties = new Properties();
-        applicationProperties.load(Launcher.class.getClassLoader().getResourceAsStream(ONCE_PROPERTY));
+
+        InputStream resourceAsStream = Launcher.class.getClassLoader().getResourceAsStream(ONCE_PROPERTY);
+        if (resourceAsStream != null) {
+            applicationProperties.load(resourceAsStream);
+        }
         Properties applicationProps = new Properties(applicationProperties);
 
-        String sourceDir = applicationProps.getProperty(OnceProperties.SRC_DIR, args[0]);
+        String sourceDir = applicationProps.getProperty(OnceProperties.SRC_DIR, (args.length <= 0) ? "." : args[0]);
         String sourceEncoding = applicationProps.getProperty(OnceProperties.SRC_ENCODING, "iso8859-1");
         boolean isVerbose = Boolean.parseBoolean(applicationProps.getProperty(OnceProperties.VERBOSE, "false"));
 
-        Logger.getRootLogger().setLevel(Level.INFO);
+//        Logger.getRootLogger().setLevel(Level.INFO);
 
         if (isVerbose) {
             Reporting.LOG_CSV.addAppender(new FileAppender(new PatternLayout("%m\n"), "result/fichierSortie.csv", false));
