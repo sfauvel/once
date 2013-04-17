@@ -71,6 +71,21 @@ public class ComparateurAvecSubstitutionTest extends AbstractComparateurTest {
     }
 
     @Test
+    public void testGetRedundancySizeWithSpace() throws Exception {
+        final Code CODE = creerCode(
+                "a", "b", "c", "d", "c", "b", "b", "a", ";",
+                "A", "B", "C", "A", "C", "A", "A", "B", ";");
+
+        assertEquals(3, new ComparateurAvecSubstitution(CODE).getRedundancySize(0, 9));
+        assertEquals(5, new ComparateurAvecSubstitution(CODE).getRedundancySize(4, 13));
+
+        Comparateur comparateur = new ComparateurAvecSubstitution(CODE);
+        assertEquals(3, comparateur.getRedundancySizeWithPreviousSubstitution(0, 9));
+        // Only 'c' with 'C'. 'b' doesn't match with 'A'.
+        assertEquals(1, comparateur.getRedundancySizeWithPreviousSubstitution(4, 13));
+    }
+
+    @Test
     public void testGetRedundancySizeCaractereNonInterchangeable() throws Exception {
 
         assertEquals(4, getComparator("a", "a", "b", "x", "c", "c", "d", "z").getRedundancySize(0, 4));
@@ -132,7 +147,7 @@ public class ComparateurAvecSubstitutionTest extends AbstractComparateurTest {
         assertEquals(-1, comparateur.compare(0, 3));
         assertEquals(1, comparateur.compare(3, 0));
     }
-    
+
     /**
      * A B A C E G E F 0:1 2 1 3 4 5 4 6 1: 1 2 3 4 5 4 6 2: 1 2 3 4 3 5 3: 1 2
      * 3 2 4 4: 1 2 1 3 5: 1 2 3 6: 1 2 7: 1

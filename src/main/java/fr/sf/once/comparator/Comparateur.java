@@ -135,5 +135,22 @@ public abstract class Comparateur implements Comparator<Integer> {
         }
         return profondeur;
     }
+    /**
+     * Get redundancy size continuing with substitution already done.
+     * @param position1
+     * @param position2
+     * @return
+     */
+    public int getRedundancySizeWithPreviousSubstitution(int position1, int position2) {
+        traceDebug = new StringBuffer();
+        profondeur = 0;
+        compareEnProfondeur(position1, position2);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Nombre de redondance = " + profondeur + " entre les positions " + position1 + " et " + position2);
+            LOG.debug(traceDebug.toString());
+        }
+        return profondeur;
+    }
 
 }
