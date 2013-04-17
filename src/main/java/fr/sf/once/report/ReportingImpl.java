@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.MethodLocalisation;
@@ -25,6 +26,10 @@ public class ReportingImpl implements Reporting {
     public ReportingImpl(List<MethodLocalisation> methodList) {
         this.methodList = methodList;
         this.tokenLogger = TRACE_TOKEN;
+    }
+    
+    public void afficherRedondance(final ManagerToken manager, final int tailleMin, List<Redondance> listeRedondance) {
+        afficherRedondance(manager.getTokenList(), tailleMin, listeRedondance);
     }
     
     public void afficherRedondance(final List<Token> tokenList, final int tailleMin, List<Redondance> listeRedondance) {

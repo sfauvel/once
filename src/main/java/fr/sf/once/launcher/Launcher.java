@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.SimpleLayout;
 
+import fr.sf.commons.Files;
 import fr.sf.once.ast.ExtractTokenFileVisitor;
 import fr.sf.once.comparator.Comparateur;
 import fr.sf.once.comparator.ComparateurAvecSubstitution;
@@ -19,22 +20,25 @@ import fr.sf.once.comparator.ComparateurSansSubstitution;
 import fr.sf.once.comparator.ComparateurSimpleSansString;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.ManagerToken;
+import fr.sf.once.model.Code;
 import fr.sf.once.model.Redondance;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingImpl;
-import fr.sf.commons.Files;
 
 public class Launcher {
 
     public static class OnceProperties {
         private OnceProperties() {
-            
+
         }
+
         public static final String SRC_DIR = "once.sourceDir";
         public static final String SRC_ENCODING = "once.sourceEncoding";
+        public static final String VERBOSE = "once.verbose";
     }
+
     private static final String ONCE_PROPERTY = "once.properties";
-    
+
     public static final Logger LOG = Logger.getLogger(Launcher.class);
 
     /**
@@ -48,10 +52,11 @@ public class Launcher {
 
         String sourceDir = applicationProps.getProperty(OnceProperties.SRC_DIR, args[0]);
         String sourceEncoding = applicationProps.getProperty(OnceProperties.SRC_ENCODING, "iso8859-1");
+        boolean isVerbose = Boolean.parseBoolean(applicationProps.getProperty(OnceProperties.VERBOSE, "false"));
 
         Logger.getRootLogger().setLevel(Level.INFO);
 
-        if (args.length > 1 && args[1].equals("verbose")) {
+        if (isVerbose) {
             Reporting.LOG_CSV.addAppender(new FileAppender(new PatternLayout("%m\n"), "result/fichierSortie.csv", false));
             activeLog(Reporting.TRACE_TOKEN, Level.INFO, "result/listeToken.txt");
             activeLog(LOG, Level.INFO, "result/token.txt");
@@ -64,23 +69,23 @@ public class Launcher {
         activeLog(Reporting.LOG_RESULTAT, Level.INFO, "result/once.txt");
         activeLog(ManagerToken.LOG, Level.INFO, null);
         activeLog(LOG, Level.INFO, null);
-        
-        Launcher launchMyAppli = new Launcher();
 
-      //  String dir = args[0];
+        // String dir = args[0];
+        LOG.info("Source directory:" + sourceDir);
         ExtractTokenFileVisitor extractToken = new ExtractTokenFileVisitor(sourceDir, sourceEncoding);
         Files.visitFile(sourceDir, extractToken);
-        
-      ReportingImpl reporting = new ReportingImpl(extractToken.getMethodList());
-      reporting.display(extractToken.getTokenList());
-        
+
+        Reporting reporting = new ReportingImpl(extractToken.getMethodList());
+        reporting.display(new Code(extractToken.getTokenList(), extractToken.getMethodList()));
+
         ManagerToken manager = new ManagerToken(extractToken.getTokenList());
         List<Redondance> listeRedondance = manager.getRedondance(
                 new Configuration(ComparateurAvecSubstitutionEtType.class)
-                        .withTailleMin(30));
+                        .withTailleMin(100));
 
         LOG.info("Affichage des resultats...");
-        reporting.afficherRedondance(manager.getTokenList(), 20, listeRedondance);
+        reporting.afficherRedondance(manager, 20, listeRedondance);
+
         LOG.info("Fin");
 
     }
