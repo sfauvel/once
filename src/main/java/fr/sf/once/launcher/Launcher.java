@@ -1,8 +1,11 @@
 package fr.sf.once.launcher;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.log4j.ConsoleAppender;
@@ -49,12 +52,19 @@ public class Launcher {
     public static void main(String[] args) throws IOException {
         Properties applicationProperties = new Properties();
 
-        InputStream resourceAsStream = Launcher.class.getClassLoader().getResourceAsStream(ONCE_PROPERTY);
-        if (resourceAsStream != null) {
-            applicationProperties.load(resourceAsStream);
-        }
-        Properties applicationProps = new Properties(applicationProperties);
+        File propertiesFile = new File(ONCE_PROPERTY);
 
+        Properties applicationProps = new Properties();
+        if (propertiesFile.exists()) {
+            InputStream resourceAsStream = new FileInputStream(propertiesFile);
+            applicationProperties.load(resourceAsStream);
+            applicationProps = new Properties(applicationProperties);
+        }
+
+        LOG.debug("Properties:");
+        for (Entry<Object, Object> entry : applicationProps.entrySet()) {
+            LOG.debug(entry.getKey() + ":" + entry.getValue());
+        }
         String sourceDir = applicationProps.getProperty(OnceProperties.SRC_DIR, (args.length <= 0) ? "." : args[0]);
         String sourceEncoding = applicationProps.getProperty(OnceProperties.SRC_ENCODING, "iso8859-1");
         boolean isVerbose = Boolean.parseBoolean(applicationProps.getProperty(OnceProperties.VERBOSE, "false"));
