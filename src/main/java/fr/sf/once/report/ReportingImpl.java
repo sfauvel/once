@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
@@ -17,12 +18,15 @@ import fr.sf.once.model.Token;
 
 public class ReportingImpl implements Reporting {
 
+    private Logger tokenLogger;
+
     private List<MethodLocalisation> methodList;
 
     public ReportingImpl(List<MethodLocalisation> methodList) {
         this.methodList = methodList;
+        this.tokenLogger = TRACE_TOKEN;
     }
-
+    
     public void afficherRedondance(final List<Token> tokenList, final int tailleMin, List<Redondance> listeRedondance) {
         LOG_CSV.info("Taille Redondance;Nombre redondance;Note");
         Collections.sort(listeRedondance, new Comparator<Redondance>() {
@@ -292,6 +296,10 @@ public class ReportingImpl implements Reporting {
             lastLine = currentLine;
             lastColumn = currentColumn;
         }
+    }
+
+    public Logger getTokenLogger() {
+        return tokenLogger;
     }
 
 }

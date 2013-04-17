@@ -15,10 +15,9 @@ public class MethodVisitor extends VoidVisitorAdapter<List<MethodLocalisation>> 
 
     @Override
     public void visit(MethodDeclaration n, List<MethodLocalisation> methodList) {
-        MethodLocalisation methodLocalisation = new MethodLocalisation();
-        methodLocalisation.setMethodName(n.getName());
-        methodLocalisation.setLocalisationDebut(new Localisation("", n.getBeginLine(), n.getBeginColumn()));
-        methodLocalisation.setLocalisationFin(new Localisation("", n.getEndLine(), n.getEndColumn()));
+        MethodLocalisation methodLocalisation = new MethodLocalisation(n.getName(),
+                new Localisation("", n.getBeginLine(), n.getBeginColumn()),
+                new Localisation("", n.getEndLine(), n.getEndColumn()));
         methodList.add(methodLocalisation);
     }
 }

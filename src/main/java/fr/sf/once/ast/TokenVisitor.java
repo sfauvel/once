@@ -92,6 +92,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.model.Localisation;
@@ -104,18 +105,20 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     static final Logger LOG = Logger.getLogger(TokenVisitor.class);
     private final String fileName;
     private final List<MethodLocalisation> methodList;
+    private int firstTokenNumber;
 
     public TokenVisitor() {
         this("");
     }
 
     public TokenVisitor(String fileName) {
-        this(fileName, new ArrayList<MethodLocalisation>());
+        this(fileName, new ArrayList<MethodLocalisation>(), 0);
     }
 
-    public TokenVisitor(String fileName, List<MethodLocalisation> methodList) {
+    public TokenVisitor(String fileName, List<MethodLocalisation> methodList, int firstTokenNumber) {
         this.fileName = fileName;
         this.methodList = methodList;
+        this.firstTokenNumber = firstTokenNumber;
     }
 
     public void genericVisit(Node n, List<Token> arg) {
@@ -733,15 +736,19 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             addParameterList(n.getThrows(), arg);
         }
         if (n.getBody() != null) {
-            MethodLocalisation methodLocalisation = new MethodLocalisation();
-            methodLocalisation.setMethodName(n.getName());
             Position startPosition = position(n.getBody());
-            methodLocalisation.setLocalisationDebut(new Localisation(fileName, startPosition.line, startPosition.column));
             addToken(startPosition, TokenJava.METHOD_LIMIT, arg);
+            int startTokenPosition = firstTokenNumber + arg.size() - 1;
             n.getBody().accept(this, arg);
             Position endPosition = nextNode(n.getBody());
-            methodLocalisation.setLocalisationFin(new Localisation(fileName, endPosition.line, endPosition.column));
             addToken(endPosition, TokenJava.METHOD_LIMIT, arg);
+            int endTokenPosition = firstTokenNumber + arg.size() - 1;
+            
+            MethodLocalisation methodLocalisation = new MethodLocalisation(n.getName(),
+                    new Localisation(fileName, startPosition.line, startPosition.column),
+                    new Localisation(fileName, endPosition.line, endPosition.column),
+                    new IntRange(startTokenPosition, endTokenPosition));
+
             methodList.add(methodLocalisation);
         }
     }

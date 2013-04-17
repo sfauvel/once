@@ -14,8 +14,8 @@ public class TokenVisitorInMethod extends TokenVisitor {
 
     private boolean isInMethod = false;
     
-    public TokenVisitorInMethod(String fileName, List<MethodLocalisation> methodList) {
-        super(fileName, methodList);
+    public TokenVisitorInMethod(String fileName, List<MethodLocalisation> methodList, int firstTokenNumber) {
+        super(fileName, methodList, firstTokenNumber);
     }
 
     public void visit(MethodDeclaration n, List<Token> arg) {

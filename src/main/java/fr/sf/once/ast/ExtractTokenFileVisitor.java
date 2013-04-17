@@ -31,7 +31,7 @@ public class ExtractTokenFileVisitor extends ParcoursAst implements Files.FileVi
             FileInputStream in = null;
             try {
                 in = new FileInputStream(file);
-                TokenVisitor tokenVisitor = new TokenVisitorInMethod(file.getPath().replace(rootPath, ""), methodList);
+                TokenVisitor tokenVisitor = new TokenVisitorInMethod(file.getPath().replace(rootPath, ""), methodList, tokenList.size());
                 tokenList.addAll(extraireToken(in, tokenVisitor));
                 LOG.info(fileName + ": " + tokenList.size());
             } catch (FileNotFoundException e) {

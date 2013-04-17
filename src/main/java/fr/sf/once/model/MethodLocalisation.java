@@ -4,32 +4,52 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.math.IntRange;
+
 
 public class MethodLocalisation {
 
-    private String methodName;
-    private Localisation localisationDebut;
-    private Localisation localisationFin;
+    private final String methodName;
+    private final Localisation localisationDebut;
+    private final Localisation localisationFin;
+    private final IntRange tokenRange;
     private Set<Redondance> redondanceList = new HashSet<Redondance>();
     
+    
+    public MethodLocalisation(String methodName, Localisation localisationDebut, Localisation localisationFin) {
+        super();
+        this.methodName = methodName;
+        this.localisationDebut = localisationDebut;
+        this.localisationFin = localisationFin;
+        this.tokenRange = null;
+    }
+    public MethodLocalisation(String methodName, IntRange tokenRange) {
+        super();
+        this.methodName = methodName;
+        this.localisationDebut = null;
+        this.localisationFin = null;
+        this.tokenRange = tokenRange;
+    }
+    
+    public MethodLocalisation(String methodName, Localisation localisationDebut, Localisation localisationFin, IntRange tokenRange) {
+        super();
+        this.methodName = methodName;
+        this.localisationDebut = localisationDebut;
+        this.localisationFin = localisationFin;
+        this.tokenRange = tokenRange;
+    }
     public String getMethodName() {
         return methodName;
     }
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
+
     public Localisation getLocalisationDebut() {
         return localisationDebut;
     }
-    public void setLocalisationDebut(Localisation localisationDebut) {
-        this.localisationDebut = localisationDebut;
-    }
+
     public Localisation getLocalisationFin() {
         return localisationFin;
     }
-    public void setLocalisationFin(Localisation localisationFin) {
-        this.localisationFin = localisationFin;
-    }
+
     public Set<Redondance> getRedondanceList() {
         return redondanceList;
     }
@@ -47,6 +67,21 @@ public class MethodLocalisation {
                     
         }
         return null;
+    }
+    public static MethodLocalisation findMethod(List<MethodLocalisation> methodList, Integer tokenPosition) {
+        for (MethodLocalisation methodLocalisation : methodList) {
+            if (methodLocalisation.containsPosition(tokenPosition)) {
+                return methodLocalisation;
+            }
+        }
+        return null;
+    }
+    
+    public boolean containsPosition(int tokenPosition) {
+        return tokenRange.containsInteger(tokenPosition);
+    }
+    public IntRange getTokenRange() {
+        return tokenRange;
     }
     
 }

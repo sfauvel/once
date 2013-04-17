@@ -215,7 +215,6 @@ public class ManagerTokenTest {
 
     @Test
     public void testSupprimerDoublonListeVide() {
-
         ManagerToken managerToken = new ManagerToken(Collections.<Token> emptyList());
         List<Redondance> listeRedondance = new ArrayList<Redondance>();
         List<Redondance> listeObtenue = managerToken.supprimerDoublon(listeRedondance);
