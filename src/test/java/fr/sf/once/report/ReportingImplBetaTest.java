@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.math.IntRange;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.WriterAppender;
@@ -39,6 +40,7 @@ public class ReportingImplBetaTest {
         writer = new StringWriter();
         WriterAppender writerAppender = new WriterAppender(new PatternLayout("%m;"), writer);
         tokenLogger.addAppender(writerAppender);
+        tokenLogger.setLevel(Level.INFO);
     }
     @Test
     public void testDisplayToken() {
