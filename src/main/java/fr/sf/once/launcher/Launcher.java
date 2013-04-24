@@ -96,7 +96,7 @@ public class Launcher {
         ManagerToken manager = new ManagerToken(extractToken.getTokenList());
         List<Redondance> listeRedondance = manager.getRedondance(
                 new Configuration(ComparateurAvecSubstitutionEtType.class)
-                        .withTailleMin(100));
+                        .withTailleMin(20));
 
         LOG.info("Affichage des resultats...");
         reporting.afficherRedondance(manager, 20, listeRedondance);

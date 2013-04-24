@@ -91,6 +91,7 @@ import japa.parser.ast.visitor.VoidVisitor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
@@ -105,6 +106,8 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     static final Logger LOG = Logger.getLogger(TokenVisitor.class);
     private final String fileName;
     private final List<MethodLocalisation> methodList;
+    private final Stack<String> currentClassList = new Stack<String>();
+    private String currentPackage = "";
     private int firstTokenNumber;
 
     public TokenVisitor() {
@@ -291,6 +294,12 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(n, typeObjet, arg);
         addToken(finToken(n, typeObjet), n.getName(), arg);
 
+        if (currentClassList.isEmpty()) {
+            currentClassList.push(currentPackage + "." + n.getName());
+        } else {
+            currentClassList.push(currentClassList.peek() + "$" + n.getName());
+        }
+        
         if (n.getTypeParameters() != null) {
             for (TypeParameter t : n.getTypeParameters()) {
                 t.accept(this, arg);
@@ -325,6 +334,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             }
         }
         addToken(finNode(n), TokenJava.ACCOLADE_FERMANTE, arg);
+        currentClassList.pop();
     }
 
     public void visit(ClassOrInterfaceType n, List<Token> arg) {
@@ -743,8 +753,11 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             Position endPosition = nextNode(n.getBody());
             addToken(endPosition, TokenJava.METHOD_LIMIT, arg);
             int endTokenPosition = firstTokenNumber + arg.size() - 1;
-            
-            MethodLocalisation methodLocalisation = new MethodLocalisation(n.getName(),
+            String classContexte = "";
+            if (!currentClassList.isEmpty()) {
+                classContexte = currentClassList.peek() + ".";
+            }
+            MethodLocalisation methodLocalisation = new MethodLocalisation(classContexte + n.getName(),
                     new Localisation(fileName, startPosition.line, startPosition.column),
                     new Localisation(fileName, endPosition.line, endPosition.column),
                     new IntRange(startTokenPosition, endTokenPosition));
@@ -810,6 +823,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             }
         }
         addToken(n, TokenJava.PACKAGE, arg);
+        currentPackage = n.getName().toString();
         n.getName().accept(this, arg);
         addToken(finNode(n), TokenJava.FIN_INSTRUCTION, arg);
     }

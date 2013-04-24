@@ -31,7 +31,7 @@ public class ManagerToken extends Code {
     public List<Redondance> getRedondance(Configuration configuration) {
         List<Integer> positionList = getPositionToManage();
         Comparateur comparator = configuration.getComparateur(this);
-        LOG.info("Tri des tokens...");
+        LOG.info("Tri des " + positionList.size() + " tokens...");
         sortPositionList(positionList, comparator);
         traceSortedToken(positionList);
         LOG.info("Calcul des tailles de redondance...");

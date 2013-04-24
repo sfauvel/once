@@ -27,11 +27,11 @@ public class ReportingImpl implements Reporting {
         this.methodList = methodList;
         this.tokenLogger = TRACE_TOKEN;
     }
-    
+
     public void afficherRedondance(final ManagerToken manager, final int tailleMin, List<Redondance> listeRedondance) {
         afficherRedondance(manager.getTokenList(), tailleMin, listeRedondance);
     }
-    
+
     public void afficherRedondance(final List<Token> tokenList, final int tailleMin, List<Redondance> listeRedondance) {
         LOG_CSV.info("Taille Redondance;Nombre redondance;Note");
         Collections.sort(listeRedondance, new Comparator<Redondance>() {
@@ -109,7 +109,7 @@ public class ReportingImpl implements Reporting {
                     StringBuffer buffer = new StringBuffer();
                     buffer.append("  ")
                             .append(listeValeur.size())
-                            .append(" valeurs: ");
+                            .append(" values: ");
 
                     buffer.append(join);
                     substitutionList.add(buffer.toString());
@@ -134,7 +134,7 @@ public class ReportingImpl implements Reporting {
             List<String> substitutionList = getSubstitution(tokenList, redondance);
             List<Integer> firstTokenList = redondance.getFirstTokenList();
             int redundancyNumber = firstTokenList.size();
-            LOG_RESULTAT.info("Taille:" + redondance.getDuplicatedTokenNumber() + " Longueur:" + redundancyNumber + " Substitutions:" + substitutionList.size());
+            LOG_RESULTAT.info("Tokens number:" + redondance.getDuplicatedTokenNumber() + " Duplications number:" + redundancyNumber + " Substitutions number:" + substitutionList.size());
 
             for (Integer firstTokenPosition : firstTokenList) {
                 final int NB_MAX_DISPLAY = 200;
@@ -147,7 +147,7 @@ public class ReportingImpl implements Reporting {
                 Token lastToken = tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber() - 1);
                 Integer ligneFin = lastToken.getLigneDebut();
                 if (LOG_RESULTAT.isTraceEnabled()) {
-                    LOG_RESULTAT.trace("First position:" + firstTokenPosition + " ligne debut:" + ligneDebut + " ligne fin:" + ligneFin);
+                    LOG_RESULTAT.trace("First position:" + firstTokenPosition + " start line:" + ligneDebut + " end line:" + ligneFin);
                 }
                 MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
                 if (method != null) {
@@ -159,21 +159,15 @@ public class ReportingImpl implements Reporting {
                     buffer.append(pourcentage)
                             .append("% ")
                             .append(redundancyLineNumber)
-                            .append(" lignes sur ")
-                            .append(methodLineNumber);
-
-                    firstToken.getlocalisation().appendLocalisation(buffer);
-                    buffer.append(" <-> ");
-                    lastToken.getlocalisation().appendLocalisation(buffer);
-
-                    buffer.append(" ")
+                            .append("/")
+                            .append(methodLineNumber)
+                            .append(" lines ")
                             .append(method.getMethodName())
-                            .append("(")
-                            .append(method.getLocalisationDebut().getLigne())
-                            .append(" <-> ")
-                            .append(method.getLocalisationFin().getLigne())
-                            .append(")")
                             .append(" ");
+                    appendString(buffer, method.getLocalisationDebut());
+                    buffer.append(" <-> ");
+                    appendString(buffer, method.getLocalisationFin());
+                    
                     displayVisualRedondance(method, ligneDebut, ligneFin);
                 } else {
                     buffer.append(" No method ");
@@ -195,7 +189,14 @@ public class ReportingImpl implements Reporting {
             for (String substitution : substitutionList) {
                 LOG_RESULTAT.info("  " + substitution);
             }
+            LOG_RESULTAT.info("");
         }
+    }
+
+    private void appendString(StringBuffer buffer, Localisation localisation) {
+        buffer.append(localisation.getLigne())
+                .append(":")
+                .append(localisation.getColonne());
     }
 
     public void afficherMethodeDupliqueAvecSubtitution(final List<Token> tokenList, Redondance redondance) {
@@ -284,7 +285,7 @@ public class ReportingImpl implements Reporting {
             display(token);
         }
     }
-    
+
     public void checkLocalisation(final Code code) {
         int lastLine = 0;
         int lastColumn = 0;
