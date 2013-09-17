@@ -1,5 +1,7 @@
 once
 ====
+Version gérer via GitHub/CloudBees
+
 Ce programme permet de chercher les redondances dans un programme.
 Il ne cherche pas les copier/coller mais les structures de programme identique. 
 Des codes seront considérés identiques même si les nom de variables, méthodes ou classes sont différents. 
