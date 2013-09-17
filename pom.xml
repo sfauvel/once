@@ -74,4 +74,23 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<scm>
+		<url>https://github.com/sfauvel/once</url>
+		<connection>scm:git:ssh://git@github.com/sfauvel/once.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/sfauvel/once.git</developerConnection>
+	</scm>
+	<distributionManagement>
+		<downloadUrl>https://github.com/sfauvel/once</downloadUrl>
+		<repository>
+			<id>once-release</id>
+			<name>once-release</name>
+			<url>dav:https://repository-sfauvel.forge.cloudbees.com/release/</url>
+		</repository>
+		<snapshotRepository>
+			<id>once-snapshot</id>
+			<name>once-snapshot</name>
+			<url>dav:https://repository-sfauvel.forge.cloudbees.com/snapshot/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
