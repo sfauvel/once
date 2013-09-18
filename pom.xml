@@ -1,8 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.sf.once</groupId>
 	<artifactId>once-core</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.2-snapshot</version>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -83,8 +84,8 @@
 		<url>https://github.com/sfauvel/once</url>
 		<connection>scm:git:ssh://git@github.com/sfauvel/once.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/sfauvel/once.git</developerConnection>
-	  <tag>once-core-0.0.2</tag>
-  </scm>
+		<tag>once-core-0.0.2</tag>
+	</scm>
 	<distributionManagement>
 		<downloadUrl>https://github.com/sfauvel/once</downloadUrl>
 		<repository>
@@ -98,4 +99,16 @@
 			<url>dav:https://repository-sfauvel.forge.cloudbees.com/snapshot/</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<repositories>
+		<repository>
+			<id>sfauvel-cloudbees-snapshot</id>
+			<name>sfauvel-cloudbees-snapshot</name>
+			<url>https://repository-sfauvel.forge.cloudbees.com/snapshot/</url>
+		</repository>
+		<repository>
+			<id>sfauvel-cloudbees-release</id>
+			<name>sfauvel-cloudbees-release</name>
+			<url>https://repository-sfauvel.forge.cloudbees.com//release/</url>
+		</repository>
+	</repositories>
 </project>
