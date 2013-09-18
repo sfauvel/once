@@ -1,6 +1,6 @@
 package fr.sf.once.core;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,19 +22,23 @@ public class ManagerTokenTest {
 
     @ClassRule
     public static final LogRule LOG_RULE = new LogRule();
-    
+
+    @Test
+    public void testForge() {
+        fail("I would receive a mail");
+    }
 
     @Test
     public void testCreateRedondance() {
         ManagerToken manager = new ManagerToken(UtilsToken.createTokenList("A", "B", "C", "D", "E"));
-        
+
         Redondance redondance = manager.createRedondance(2, Arrays.asList(1, 3));
         List<Integer> firstTokenList = redondance.getFirstTokenList();
         assertEquals(2, firstTokenList.size());
         assertEquals("B", manager.getToken(firstTokenList.get(0)).getValeurToken());
         assertEquals("D", manager.getToken(firstTokenList.get(1)).getValeurToken());
     }
-    
+
     @Test
     public void testAjouterToken() {
         List<Token> listeToken = UtilsToken.createTokenList("A", "B");
@@ -50,20 +54,20 @@ public class ManagerTokenTest {
      */
     @Test
     public void testTrierListeTokenSansModifierListeOrigine() {
-        
+
         List<Token> listeTokenOrigine = UtilsToken.createTokenList("A", "A", "B");
         ManagerToken manager = new ManagerToken(listeTokenOrigine);
 
         Comparateur comparator = new ComparateurAvecSubstitution(manager);
 
         List<Integer> positionList = Arrays.asList(0, 1, 2);
-        manager.sortPositionList(positionList , comparator);
+        manager.sortPositionList(positionList, comparator);
         assertEquals(3, positionList.size());
         UtilsToken.afficher(listeTokenOrigine, positionList);
         assertEquals(2, positionList.get(0).intValue());
         assertEquals(0, positionList.get(1).intValue());
         assertEquals(1, positionList.get(2).intValue());
-        
+
         // Vérification que la liste d'origine n'a pas changée.
         assertEquals("A", manager.getToken(0).getValeurToken());
         assertEquals("A", manager.getToken(1).getValeurToken());
@@ -82,10 +86,10 @@ public class ManagerTokenTest {
         Comparateur comparator = new ComparateurAvecSubstitution(manager);
 
         List<Integer> positionList = Arrays.asList(0, 1, 2, 3, 4, 5);
-        manager.sortPositionList(positionList , comparator);
-        
+        manager.sortPositionList(positionList, comparator);
+
         assertEquals("C", listeTokenOrigine.get(positionList.get(0)).getValeurToken());
-        
+
         assertEquals(5, positionList.get(0).intValue());
         assertEquals(4, positionList.get(1).intValue());
         assertEquals(2, positionList.get(2).intValue());
@@ -103,7 +107,7 @@ public class ManagerTokenTest {
         ManagerToken manager = new ManagerToken(UtilsToken.createTokenList("A", "A", "B", "B"));
 
         List<Redondance> listeRedondance = manager.getRedondance(0);
-   
+
         Redondance red = listeRedondance.get(0);
 
         assertRedondance(2, listeRedondance.get(0));
@@ -116,7 +120,7 @@ public class ManagerTokenTest {
         ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F");
         List<Integer> positionList = UtilsToken.createPositionList(2);
         List<Redondance> listeRedondance = managerToken.calculerRedondance(
-                positionList, 
+                positionList,
                 new int[] { 3 },
                 0);
 
@@ -163,7 +167,7 @@ public class ManagerTokenTest {
                 positionList,
                 new int[] { 5, 5, 5, 5 },
                 0);
-        
+
         assertRedondance(5, listeRedondance.get(0));
         assertEquals(1, listeRedondance.size());
     }
@@ -176,7 +180,7 @@ public class ManagerTokenTest {
                 positionList,
                 new int[] { 8, 5 },
                 0);
-       
+
         assertRedondance(8, listeRedondance.get(0));
         assertRedondance(5, listeRedondance.get(1));
         assertEquals(2, listeRedondance.size());
@@ -189,9 +193,9 @@ public class ManagerTokenTest {
         List<Integer> positionList = UtilsToken.createPositionList(4);
         List<Redondance> listeRedondance = managerToken.calculerRedondance(
                 positionList,
-                new int[]  { 2, 5, 3 },
+                new int[] { 2, 5, 3 },
                 0);
-                
+
         assertRedondance(2, listeRedondance.get(0));
         assertRedondance(5, listeRedondance.get(1));
         assertRedondance(3, listeRedondance.get(2));
@@ -221,5 +225,4 @@ public class ManagerTokenTest {
         assertEquals(true, listeObtenue.isEmpty());
     }
 
- 
 }
