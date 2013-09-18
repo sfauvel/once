@@ -25,7 +25,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testForge() {
-        fail("I would receive a mail");
+        fail("I would receive a mail. The error is still present");
     }
 
     @Test
