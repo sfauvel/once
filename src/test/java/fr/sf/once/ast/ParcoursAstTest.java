@@ -28,13 +28,9 @@ import fr.sf.once.test.LogRule;
 public class ParcoursAstTest {
 
     @ClassRule
-    public static final LogRule LOG_RULE = new LogRule();
+    public static final LogRule LOG_RULE = new LogRule(); 
     
-    @BeforeClass
-    static public void initTrace() {
-        TokenVisitor.LOG.addAppender(new ConsoleAppender(new PatternLayout()));
-        TokenVisitor.LOG.setLevel(Level.TRACE);
-    }
+    public static final Logger LOG = Logger.getLogger(ParcoursAstTest.class);
 
     @Test
     public void testDeclarationClassPostion() throws Exception {
@@ -159,11 +155,14 @@ public class ParcoursAstTest {
     }
 
     private void afficherListToken(List<? extends Token> listToken) {
+        if (!LOG.isDebugEnabled()) {
+            return;
+        }
         int listeSize = listToken.size();
         for (int i = 0; i < listeSize; i++) {
             Token token = listToken.get(i);
             Localisation localisation = token.getlocalisation();
-            System.out.println(i + ":" + token.getValeurToken() + "(" + localisation.getLigne() + ", " + localisation.getColonne() + ")");
+            LOG.debug(i + ":" + token.getValeurToken() + "(" + localisation.getLigne() + ", " + localisation.getColonne() + ")");
 
         }
     }

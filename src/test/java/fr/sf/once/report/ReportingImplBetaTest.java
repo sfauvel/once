@@ -13,10 +13,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.math.IntRange;
+import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.WriterAppender;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,6 +44,7 @@ public class ReportingImplBetaTest {
         tokenLogger.addAppender(writerAppender);
         tokenLogger.setLevel(Level.INFO);
     }
+    
     @Test
     public void testDisplayToken() {
         Token token = createTokenWithFormatReturn("mon token");
