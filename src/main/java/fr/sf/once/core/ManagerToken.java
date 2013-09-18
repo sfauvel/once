@@ -30,7 +30,6 @@ public class ManagerToken extends Code {
 
     public List<Redondance> getRedondance(Configuration configuration) {
         List<Integer> positionList = getPositionToManage();
-        positionList = null;
         Comparateur comparator = configuration.getComparateur(this);
         LOG.info("Tri des " + positionList.size() + " tokens...");
         sortPositionList(positionList, comparator);
