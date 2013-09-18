@@ -16,14 +16,20 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
+import fr.sf.once.test.LogRule;
+
 
 public class ParcoursAstTest {
 
+    @ClassRule
+    public static final LogRule LOG_RULE = new LogRule();
+    
     @BeforeClass
     static public void initTrace() {
         TokenVisitor.LOG.addAppender(new ConsoleAppender(new PatternLayout()));

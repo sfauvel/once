@@ -14,7 +14,7 @@ public class LogRule  implements TestRule {
     public Statement apply(Statement paramStatement, Description paramDescription) {
         Logger rootLogger = Logger.getRootLogger();
         rootLogger.addAppender(new ConsoleAppender(new SimpleLayout()));
-        rootLogger.setLevel(Level.DEBUG);
+        rootLogger.setLevel(Level.ERROR);
         return paramStatement;
     }
 

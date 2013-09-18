@@ -35,7 +35,7 @@ public class ManagerTokenSampleTest {
     // }
     // }
 
-    private static Logger LOG = Logger.getLogger(ManagerTokenSampleTest.class);
+//    private static Logger LOG = Logger.getLogger(ManagerTokenSampleTest.class);
 
     @ClassRule
     public static final LogRule LOG_RULE = new LogRule();
@@ -47,9 +47,9 @@ public class ManagerTokenSampleTest {
     @Test
     public void testTrierListeTokenSansModifierListeOrigine() {
 
-        LOG.addAppender(new ConsoleAppender(new SimpleLayout()));
-        LOG.setLevel(Level.DEBUG);
-        LOG.setAdditivity(false);
+//        LOG.addAppender(new ConsoleAppender(new SimpleLayout()));
+//        LOG.setLevel(Level.DEBUG);
+//        LOG.setAdditivity(false);
 
         List<Token> listeTokenOrigine = createTokenList();
         ManagerToken manager = new ManagerToken(listeTokenOrigine);
@@ -66,7 +66,7 @@ public class ManagerTokenSampleTest {
         int index = 0;
         for (Integer tokenPosition : positionList) {
             Token token = listeTokenOrigine.get(tokenPosition);
-            LOG.debug(tokenPosition + ":\t" + token.getValeurToken());
+//            LOG.debug(tokenPosition + ":\t" + token.getValeurToken());
 
             if ("(".equals(token.getValeurToken())) {
                 nombreParentheseOuvrante++;

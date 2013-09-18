@@ -1,4 +1,4 @@
-package fr.sf.commons;
+﻿package fr.sf.commons;
 
 import java.io.File;
 
