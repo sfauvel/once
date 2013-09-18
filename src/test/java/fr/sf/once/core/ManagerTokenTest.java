@@ -24,11 +24,6 @@ public class ManagerTokenTest {
     public static final LogRule LOG_RULE = new LogRule();
 
     @Test
-    public void testForge() {
-        fail("I would receive a mail. The error is still present");
-    }
-
-    @Test
     public void testCreateRedondance() {
         ManagerToken manager = new ManagerToken(UtilsToken.createTokenList("A", "B", "C", "D", "E"));
 
