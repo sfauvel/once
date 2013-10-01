@@ -1,77 +1,75 @@
 package fr.sf.once.core;
 
-import static org.junit.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import fr.sf.once.core.ListeSubstitution;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
 public class ListeSubstitutionTest {
     
+    
+    private final Token tokenA = new Token(null, "A", Type.VALEUR);
+    private final Token tokenB = new Token(null, "B", Type.VALEUR);
+    private final Token tokenC = new Token(null, "C", Type.VALEUR);
+    private ListeSubstitution listeSubstitution;
+
+    @Before
+    public void initialiseObjetSousTest() {
+        listeSubstitution = new ListeSubstitution();
+    }
+    
     @Test
     public void testAjouterUnElementSurListeVide() {
-        
-        ListeSubstitution listeSubstitution = new ListeSubstitution();
-        assertEquals(0, listeSubstitution.getPosition("B"));
+        assertThat(listeSubstitution.getPosition("B")).isEqualTo(0);
     }
 
     @Test
     public void testAjouterDeuxElementsSurListe() {
-        ListeSubstitution listeSubstitution = new ListeSubstitution();
         listeSubstitution.getPosition("A");
-
-        assertEquals(1, listeSubstitution.getPosition("B"));
+        assertThat(listeSubstitution.getPosition("B")).isEqualTo(1);
     }
 
 
     @Test
     public void testAjouterElementDejaPresent() {
-        ListeSubstitution listeSubstitution = new ListeSubstitution();
         listeSubstitution.getPosition("A");
         listeSubstitution.getPosition("B");
         listeSubstitution.getPosition("C");
 
-        assertEquals(1, listeSubstitution.getPosition("B"));
+        assertThat(listeSubstitution.getPosition("B")).isEqualTo(1);
     }
-    
-    final Token tokenA = new Token(null, "A", Type.VALEUR);
-    final Token tokenB = new Token(null, "B", Type.VALEUR);
-    final Token tokenC = new Token(null, "C", Type.VALEUR);
     
     @Test
     public void testAjouterPremierToken() {
-        ListeSubstitution listeSubstitution = new ListeSubstitution();
-        assertEquals(0, listeSubstitution.getPosition(tokenA));
-        assertEquals(0, listeSubstitution.getPosition(tokenA));
+        assertThat(listeSubstitution.getPosition("A")).isEqualTo(0);
+        assertThat(listeSubstitution.getPosition("A")).isEqualTo(0);
     }
 
     @Test
     public void testAjouterTokenDifferentMaisEgal() {
-        ListeSubstitution listeSubstitution = new ListeSubstitution();
-        assertEquals(0, listeSubstitution.getPosition(tokenA));
-        assertEquals(0, listeSubstitution.getPosition(new Token(null, tokenA.getValeurToken(), tokenA.getType())));
+        assertThat(listeSubstitution.getPosition("A")).isEqualTo(0);
+        Token otherTokenReferenceWithSameValue = new Token(null, tokenA.getValeurToken(), tokenA.getType());
+        assertEquals(0, listeSubstitution.getPosition(otherTokenReferenceWithSameValue));
     }
 
     
     @Test
     public void testAjouterSecondToken() {
-        ListeSubstitution listeSubstitution = new ListeSubstitution();
-        assertEquals(0, listeSubstitution.getPosition(tokenA));
-        assertEquals(1, listeSubstitution.getPosition(tokenB));
-        assertEquals(1, listeSubstitution.getPosition(tokenB));
+        assertThat(listeSubstitution.getPosition("A")).isEqualTo(0);
+        assertThat(listeSubstitution.getPosition("B")).isEqualTo(1);
+        assertThat(listeSubstitution.getPosition("B")).isEqualTo(1);
     }
     
     @Test
     public void testAjouterTokenTypeDifferent() {
-
         final Token tokenATypeBreak = new Token(null, "A", Type.BREAK);
-        assertTrue(tokenATypeBreak.getType() != tokenA.getType());
-        
-        ListeSubstitution listeSubstitution = new ListeSubstitution();
-        assertEquals(0, listeSubstitution.getPosition(tokenA));
-        assertEquals(1, listeSubstitution.getPosition(tokenATypeBreak));
+        assertThat(tokenA.getType()).isNotEqualTo(tokenATypeBreak.getType());
+        assertThat(listeSubstitution.getPosition(tokenA)).isEqualTo(0);
+        assertThat(listeSubstitution.getPosition(tokenATypeBreak)).isEqualTo(1);
     }
 }
