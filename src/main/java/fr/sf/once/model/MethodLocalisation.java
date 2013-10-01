@@ -13,7 +13,7 @@ public class MethodLocalisation {
     private final Localisation localisationDebut;
     private final Localisation localisationFin;
     private final IntRange tokenRange;
-    private Set<Redondance> redondanceList = new HashSet<Redondance>();
+    private final Set<Redondance> redondanceList = new HashSet<Redondance>();
     
     
     public MethodLocalisation(String methodName, Localisation localisationDebut, Localisation localisationFin) {
@@ -54,7 +54,8 @@ public class MethodLocalisation {
         return redondanceList;
     }
     public void setRedondanceList(Set<Redondance> redondanceList) {
-        this.redondanceList = redondanceList;
+        this.redondanceList.clear();
+        this.redondanceList.addAll(redondanceList);
     }
        
     public static MethodLocalisation findMethod(List<MethodLocalisation> methodList, Token token) {

@@ -3,6 +3,7 @@ package fr.sf.once.report;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import static org.fest.assertions.Assertions.assertThat;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,12 +14,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.math.IntRange;
-import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.WriterAppender;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,8 +29,8 @@ import fr.sf.once.model.Type;
 
 
 public class ReportingImplBetaTest {
-    ReportingImplBeta report;
-    StringWriter writer;
+    private ReportingImplBeta report;
+    private StringWriter writer;
     
     @Before 
     public void setUp() {
@@ -46,30 +45,31 @@ public class ReportingImplBetaTest {
     }
     
     @Test
-    public void testDisplayToken() {
+    public void verificationDeLAffichageDUnToken() {
         Token token = createTokenWithFormatReturn("mon token");
         report.display(token);
-        assertEquals("mon token;", writer.toString());
+        
+        assertThat(writer.toString()).isEqualTo("mon token;");
     }
      
     @Test
-    public void testDisplayTokenList() {
+    public void verificationDeLAffichageDUneListeDeTokens() {
         ArrayList<Token> tokenList = new ArrayList<Token>();
         tokenList.add(createTokenWithFormatReturn("token A"));
         tokenList.add(createTokenWithFormatReturn("token B"));
         
         report.display(tokenList);
-        assertEquals("token A;token B;", writer.toString());
+        assertThat(writer.toString()).isEqualTo("token A;token B;");
     }
    
     @Test
-    public void testDisplayCode() {
+    public void verificationDeLAffichageDUnCode() {
         ArrayList<Token> tokenList = new ArrayList<Token>();
         tokenList.add(createTokenWithFormatReturn("token A"));
         tokenList.add(createTokenWithFormatReturn("token B"));
         
         report.display(new Code(tokenList));
-        assertEquals("token A;token B;", writer.toString());
+        assertThat(writer.toString()).isEqualTo("token A;token B;");
     }
     
     @Test
