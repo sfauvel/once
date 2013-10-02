@@ -1,7 +1,9 @@
 package fr.sf.once.core;
 
+import static fr.sf.once.test.OnceAssertions.assertThat;
+import static fr.sf.once.test.UtilsToken.createUnmodifiableTokenList;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +19,9 @@ import fr.sf.once.model.Redondance;
 import fr.sf.once.model.Token;
 import fr.sf.once.test.LogRule;
 import fr.sf.once.test.UtilsToken;
-public class ManagerTokenTest {
 
+public class ManagerTokenTest {
+  
     @ClassRule
     public static final LogRule LOG_RULE = new LogRule();
 
@@ -30,44 +33,44 @@ public class ManagerTokenTest {
         final int SECOND_POSITION = 3;
         Redondance redondance = manager.createRedondance(2, Arrays.asList(FIRST_POSITION, SECOND_POSITION));
         List<Integer> startRedundancyList = redondance.getStartRedundancyList();
-        
+
         assertThat(startRedundancyList.size())
-            .isEqualTo(redondance.getRedundancyNumber())
-            .isEqualTo(2);
-        
+                .isEqualTo(redondance.getRedundancyNumber())
+                .isEqualTo(2);
+
         assertThat(startRedundancyList.get(0)).isEqualTo(FIRST_POSITION);
         assertThat(startRedundancyList.get(1)).isEqualTo(SECOND_POSITION);
     }
 
     @Test
-    public void testRetrieveAToken() {
-        ManagerToken manager = new ManagerToken(UtilsToken.createTokenList("A", "B", "C", "D", "E"));
-
-        assertEquals("B", manager.getToken(1).getValeurToken());
-        assertEquals("D", manager.getToken(3).getValeurToken());
+    public void when_i_get_a_token_from_a_position_i_have_the_corresponding_token() {
+        ManagerToken manager = new ManagerToken(createUnmodifiableTokenList("A", "B", "C", "D", "E"));
+        assertThat(manager.getToken(0)).hasValue("A");
+        assertThat(manager.getToken(1)).hasValue("B");
+        assertThat(manager.getToken(2)).hasValue("C");
+        assertThat(manager.getToken(3)).hasValue("D");
+        assertThat(manager.getToken(4)).hasValue("E");        
     }
 
-
-    
     @Test
-    public void testAjouterToken() {
-        List<Token> listeToken = UtilsToken.createTokenList("A", "B");
-        ManagerToken manager = new ManagerToken(listeToken);
-
-        assertEquals(2, listeToken.size());
-        assertEquals("A", listeToken.get(0).getValeurToken());
-        assertEquals("B", listeToken.get(1).getValeurToken());
+    public void when_i_get_a_token_from_a_position_out_of_the_bound_i_have_an_exception() {
+        ManagerToken manager = new ManagerToken(createUnmodifiableTokenList("A", "B"));    
+        try {
+            manager.getToken(2);
+            fail("IndexOutOfBoundsException expected because manager has only 2 tokens");
+          } catch (IndexOutOfBoundsException e) {
+            assertThat(e).hasMessage("Index: 2, Size: 2");
+          }
     }
-
+    
     /**
      * A A B 0: 1 1 2 -> 1 1: 1 2 -> 2 2: 1 -> 0
      */
     @Test
     public void testTrierListeTokenSansModifierListeOrigine() {
 
-        List<Token> listeTokenOrigine = UtilsToken.createTokenList("A", "A", "B");
+        List<Token> listeTokenOrigine = createUnmodifiableTokenList("A", "A", "B");
         ManagerToken manager = new ManagerToken(listeTokenOrigine);
-
         Comparateur comparator = new ComparateurAvecSubstitution(manager);
 
         List<Integer> positionList = Arrays.asList(0, 1, 2);
@@ -77,11 +80,6 @@ public class ManagerTokenTest {
         assertEquals(2, positionList.get(0).intValue());
         assertEquals(0, positionList.get(1).intValue());
         assertEquals(1, positionList.get(2).intValue());
-
-        // Vérification que la liste d'origine n'a pas changée.
-        assertEquals("A", manager.getToken(0).getValeurToken());
-        assertEquals("A", manager.getToken(1).getValeurToken());
-        assertEquals("B", manager.getToken(2).getValeurToken());
     }
 
     /**
@@ -90,7 +88,7 @@ public class ManagerTokenTest {
      */
     @Test
     public void testTrierSurPlusieursTokens() {
-        List<Token> listeTokenOrigine = UtilsToken.createTokenList("A", "E", "A", "B", "A", "C");
+        List<Token> listeTokenOrigine = createUnmodifiableTokenList("A", "E", "A", "B", "A", "C");
         ManagerToken manager = new ManagerToken(listeTokenOrigine);
 
         Comparateur comparator = new ComparateurAvecSubstitution(manager);
@@ -114,7 +112,7 @@ public class ManagerTokenTest {
      */
     @Test
     public void testAfficherRedondance() {
-        ManagerToken manager = new ManagerToken(UtilsToken.createTokenList("A", "A", "B", "B"));
+        ManagerToken manager = new ManagerToken(createUnmodifiableTokenList("A", "A", "B", "B"));
 
         List<Redondance> listeRedondance = manager.getRedondance(0);
 

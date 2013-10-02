@@ -1,6 +1,7 @@
 package fr.sf.once.test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -20,19 +21,21 @@ public final class UtilsToken {
     }
     
     /**
-     * Création d'une liste de token.
+     * Création d'une liste de token non modifiable.
+     * Les tokens sont de type "VALEUR".
      * 
-     * @param tokenValueList
+     * @param tokenValueList La liste des valeurs contenu dans les tokens
      * @return
      */
-    public static ArrayList<Token> createTokenList(String... tokenValueList) {
+    public static List<Token> createUnmodifiableTokenList(String... tokenValueList) {
         ArrayList<Token> tokenList = new ArrayList<Token>();
         int ligne = 1;
         for (String tokenValue : tokenValueList) {
             tokenList.add(new Token(new Localisation("", ligne, 0), tokenValue, Type.VALEUR));
             ligne++;
         }
-        return tokenList;
+        //return tokenList;
+        return Collections.unmodifiableList(tokenList);
     }
     
     public static void afficher(List<Token> tokenList, List<Integer> positionList) {
@@ -61,7 +64,7 @@ public final class UtilsToken {
     }
     
     public static ManagerToken createManagerToken(String... tokenValueList) {
-        return createManagerToken(createTokenList(tokenValueList));
+        return createManagerToken(createUnmodifiableTokenList(tokenValueList));
     }
     
 }

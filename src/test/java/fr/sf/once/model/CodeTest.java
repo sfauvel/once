@@ -16,13 +16,13 @@ import fr.sf.once.test.UtilsToken;
 public class CodeTest {
     @Test
     public void testGetCodeBasic() {
-        Code code = new Code(UtilsToken.createTokenList("A"));
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A"));
         assertEquals("A", code.getToken(0).getValeurToken());
     }
 
     @Test
     public void testGetCode() {
-        Code code = new Code(UtilsToken.createTokenList("A", "B", "C", "D"));
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D"));
         assertEquals("A", code.getToken(0).getValeurToken());
         assertEquals("B", code.getToken(1).getValeurToken());
         assertEquals("C", code.getToken(2).getValeurToken());
@@ -31,9 +31,10 @@ public class CodeTest {
 
     @Test
     public void testTokenListUnmodifiable() {
-        ArrayList<Token> tokenList = UtilsToken.createTokenList("A");
+        // On rend la liste modifiable pour les besoins du test
+        List<Token> tokenList = new ArrayList<Token>(UtilsToken.createUnmodifiableTokenList("A"));
         Code code = new Code(tokenList);
-
+      
         assertEquals(1, code.getTokenList().size());
         tokenList.clear();
         assertEquals(1, code.getTokenList().size());
@@ -53,8 +54,8 @@ public class CodeTest {
     @Test
     public void testCodeSize() {
         assertEquals(0, new Code(Collections.<Token> emptyList()).getSize());
-        assertEquals(1, new Code(UtilsToken.createTokenList("A")).getSize());
-        assertEquals(4, new Code(UtilsToken.createTokenList("A", "B", "C", "D")).getSize());
+        assertEquals(1, new Code(UtilsToken.createUnmodifiableTokenList("A")).getSize());
+        assertEquals(4, new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D")).getSize());
     }
 
     @Test
