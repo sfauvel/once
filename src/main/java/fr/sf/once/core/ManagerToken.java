@@ -54,7 +54,7 @@ public class ManagerToken extends Code {
         for (Iterator<Redondance> iterator = redundancyList.iterator(); iterator.hasNext();) {
             Redondance redondance = iterator.next();
             redondance.removeOverlapRedundancy();
-            if (redondance.getFirstTokenList().size() <= 1) {
+            if (redondance.getStartRedundancyList().size() <= 1) {
                 iterator.remove();
             }
         }
@@ -190,7 +190,7 @@ public class ManagerToken extends Code {
 
     Redondance createRedondance(int redondanceSize, List<Integer> subList) {
         Redondance redondance = new Redondance(redondanceSize);
-        redondance.getFirstTokenList().addAll(subList);
+        redondance.getStartRedundancyList().addAll(subList);
         return redondance;
     }
 

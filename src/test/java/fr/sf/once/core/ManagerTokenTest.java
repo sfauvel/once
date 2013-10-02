@@ -1,6 +1,7 @@
 package fr.sf.once.core;
 
-import static org.junit.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,12 +13,10 @@ import org.junit.Test;
 
 import fr.sf.once.comparator.Comparateur;
 import fr.sf.once.comparator.ComparateurAvecSubstitution;
-import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Redondance;
 import fr.sf.once.model.Token;
 import fr.sf.once.test.LogRule;
 import fr.sf.once.test.UtilsToken;
-
 public class ManagerTokenTest {
 
     @ClassRule
@@ -25,15 +24,31 @@ public class ManagerTokenTest {
 
     @Test
     public void testCreateRedondance() {
-        ManagerToken manager = new ManagerToken(UtilsToken.createTokenList("A", "B", "C", "D", "E"));
+        ManagerToken manager = new ManagerToken(Collections.<Token> emptyList());
 
-        Redondance redondance = manager.createRedondance(2, Arrays.asList(1, 3));
-        List<Integer> firstTokenList = redondance.getFirstTokenList();
-        assertEquals(2, firstTokenList.size());
-        assertEquals("B", manager.getToken(firstTokenList.get(0)).getValeurToken());
-        assertEquals("D", manager.getToken(firstTokenList.get(1)).getValeurToken());
+        final int FIRST_POSITION = 1;
+        final int SECOND_POSITION = 3;
+        Redondance redondance = manager.createRedondance(2, Arrays.asList(FIRST_POSITION, SECOND_POSITION));
+        List<Integer> startRedundancyList = redondance.getStartRedundancyList();
+        
+        assertThat(startRedundancyList.size())
+            .isEqualTo(redondance.getRedundancyNumber())
+            .isEqualTo(2);
+        
+        assertThat(startRedundancyList.get(0)).isEqualTo(FIRST_POSITION);
+        assertThat(startRedundancyList.get(1)).isEqualTo(SECOND_POSITION);
     }
 
+    @Test
+    public void testRetrieveAToken() {
+        ManagerToken manager = new ManagerToken(UtilsToken.createTokenList("A", "B", "C", "D", "E"));
+
+        assertEquals("B", manager.getToken(1).getValeurToken());
+        assertEquals("D", manager.getToken(3).getValeurToken());
+    }
+
+
+    
     @Test
     public void testAjouterToken() {
         List<Token> listeToken = UtilsToken.createTokenList("A", "B");

@@ -21,7 +21,7 @@ public class Redondance {
 		return this.duplicatedTokenNumber;
 	}
 
-    public List<Integer> getFirstTokenList() {
+    public List<Integer> getStartRedundancyList() {
         return firstTokenList;
     }
     

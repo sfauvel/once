@@ -26,15 +26,15 @@ public class RedondanceTest {
     public void testContainsWhenRedundancyIsSmaller() {
         Redondance referenceRedundancy = new Redondance(5) {
             {
-                getFirstTokenList().add(4);
-                getFirstTokenList().add(8);
+                getStartRedundancyList().add(4);
+                getStartRedundancyList().add(8);
             }
         };
 
         Redondance includedRedundancy = new Redondance(2) {
             {
-                getFirstTokenList().add(4 + 5 - 2);
-                getFirstTokenList().add(8 + 5 - 2);
+                getStartRedundancyList().add(4 + 5 - 2);
+                getStartRedundancyList().add(8 + 5 - 2);
             }
         };
         assertTrue(referenceRedundancy.contains(includedRedundancy));
@@ -44,15 +44,15 @@ public class RedondanceTest {
     public void testContainsWhenRedundancyWithDifferentOrder() {
         Redondance referenceRedundancy = new Redondance(5) {
             {
-                getFirstTokenList().add(4);
-                getFirstTokenList().add(8);
+                getStartRedundancyList().add(4);
+                getStartRedundancyList().add(8);
             }
         };
 
         Redondance includedRedundancy = new Redondance(2) {
             {
-                getFirstTokenList().add(8 + 5 - 2);
-                getFirstTokenList().add(4 + 5 - 2);
+                getStartRedundancyList().add(8 + 5 - 2);
+                getStartRedundancyList().add(4 + 5 - 2);
             }
         };
         assertTrue(referenceRedundancy.contains(includedRedundancy));
@@ -62,16 +62,16 @@ public class RedondanceTest {
     public void testContainsWhenMorePosition() {
         Redondance referenceRedundancy = new Redondance(5) {
             {
-                getFirstTokenList().add(4);
-                getFirstTokenList().add(8);
+                getStartRedundancyList().add(4);
+                getStartRedundancyList().add(8);
             }
         };
 
         Redondance includedRedundancy = new Redondance(2) {
             {
-                getFirstTokenList().add(4 + 5 - 2);
-                getFirstTokenList().add(8 + 5 - 2);
-                getFirstTokenList().add(23 + 5 - 2);
+                getStartRedundancyList().add(4 + 5 - 2);
+                getStartRedundancyList().add(8 + 5 - 2);
+                getStartRedundancyList().add(23 + 5 - 2);
             }
         };
         assertFalse(referenceRedundancy.contains(includedRedundancy));
@@ -81,16 +81,16 @@ public class RedondanceTest {
     public void testContainsWhenLessPosition() {
         Redondance referenceRedundancy = new Redondance(5) {
             {
-                getFirstTokenList().add(4);
-                getFirstTokenList().add(8);
-                getFirstTokenList().add(12);
+                getStartRedundancyList().add(4);
+                getStartRedundancyList().add(8);
+                getStartRedundancyList().add(12);
             }
         };
 
         Redondance includedRedundancy = new Redondance(2) {
             {
-                getFirstTokenList().add(4 + 5 - 2);
-                getFirstTokenList().add(8 + 5 - 2);
+                getStartRedundancyList().add(4 + 5 - 2);
+                getStartRedundancyList().add(8 + 5 - 2);
             }
         };
         assertTrue(referenceRedundancy.contains(includedRedundancy));
@@ -157,8 +157,8 @@ public class RedondanceTest {
     @Test
     public void testGetRedundancyKey() {
         Redondance redondance = new Redondance(4);
-        redondance.getFirstTokenList().add(3);
-        redondance.getFirstTokenList().add(10);
+        redondance.getStartRedundancyList().add(3);
+        redondance.getStartRedundancyList().add(10);
         assertEquals("7,14,", Redondance.getRedundancyKey(redondance));
         
     }
@@ -166,40 +166,40 @@ public class RedondanceTest {
     @Test
     public void testRemoveOverlapRedundancyWithNoOverlap() {
         Redondance redundancy = createRedundancy(5, 2, 12);
-        assertEquals(2, redundancy.getFirstTokenList().size());
+        assertEquals(2, redundancy.getStartRedundancyList().size());
         redundancy.removeOverlapRedundancy();
-        assertEquals(2, redundancy.getFirstTokenList().size());
+        assertEquals(2, redundancy.getStartRedundancyList().size());
     }
     
     @Test
     public void testRemoveOverlapRedundancyWithOneOverlap() {
         Redondance redundancy = createRedundancy(5, 2, 4);
-        assertEquals(2, redundancy.getFirstTokenList().size());
+        assertEquals(2, redundancy.getStartRedundancyList().size());
         redundancy.removeOverlapRedundancy();
-        assertEquals(1, redundancy.getFirstTokenList().size());
-        assertEquals(4, redundancy.getFirstTokenList().get(0).intValue());
+        assertEquals(1, redundancy.getStartRedundancyList().size());
+        assertEquals(4, redundancy.getStartRedundancyList().get(0).intValue());
     }
     
     @Test
     public void testRemoveOverlapRedundancyWithSeveralOverlap() {
         Redondance redundancy = createRedundancy(5, 2, 4, 8, 11, 14);
-        assertEquals(5, redundancy.getFirstTokenList().size());
+        assertEquals(5, redundancy.getStartRedundancyList().size());
         redundancy.removeOverlapRedundancy();
-        assertEquals(3, redundancy.getFirstTokenList().size());
-        assertEquals(2, redundancy.getFirstTokenList().get(0).intValue());
-        assertEquals(8, redundancy.getFirstTokenList().get(1).intValue());
-        assertEquals(14, redundancy.getFirstTokenList().get(2).intValue());
+        assertEquals(3, redundancy.getStartRedundancyList().size());
+        assertEquals(2, redundancy.getStartRedundancyList().get(0).intValue());
+        assertEquals(8, redundancy.getStartRedundancyList().get(1).intValue());
+        assertEquals(14, redundancy.getStartRedundancyList().get(2).intValue());
     }
     
     @Test
     public void testRemoveOverlapRedundancyLimit() {
         Redondance redundancyWithOverlap = createRedundancy(5, 2, 6);
         redundancyWithOverlap.removeOverlapRedundancy();
-        assertEquals(1, redundancyWithOverlap.getFirstTokenList().size());
+        assertEquals(1, redundancyWithOverlap.getStartRedundancyList().size());
         
         Redondance redundancyWithoutOverlap = createRedundancy(5, 2, 7);
         redundancyWithoutOverlap.removeOverlapRedundancy();
-        assertEquals(2, redundancyWithoutOverlap.getFirstTokenList().size());
+        assertEquals(2, redundancyWithoutOverlap.getStartRedundancyList().size());
     }
     
     private Redondance createRedundancyThatContains(final int redundancySize, final int indentifiedRedundancy) {
@@ -214,7 +214,7 @@ public class RedondanceTest {
     
     private Redondance createRedundancy(final int redundancySize, final Integer... firstTokenList) {
          Redondance redondance = new Redondance(redundancySize);
-         redondance.getFirstTokenList().addAll(Arrays.asList(firstTokenList));
+         redondance.getStartRedundancyList().addAll(Arrays.asList(firstTokenList));
          return redondance;
     }
 }

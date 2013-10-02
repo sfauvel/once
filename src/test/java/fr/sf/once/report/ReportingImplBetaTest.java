@@ -83,7 +83,7 @@ public class ReportingImplBetaTest {
         ReportingImplBeta report = new ReportingImplBeta(methodList);
         
         Redondance redondance = new Redondance(2);
-        redondance.getFirstTokenList().addAll(Arrays.asList(2, 10));
+        redondance.getStartRedundancyList().addAll(Arrays.asList(2, 10));
         
         methodA.getRedondanceList().add(redondance);
         methodB.getRedondanceList().add(redondance);
@@ -104,10 +104,10 @@ public class ReportingImplBetaTest {
         ReportingImplBeta report = new ReportingImplBeta(methodList);
         
         Redondance redondance1 = new Redondance(3);
-        redondance1.getFirstTokenList().addAll(Arrays.asList(2, 35));
+        redondance1.getStartRedundancyList().addAll(Arrays.asList(2, 35));
         
         Redondance redondance2 = new Redondance(5);
-        redondance2.getFirstTokenList().addAll(Arrays.asList(12, 40));
+        redondance2.getStartRedundancyList().addAll(Arrays.asList(12, 40));
         
         methodA.getRedondanceList().add(redondance1);
         methodA.getRedondanceList().add(redondance2);
@@ -134,7 +134,7 @@ public class ReportingImplBetaTest {
         ReportingImplBeta report = new ReportingImplBeta(methodList);
                 
         Redondance redondance = new Redondance(2);
-        redondance.getFirstTokenList().addAll(Arrays.asList(2, 10, 45));
+        redondance.getStartRedundancyList().addAll(Arrays.asList(2, 10, 45));
         
         methodA.getRedondanceList().add(redondance);
         methodB.getRedondanceList().add(redondance);
@@ -153,7 +153,7 @@ public class ReportingImplBetaTest {
 
         ArrayList<Redondance> redundancyList = new ArrayList<Redondance>();
         Redondance redondance = new Redondance(2);
-        redondance.getFirstTokenList().addAll(Arrays.asList(5, 15));
+        redondance.getStartRedundancyList().addAll(Arrays.asList(5, 15));
         redundancyList.add(redondance);
         
         MethodLocalisation methodA = new MethodLocalisation("A", new IntRange(3, 7));
