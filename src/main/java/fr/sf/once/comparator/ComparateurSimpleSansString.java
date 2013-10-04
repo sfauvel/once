@@ -15,7 +15,7 @@ import fr.sf.once.model.Token;
  * Compare les éléments par leur valeur sauf pour les String. 
  * Une chaîne peut être remplacé par n'importe quoi.
  */
-public class ComparateurSimpleSansString extends Comparateur {
+public class ComparateurSimpleSansString extends CodeComparator {
         
     public static final Logger LOG = Logger.getLogger(ComparateurSimpleSansString.class);
     

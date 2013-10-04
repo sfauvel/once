@@ -8,10 +8,13 @@ import org.apache.log4j.Logger;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 
-public class ComparateurSansSubstitution extends Comparateur {
-    public static final Logger LOG = Logger.getLogger(ComparateurSansSubstitution.class);
+/**
+ * Simple comparator which compare token only on value.
+ */
+public class BasicComparator extends CodeComparator {
+    public static final Logger LOG = Logger.getLogger(BasicComparator.class);
     
-    public ComparateurSansSubstitution(Code code) {
+    public BasicComparator(Code code) {
         super(code);
     }
     

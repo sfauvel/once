@@ -12,7 +12,7 @@ import org.apache.log4j.SimpleLayout;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import fr.sf.once.comparator.Comparateur;
+import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparateurAvecSubstitution;
 import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
@@ -54,7 +54,7 @@ public class ManagerTokenSampleTest {
         List<Token> listeTokenOrigine = createTokenList();
         ManagerToken manager = new ManagerToken(listeTokenOrigine);
 
-        Comparateur comparator = new ComparateurAvecSubstitution(new Code(listeTokenOrigine));
+        CodeComparator comparator = new ComparateurAvecSubstitution(new Code(listeTokenOrigine));
 
         List<Integer> positionList = UtilsToken.createPositionList(listeTokenOrigine.size());
 

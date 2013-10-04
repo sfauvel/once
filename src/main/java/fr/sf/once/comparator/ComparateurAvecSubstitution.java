@@ -9,7 +9,7 @@ import fr.sf.once.core.ListeSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 
-public class ComparateurAvecSubstitution extends Comparateur {
+public class ComparateurAvecSubstitution extends CodeComparator {
 
     public static final Logger LOG = Logger.getLogger(ComparateurAvecSubstitution.class);
 

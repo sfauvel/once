@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.comparator.Comparateur;
+import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparateurAvecSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redondance;
@@ -30,7 +30,7 @@ public class ManagerToken extends Code {
 
     public List<Redondance> getRedondance(Configuration configuration) {
         List<Integer> positionList = getPositionToManage();
-        Comparateur comparator = configuration.getComparateur(this);
+        CodeComparator comparator = configuration.getComparateur(this);
         LOG.info("Tri des " + positionList.size() + " tokens...");
         sortPositionList(positionList, comparator);
         traceSortedToken(positionList);
@@ -103,7 +103,7 @@ public class ManagerToken extends Code {
         return redundancyList;
     }
 
-    public void sortPositionList(List<Integer> positionList, Comparateur comparator) {
+    public void sortPositionList(List<Integer> positionList, CodeComparator comparator) {
         ReportingImpl report = null;
         if (ReportingImpl.TRACE_TOKEN.isDebugEnabled()) {
             report = new ReportingImpl(null);

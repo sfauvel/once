@@ -11,18 +11,18 @@ import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
 
-public abstract class Comparateur implements Comparator<Integer> {
-    public static final Logger LOG = Logger.getLogger(Comparateur.class);
+public abstract class CodeComparator implements Comparator<Integer> {
+    public static final Logger LOG = Logger.getLogger(CodeComparator.class);
 
-    private int profondeur;
+    private int depth;
     private Code code;
     private StringBuffer traceDebug = new StringBuffer();
 
-    public Comparateur(List<Token> listeToken) {
+    public CodeComparator(List<Token> listeToken) {
         this.code = new Code(listeToken);
     }
 
-    public Comparateur(Code code) {
+    public CodeComparator(Code code) {
         this.code = code;
     }
 
@@ -34,16 +34,20 @@ public abstract class Comparateur implements Comparator<Integer> {
     @Override
     public int compare(Integer position1, Integer position2) {
         reinit();
-        int result = compareEnProfondeur(position1, position2);
+        int result = deepCompare(position1, position2);
 
         return result;
     }
 
     protected void reinit() {
         traceDebug = new StringBuffer();
-        profondeur = 0;
+        depth = 0;
     }
 
+    /**
+     * Sort a sub-list of positions. 
+     * @param positionList
+     */
     public void sortList(List<Integer> positionList) {
         Collections.sort(positionList, this);
     }
@@ -65,11 +69,11 @@ public abstract class Comparateur implements Comparator<Integer> {
      * @param position2
      * @return
      */
-    protected int compareEnProfondeur(Integer position1, Integer position2) {
+    protected int deepCompare(Integer position1, Integer position2) {
         if (position1 >= code.getSize() || position2 >= code.getSize()) {
             int result = position2 - position1;
             if (LOG.isDebugEnabled()) {
-                LOG.debug("compare(" + position1 + ", " + position2 + ") hors limite = " + result + "  size:" + profondeur);
+                LOG.debug("compare(" + position1 + ", " + position2 + ") hors limite = " + result + "  size:" + depth);
             }
             return result;
         }
@@ -81,18 +85,18 @@ public abstract class Comparateur implements Comparator<Integer> {
         }
         int result = compareTokenValue(token1, token2);
         if (result == 0) {
-            profondeur++;
+            depth++;
             if (LOG.isDebugEnabled()) {
-                traceDebug.append(profondeur + ":" + token1.getValeurToken() + "=" + token2.getValeurToken() + " ");
+                traceDebug.append(depth + ":" + token1.getValeurToken() + "=" + token2.getValeurToken() + " ");
             }
-            result = compareEnProfondeur(position1 + 1, position2 + 1);
+            result = deepCompare(position1 + 1, position2 + 1);
         } else {
             if (LOG.isDebugEnabled()) {
-                traceDebug.append(profondeur + ":" + token1.getValeurToken() + "<>" + token2.getValeurToken() + " ");
+                traceDebug.append(depth + ":" + token1.getValeurToken() + "<>" + token2.getValeurToken() + " ");
             }
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug("compare(" + position1 + ":" + code.getToken(position1).getValeurToken() + ", " + position2 + ":" + code.getToken(position2).getValeurToken() + ") = " + result + "  size:" + profondeur);
+            LOG.debug("compare(" + position1 + ":" + code.getToken(position1).getValeurToken() + ", " + position2 + ":" + code.getToken(position2).getValeurToken() + ") = " + result + "  size:" + depth);
         }
         return result;
     }
@@ -106,7 +110,7 @@ public abstract class Comparateur implements Comparator<Integer> {
      */
     public int breakReturn(Token token1, Token token2) {
         if (LOG.isDebugEnabled()) {
-            traceDebug.append(profondeur + ":" + token1.getType() + "<>" + token2.getType() + " ");
+            traceDebug.append(depth + ":" + token1.getType() + "<>" + token2.getType() + " ");
         }
         if (token1.getType().is(Type.BREAK)) {
             if (token2.getType().is(Type.BREAK)) {
@@ -130,10 +134,10 @@ public abstract class Comparateur implements Comparator<Integer> {
     public int getRedundancySize(int position1, int position2) {
         compare(position1, position2);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Nombre de redondance = " + profondeur + " entre les positions " + position1 + " et " + position2);
+            LOG.debug("Nombre de redondance = " + depth + " entre les positions " + position1 + " et " + position2);
             LOG.debug(traceDebug.toString());
         }
-        return profondeur;
+        return depth;
     }
     /**
      * Get redundancy size continuing with substitution already done.
@@ -143,14 +147,14 @@ public abstract class Comparateur implements Comparator<Integer> {
      */
     public int getRedundancySizeWithPreviousSubstitution(int position1, int position2) {
         traceDebug = new StringBuffer();
-        profondeur = 0;
-        compareEnProfondeur(position1, position2);
+        depth = 0;
+        deepCompare(position1, position2);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Nombre de redondance = " + profondeur + " entre les positions " + position1 + " et " + position2);
+            LOG.debug("Nombre de redondance = " + depth + " entre les positions " + position1 + " et " + position2);
             LOG.debug(traceDebug.toString());
         }
-        return profondeur;
+        return depth;
     }
 
 }

@@ -17,10 +17,10 @@ import org.apache.log4j.SimpleLayout;
 
 import fr.sf.commons.Files;
 import fr.sf.once.ast.ExtractTokenFileVisitor;
-import fr.sf.once.comparator.Comparateur;
+import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparateurAvecSubstitution;
 import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
-import fr.sf.once.comparator.ComparateurSansSubstitution;
+import fr.sf.once.comparator.BasicComparator;
 import fr.sf.once.comparator.ComparateurSimpleSansString;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.ManagerToken;
@@ -106,8 +106,8 @@ public class Launcher {
     }
 
     private static void activeComparateurLog(Level level, String filename) throws IOException {
-        activeLog(Comparateur.LOG, level, filename);
-        activeLog(ComparateurSansSubstitution.LOG, level, filename);
+        activeLog(CodeComparator.LOG, level, filename);
+        activeLog(BasicComparator.LOG, level, filename);
         activeLog(ComparateurAvecSubstitution.LOG, level, filename);
         activeLog(ComparateurSimpleSansString.LOG, level, filename);
         activeLog(ComparateurAvecSubstitutionEtType.LOG, level, filename);
