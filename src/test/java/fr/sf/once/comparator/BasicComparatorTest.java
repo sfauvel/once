@@ -7,15 +7,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
-import org.fest.assertions.api.ListAssert;
 import org.junit.Test;
 
-import fr.sf.once.AbstractComparateurTest;
+import fr.sf.once.AbstractComparatorTest;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
-public class BasicComparatorTest extends AbstractComparateurTest {
+public class BasicComparatorTest extends AbstractComparatorTest {
 
     /**
      * 0: a b a
@@ -72,7 +71,7 @@ public class BasicComparatorTest extends AbstractComparateurTest {
      */
     @Test
     public void when_a_break_token_is_present_the_comparaison_stop() throws Exception {
-        List<Token> tokenList = creerListeTokenListe("a a X a a a X z");
+        List<Token> tokenList = createTokenList("a a X a a a X z");
         changeTokenType(tokenList, 2, Type.BREAK);
         changeTokenType(tokenList, 6, Type.BREAK);
         CodeComparator comparateur = new BasicComparator(new Code(tokenList));
@@ -96,7 +95,7 @@ public class BasicComparatorTest extends AbstractComparateurTest {
      */
     @Test
     public void a_break_token_is_always_less_than_other_token() throws Exception {
-        List<Token> tokenList = creerListeTokenListe("a a X a a a X z");
+        List<Token> tokenList = createTokenList("a a X a a a X z");
         changeTokenType(tokenList, 2, Type.BREAK);
         changeTokenType(tokenList, 6, Type.BREAK);
         CodeComparator comparateur = new BasicComparator(new Code(tokenList));
@@ -106,16 +105,6 @@ public class BasicComparatorTest extends AbstractComparateurTest {
         // 3: a a a X z
         assertThat(comparateur.compare(0, 3)).isEqualTo(-1);
         assertThat(comparateur.compare(3, 0)).isEqualTo(1);
-    }
-
-    /**
-     * @param tokenList List where the token to change is.
-     * @param position Token position to change.
-     * @param newType New type for the token.
-     */
-    private void changeTokenType(List<Token> tokenList, int position, Type newType) {
-        Token token = tokenList.get(position);
-        tokenList.set(position, new Token(token.getlocalisation(), token.getValeurToken(), newType));
     }
     
     /**
@@ -141,12 +130,6 @@ public class BasicComparatorTest extends AbstractComparateurTest {
         assertThatSortedPosition(comparator, 1, 2, 0).containsExactly(0, 1, 2);
         assertThatSortedPosition(comparator, 2, 1, 0).containsExactly(0, 1, 2);
         assertThatSortedPosition(comparator, 1, 0, 2).containsExactly(0, 1, 2);
-    }
-
-    private ListAssert<Integer> assertThatSortedPosition(CodeComparator comparateur, Integer... positionArray) {
-        List<Integer> positionList = Arrays.asList(positionArray);
-        comparateur.sortList(positionList);
-        return assertThat(positionList);
     }
 
     @Test

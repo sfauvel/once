@@ -9,14 +9,14 @@ import fr.sf.once.core.ListeSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 
-public class ComparateurAvecSubstitution extends CodeComparator {
+public class ComparatorWithSubstitution extends CodeComparator {
 
-    public static final Logger LOG = Logger.getLogger(ComparateurAvecSubstitution.class);
+    public static final Logger LOG = Logger.getLogger(ComparatorWithSubstitution.class);
 
     private ListeSubstitution listeSubstitution1 = new ListeSubstitution();
     private ListeSubstitution listeSubstitution2 = new ListeSubstitution();
    
-    public ComparateurAvecSubstitution(Code code) {
+    public ComparatorWithSubstitution(Code code) {
         super(code);
     }
     

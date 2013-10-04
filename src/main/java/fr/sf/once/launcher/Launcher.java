@@ -18,7 +18,7 @@ import org.apache.log4j.SimpleLayout;
 import fr.sf.commons.Files;
 import fr.sf.once.ast.ExtractTokenFileVisitor;
 import fr.sf.once.comparator.CodeComparator;
-import fr.sf.once.comparator.ComparateurAvecSubstitution;
+import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
 import fr.sf.once.comparator.BasicComparator;
 import fr.sf.once.comparator.ComparateurSimpleSansString;
@@ -76,7 +76,7 @@ public class Launcher {
             activeLog(Reporting.TRACE_TOKEN, Level.INFO, "result/listeToken.txt");
             activeLog(LOG, Level.INFO, "result/token.txt");
             activeComparateurLog(Level.INFO, "result/comparator.txt");
-            activeLog(ComparateurAvecSubstitution.LOG, Level.DEBUG, null);
+            activeLog(ComparatorWithSubstitution.LOG, Level.DEBUG, null);
 
             ManagerToken.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
             ManagerToken.LOG.setLevel(Level.INFO);
@@ -108,7 +108,7 @@ public class Launcher {
     private static void activeComparateurLog(Level level, String filename) throws IOException {
         activeLog(CodeComparator.LOG, level, filename);
         activeLog(BasicComparator.LOG, level, filename);
-        activeLog(ComparateurAvecSubstitution.LOG, level, filename);
+        activeLog(ComparatorWithSubstitution.LOG, level, filename);
         activeLog(ComparateurSimpleSansString.LOG, level, filename);
         activeLog(ComparateurAvecSubstitutionEtType.LOG, level, filename);
     }

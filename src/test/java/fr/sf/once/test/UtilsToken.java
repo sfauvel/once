@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.core.ManagerToken;
-import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
@@ -57,6 +56,14 @@ public final class UtilsToken {
             positionList.add(i);
         }
         return positionList;
+    }    
+    
+    public static Integer[] createPositionArray(int size) {
+        Integer[] positionArray = new Integer[size];
+        for (int i = 0; i < size; i++) {
+            positionArray[i]=i;
+        }
+        return positionArray;
     }
     
     public static ManagerToken createManagerToken(final List<Token> tokenList) {

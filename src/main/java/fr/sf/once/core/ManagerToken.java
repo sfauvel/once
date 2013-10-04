@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.comparator.CodeComparator;
-import fr.sf.once.comparator.ComparateurAvecSubstitution;
+import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redondance;
 import fr.sf.once.model.Token;
@@ -24,7 +24,7 @@ public class ManagerToken extends Code {
     }
 
     public List<Redondance> getRedondance(int tailleMin) {
-        return getRedondance(new Configuration(ComparateurAvecSubstitution.class)
+        return getRedondance(new Configuration(ComparatorWithSubstitution.class)
                 .withTailleMin(tailleMin));
     }
 

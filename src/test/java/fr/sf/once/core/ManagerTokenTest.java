@@ -14,7 +14,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import fr.sf.once.comparator.CodeComparator;
-import fr.sf.once.comparator.ComparateurAvecSubstitution;
+import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Redondance;
 import fr.sf.once.model.Token;
 import fr.sf.once.test.LogRule;
@@ -71,7 +71,7 @@ public class ManagerTokenTest {
 
         List<Token> listeTokenOrigine = createUnmodifiableTokenList("A", "A", "B");
         ManagerToken manager = new ManagerToken(listeTokenOrigine);
-        CodeComparator comparator = new ComparateurAvecSubstitution(manager);
+        CodeComparator comparator = new ComparatorWithSubstitution(manager);
 
         List<Integer> positionList = Arrays.asList(0, 1, 2);
         manager.sortPositionList(positionList, comparator);
@@ -91,7 +91,7 @@ public class ManagerTokenTest {
         List<Token> listeTokenOrigine = createUnmodifiableTokenList("A", "E", "A", "B", "A", "C");
         ManagerToken manager = new ManagerToken(listeTokenOrigine);
 
-        CodeComparator comparator = new ComparateurAvecSubstitution(manager);
+        CodeComparator comparator = new ComparatorWithSubstitution(manager);
 
         List<Integer> positionList = Arrays.asList(0, 1, 2, 3, 4, 5);
         manager.sortPositionList(positionList, comparator);

@@ -13,7 +13,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import fr.sf.once.comparator.CodeComparator;
-import fr.sf.once.comparator.ComparateurAvecSubstitution;
+import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
@@ -54,7 +54,7 @@ public class ManagerTokenSampleTest {
         List<Token> listeTokenOrigine = createTokenList();
         ManagerToken manager = new ManagerToken(listeTokenOrigine);
 
-        CodeComparator comparator = new ComparateurAvecSubstitution(new Code(listeTokenOrigine));
+        CodeComparator comparator = new ComparatorWithSubstitution(new Code(listeTokenOrigine));
 
         List<Integer> positionList = UtilsToken.createPositionList(listeTokenOrigine.size());
 
