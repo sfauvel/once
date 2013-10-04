@@ -1,111 +1,165 @@
 package fr.sf.once.comparator;
 
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.fest.assertions.api.ListAssert;
 import org.junit.Test;
 
 import fr.sf.once.AbstractComparateurTest;
-import fr.sf.once.comparator.Comparateur;
-import fr.sf.once.comparator.ComparateurSansSubstitution;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.Localisation;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
-import fr.sf.once.test.UtilsToken;
 
 public class ComparateurSansSubstitutionTest extends AbstractComparateurTest {
 
-    @Before
-    public void init() {
+    /**
+     * 0: a b a
+     * 1: b a
+     * 2: a
+     */
+    @Test
+    public void comparing_token_give_alphabetic_order() throws Exception {
+        Comparateur comparator = createComparatorWithCode("a b a");
+
+        assertThat(comparator.compare(0, 1)).isLessThan(0);
+        assertThat(comparator.compare(0, 2)).isGreaterThan(0);
+        assertThat(comparator.compare(1, 2)).isGreaterThan(0);
     }
 
     @Test
-    public void testCompareSimple() throws Exception {
-        Code code = creerCode("a", "b", "a");
-        ComparateurSansSubstitution comparateur = new ComparateurSansSubstitution(code);
-
-        assertTrue(comparateur.compare(0, 1) < 0);
-        assertTrue(comparateur.compare(0, 2) > 0);
-        assertTrue(comparateur.compare(1, 2) > 0);
+    public void using_position_greater_than_size_give_position_order() throws Exception {
+        Comparateur comparator = createComparatorWithCode("a b");
+        
+        assertThat(comparator.compare(0, 2)).isGreaterThan(0);
+        assertThat(comparator.compare(5, 8)).isGreaterThan(0);
+        assertThat(comparator.compare(8, 5)).isLessThan(0);
     }
 
     @Test
-    public void testCompareHorsLimite() throws Exception {
-        Code code = creerCode("a", "b");
-        ComparateurSansSubstitution comparateur = new ComparateurSansSubstitution(code);
-        assertTrue(comparateur.compare(0, 2) > 0);
-        assertTrue(comparateur.compare(5, 8) > 0);
-        assertTrue(comparateur.compare(8, 5) < 0);
-
-        boolean isException = false;
+    public void using_position_less_than_0_thrown_exception() throws Exception {
+        Comparateur comparator = createComparatorWithCode("a b");
+ 
         try {
-            assertTrue(comparateur.compare(-1, 0) > 0);
-        } catch (Exception e) {
-            isException = true;
+            comparator.compare(-1, 0);
+            failBecauseExceptionWasNotThrown(IndexOutOfBoundsException.class);
+        } catch (IndexOutOfBoundsException e) {
+            assertThat(e).hasMessage("-1");
         }
-        assertTrue(isException);
+        
+        try {
+            comparator.compare(0, -1);
+            failBecauseExceptionWasNotThrown(IndexOutOfBoundsException.class);
+        } catch (IndexOutOfBoundsException e) {
+            assertThat(e).hasMessage("-1");
+        }
     }
-    
+
+    /**
+     * 0: a a X a a a X z
+     * 1: a X a a a X z
+     * 2: X a a a X z
+     * 3: a a a X z
+     * 4: a a X z
+     * 5: a X z
+     * 6: X z
+     * 7: z
+     * @throws Exception
+     */
     @Test
-    public void testCompareWithBreak() throws Exception {
-        List<Token> tokenList = creerListeTokenListe("a", "a", "X", "a", "a", "a", "X", "z");
-        tokenList.set(2, new Token(new Localisation("", 0, 0), "X", Type.BREAK));
-        tokenList.set(6, new Token(new Localisation("", 0, 0), "X", Type.BREAK));
+    public void when_a_break_token_is_present_the_comparaison_stop() throws Exception {
+        List<Token> tokenList = creerListeTokenListe("a a X a a a X z");
+        changeTokenType(tokenList, 2, Type.BREAK);
+        changeTokenType(tokenList, 6, Type.BREAK);
         Comparateur comparateur = new ComparateurSansSubstitution(new Code(tokenList));
 
-        // Le break est au même niveau.
-        assertEquals(0, comparateur.compare(0, 4));
-        // La position 0 voit le Break en premier. Il est donc inférieur.
-        assertEquals(-1, comparateur.compare(0, 3));
-        assertEquals(1, comparateur.compare(3, 0));
+        // Break is at the same position.
+        // 0: a a X a a a X z
+        // 4: a a X z
+        assertThat(comparateur.compare(0, 4)).isEqualTo(0);
+    }
+
+    /**
+     * 0: a a X a a a X z
+     * 1: a X a a a X z
+     * 2: X a a a X z
+     * 3: a a a X z
+     * 4: a a X z
+     * 5: a X z
+     * 6: X z
+     * 7: z
+     * @throws Exception
+     */
+    @Test
+    public void a_break_token_is_always_less_than_other_token() throws Exception {
+        List<Token> tokenList = creerListeTokenListe("a a X a a a X z");
+        changeTokenType(tokenList, 2, Type.BREAK);
+        changeTokenType(tokenList, 6, Type.BREAK);
+        Comparateur comparateur = new ComparateurSansSubstitution(new Code(tokenList));
+        
+        // The first break between 0 and 3 is on position 0. 0 is less than 3.
+        // 0: a a X a a a X z
+        // 3: a a a X z
+        assertThat(comparateur.compare(0, 3)).isEqualTo(-1);
+        assertThat(comparateur.compare(3, 0)).isEqualTo(1);
+    }
+
+    /**
+     * @param tokenList List where the token to change is.
+     * @param position Token position to change.
+     * @param newType New type for the token.
+     */
+    private void changeTokenType(List<Token> tokenList, int position, Type newType) {
+        Token token = tokenList.get(position);
+        tokenList.set(position, new Token(token.getlocalisation(), token.getValeurToken(), newType));
+    }
+    
+    /**
+     * 0: a b x a b t
+     * 1: b x a b t
+     * 2: x a b t
+     * 3: a b t
+     * 4: b t
+     * 5: t
+     * @throws Exception
+     */
+    @Test
+    public void comparing_two_starting_points_the_less_value_is_the_first_with_a_token_less_than_the_other_at_the_same_postion() throws Exception {
+        Comparateur comparator = createComparatorWithCode("a b x a b t");
+
+        assertThat(comparator.compare(0, 3)).isGreaterThan(0);
     }
 
     @Test
-    public void testComparePlusieursValeurs() throws Exception {
-        List<Token> listeToken = creerListeTokenListe("a", "b", "x", "a", "b", "t");
-        ComparateurSansSubstitution comparateur = new ComparateurSansSubstitution(new Code(listeToken));
-
-        assertTrue(comparateur.compare(0, 3) > 0);
+    public void when_we_sort_position_list_we_always_obtain_the_same_result() {
+        Comparateur comparator = createComparatorWithCode("A B C");
+        assertThatSortedPosition(comparator, 0, 1, 2).containsExactly(0, 1, 2);
+        assertThatSortedPosition(comparator, 1, 2, 0).containsExactly(0, 1, 2);
+        assertThatSortedPosition(comparator, 2, 1, 0).containsExactly(0, 1, 2);
+        assertThatSortedPosition(comparator, 1, 0, 2).containsExactly(0, 1, 2);
     }
 
-    @Test
-    public void testGetSortedToken() {
-        checkSortedToken(Arrays.asList(0, 1, 2));
-        checkSortedToken(Arrays.asList(1, 2, 0));
-        checkSortedToken(Arrays.asList(2, 1, 0));
-        checkSortedToken(Arrays.asList(1, 0, 2));
-    }
-
-    private void checkSortedToken(List<Integer> positionList) {
-        Code code = creerCode("A", "B", "C");
-        Comparateur comparateur = new ComparateurSansSubstitution(code);
+    private ListAssert<Integer> assertThatSortedPosition(Comparateur comparateur, Integer... positionArray) {
+        List<Integer> positionList = Arrays.asList(positionArray);
         comparateur.sortList(positionList);
-        assertEquals(0, positionList.get(0).intValue());
-        assertEquals(1, positionList.get(1).intValue());
-        assertEquals(2, positionList.get(2).intValue());
+        return assertThat(positionList);
     }
 
     @Test
-    public void testRedundancySizeAllDifferent() {
-
-        Code code = creerCode("A", "B", "D", "E", "F", "G", "H");
-        Comparateur comparator = new ComparateurSansSubstitution(code);
-        int[] redundancySize = comparator.getRedundancySize(Arrays.asList(0, 1, 2, 5));
-        assertEquals(3, redundancySize.length);
-        assertEquals(0, redundancySize[0]);
-        assertEquals(0, redundancySize[1]);
-        assertEquals(0, redundancySize[2]);
+    public void when_all_token_are_differents_all_redundancy_size_equals_0() {
+        Comparateur comparator = createComparatorWithCode("A B D E F G H");
+        int[] redundancySizeList = comparator.getRedundancySize(Arrays.asList(0, 1, 2, 5));
+        assertThat(redundancySizeList).isEqualTo(new int[]{0, 0, 0});
     }
 
     @Test
     public void testRedundancySizeWithSameValue() {
 
-        Code code = creerCode("A", "B", "C", "A", "B", "D", "E");
+        Code code = createCode("A B C A B D E");
         Comparateur comparator = new ComparateurSansSubstitution(code);
         int[] redundancySize = comparator.getRedundancySize(Arrays.asList(0, 3, 1, 4));
         assertEquals(3, redundancySize.length);
@@ -114,6 +168,11 @@ public class ComparateurSansSubstitutionTest extends AbstractComparateurTest {
         assertEquals(1, redundancySize[2]);
     }
     
+    private Comparateur createComparatorWithCode(String stringTokenList) {
+        Code code = createCode(stringTokenList);
+        return new ComparateurSansSubstitution(code);
+    }
+
     // @Test
     // public void testGetListeTriee() throws Exception {
     // List<Token> listeToken = creerListeTokenListe("a", "b", "a");

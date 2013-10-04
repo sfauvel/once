@@ -1,9 +1,9 @@
 package fr.sf.once.report;
 
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import static org.fest.assertions.Assertions.assertThat;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;

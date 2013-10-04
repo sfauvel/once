@@ -1,14 +1,14 @@
 package fr.sf.once.test;
 
-import org.fest.assertions.Assertions;
-import org.fest.assertions.GenericAssert;
+import org.fest.assertions.api.AbstractAssert;
+import org.fest.assertions.api.Assertions;
 
 import fr.sf.once.model.Token;
 
-public class TokenAssert extends GenericAssert<TokenAssert, Token> {
+public class TokenAssert extends AbstractAssert<TokenAssert, Token> {
 
     public TokenAssert(Token actual) {
-        super(TokenAssert.class, actual);
+        super(actual, TokenAssert.class);
     }
 
     public static TokenAssert assertThat(Token actual) {

@@ -28,9 +28,15 @@ public abstract class AbstractComparateurTest {
         }
     }    
 
-    protected Code creerCode(String... tokenList) {
+    protected Code createCode(String... tokenList) {
         return new Code(creerListeTokenListe(tokenList));
     }
+    
+    protected Code createCode(String stringTokenList) {
+        String[] tokenList = stringTokenList.split(" ");
+        return createCode(tokenList);
+    }
+    
     protected List<Token> creerListeTokenListe(String... tokenList) {
         ArrayList<Token> resultatList = new ArrayList<Token>();
         for (String tokenValue : tokenList) {
@@ -38,6 +44,10 @@ public abstract class AbstractComparateurTest {
             resultatList.add(new Token(new Localisation("", index, 0), String.valueOf(tokenValue), Type.VALEUR));
         }
         return resultatList;
+    }
+    protected List<Token> creerListeTokenListe(String stringTokenList) {
+        String[] tokenList = stringTokenList.split(" ");
+        return creerListeTokenListe(tokenList);
     }
     
 }
