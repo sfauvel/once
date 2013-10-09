@@ -8,12 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class Redondance {
+public class Redundancy {
 
     private int duplicatedTokenNumber;
 	private List<Integer> firstTokenList = new ArrayList<Integer>();
 	
-	public Redondance(int duplicatedTokenNumber) {
+	public Redundancy(int duplicatedTokenNumber) {
 	    this.duplicatedTokenNumber = duplicatedTokenNumber;
 	}
 	
@@ -25,14 +25,14 @@ public class Redondance {
         return firstTokenList;
     }
     
-    public boolean contains(Redondance includedRedundancy) {
+    public boolean contains(Redundancy includedRedundancy) {
         Collections.sort(firstTokenList);
         Collections.sort(includedRedundancy.firstTokenList);
         
         return containsWithSortedRedundancy(includedRedundancy);
     }
     
-    public boolean containsWithSortedRedundancy(Redondance includedRedundancy) {
+    public boolean containsWithSortedRedundancy(Redundancy includedRedundancy) {
         
         if (includedRedundancy.duplicatedTokenNumber <= duplicatedTokenNumber) {
             if (firstTokenList.size() < includedRedundancy.firstTokenList.size()) {
@@ -54,8 +54,8 @@ public class Redondance {
         return false;
     }
     
-    private static boolean containsInList(List<Redondance> redundancyList, Redondance redundancyToCheck) {
-        for (Redondance redundancy : redundancyList) {
+    private static boolean containsInList(List<Redundancy> redundancyList, Redundancy redundancyToCheck) {
+        for (Redundancy redundancy : redundancyList) {
             if (redundancy.containsWithSortedRedundancy(redundancyToCheck)) {
                 return true;
             }
@@ -64,11 +64,11 @@ public class Redondance {
     }
 
 
-    public static void sort(List<Redondance> redundancyList) {
-        Collections.sort(redundancyList, new Comparator<Redondance>() {
+    public static void sort(List<Redundancy> redundancyList) {
+        Collections.sort(redundancyList, new Comparator<Redundancy>() {
 
             @Override
-            public int compare(Redondance redondance1, Redondance redondance2) {
+            public int compare(Redundancy redondance1, Redundancy redondance2) {
                 return redondance2.getDuplicatedTokenNumber() - redondance1.getDuplicatedTokenNumber();
             }
             
@@ -81,12 +81,12 @@ public class Redondance {
      * mais avec moins de occurrence. Ce cas ne doit pas exister fonctionnellement.
      * @param redundancyList
      */
-    public static void removeDuplicatedList(List<Redondance> redundancyList) {
+    public static void removeDuplicatedList(List<Redundancy> redundancyList) {
         sort(redundancyList);
 
-        Map<String, Redondance> searchRedundancy = new HashMap<String, Redondance>();
-        for (Iterator<Redondance> iterator = redundancyList.iterator(); iterator.hasNext();) {
-            Redondance redondance = iterator.next();
+        Map<String, Redundancy> searchRedundancy = new HashMap<String, Redundancy>();
+        for (Iterator<Redundancy> iterator = redundancyList.iterator(); iterator.hasNext();) {
+            Redundancy redondance = iterator.next();
             Collections.sort(redondance.firstTokenList);
             String key = getRedundancyKey(redondance);
             if (!searchRedundancy.containsKey(key)) {
@@ -100,7 +100,7 @@ public class Redondance {
         sort(redundancyList);
     }
 
-    public static String getRedundancyKey(Redondance redondance) {
+    public static String getRedundancyKey(Redundancy redondance) {
         List<Integer> lastTokenList = new ArrayList<Integer>(redondance.firstTokenList);
         StringBuffer buffer = new StringBuffer();
         for (Integer value : lastTokenList) {

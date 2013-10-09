@@ -25,7 +25,7 @@ import fr.sf.once.comparator.ComparateurSimpleSansString;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.Redondance;
+import fr.sf.once.model.Redundancy;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingImpl;
 
@@ -94,7 +94,7 @@ public class Launcher {
         reporting.display(new Code(extractToken.getTokenList(), extractToken.getMethodList()));
 
         ManagerToken manager = new ManagerToken(extractToken.getTokenList());
-        List<Redondance> listeRedondance = manager.getRedondance(
+        List<Redundancy> listeRedondance = manager.getRedondance(
                 new Configuration(ComparateurAvecSubstitutionEtType.class)
                         .withTailleMin(20));
 

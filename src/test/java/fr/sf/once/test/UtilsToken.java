@@ -33,7 +33,6 @@ public final class UtilsToken {
             tokenList.add(new Token(new Localisation("", ligne, 0), tokenValue, Type.VALEUR));
             ligne++;
         }
-        //return tokenList;
         return Collections.unmodifiableList(tokenList);
     }
     
@@ -74,4 +73,19 @@ public final class UtilsToken {
         return createManagerToken(createUnmodifiableTokenList(tokenValueList));
     }
     
+    /**
+     * Create a token list from a string array. Each string can contains tokens separates by space.
+     * @param stringTokenList
+     * @return
+     */
+    public static List<Token> createTokenList(String... stringTokenList) {
+        ArrayList<Token> resultatList = new ArrayList<Token>();
+        for (String oneStringToken : stringTokenList) {
+            for (String tokenValue : oneStringToken.split(" ")) {
+                int index = resultatList.size();
+                resultatList.add(new Token(new Localisation("", index, 0), String.valueOf(tokenValue), Type.VALEUR));
+            }
+        }
+        return resultatList;
+    }
 }

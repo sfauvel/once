@@ -21,7 +21,7 @@ import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.MethodLocalisation;
-import fr.sf.once.model.Redondance;
+import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 
 public class ReportingImplBeta implements Reporting {
@@ -37,22 +37,22 @@ public class ReportingImplBeta implements Reporting {
         this.tokenLogger = TRACE_TOKEN;
     }
 
-    public void afficherRedondance(final ManagerToken manager, final int tailleMin, List<Redondance> listeRedondance) {
+    public void afficherRedondance(final ManagerToken manager, final int tailleMin, List<Redundancy> listeRedondance) {
         afficherRedondance(manager.getTokenList(), tailleMin, listeRedondance);
         displayFullDuplicationBetweenMethods(manager);
             
     }
 
-    public void afficherRedondance(final List<Token> tokenList, final int tailleMin, List<Redondance> listeRedondance) {
+    public void afficherRedondance(final List<Token> tokenList, final int tailleMin, List<Redundancy> listeRedondance) {
         LOG_CSV.info("Taille Redondance;Nombre redondance;Note");
-        Collections.sort(listeRedondance, new Comparator<Redondance>() {
+        Collections.sort(listeRedondance, new Comparator<Redundancy>() {
             @Override
-            public int compare(Redondance redondance1, Redondance redondance2) {
+            public int compare(Redundancy redondance1, Redundancy redondance2) {
                 return redondance2.getDuplicatedTokenNumber() - redondance1.getDuplicatedTokenNumber();
             }
         });
 
-        for (Redondance redondance : listeRedondance) {
+        for (Redundancy redondance : listeRedondance) {
             List<Integer> firstTokenList = redondance.getStartRedundancyList();
             Integer positionPremierToken = firstTokenList.get(0);
             if (isNombreLigneSuperieurA(tokenList, positionPremierToken, redondance.getDuplicatedTokenNumber(), 0)) {
@@ -66,7 +66,7 @@ public class ReportingImplBeta implements Reporting {
         // displayMethod(tokenList, listeTokenTrie, listeRedondance);
     }
 
-    private void displayCsvRedundancy(final List<Token> tokenList, Redondance redondance, long duplicationScore) {
+    private void displayCsvRedundancy(final List<Token> tokenList, Redundancy redondance, long duplicationScore) {
         if (LOG_CSV.isInfoEnabled()) {
             StringBuffer bufferCsv = new StringBuffer();
             appendCsvInformation(bufferCsv, tokenList, redondance, duplicationScore);
@@ -74,7 +74,7 @@ public class ReportingImplBeta implements Reporting {
         }
     }
 
-    private void appendCsvInformation(StringBuffer bufferCsv, final List<Token> tokenList, Redondance redondance, long duplicationScore) {
+    private void appendCsvInformation(StringBuffer bufferCsv, final List<Token> tokenList, Redundancy redondance, long duplicationScore) {
         List<Integer> firstTokenList = redondance.getStartRedundancyList();
         int redundancyNumber = redondance.getRedundancyNumber();
 
@@ -97,12 +97,12 @@ public class ReportingImplBeta implements Reporting {
         }
     }
 
-    private int computeScore(Redondance redondance) {
+    private int computeScore(Redundancy redondance) {
         int redundancyNumber = redondance.getRedundancyNumber();
         return redundancyNumber * redondance.getDuplicatedTokenNumber();
     }
 
-    private List<String> getSubstitution(final List<Token> tokenList, Redondance redondance) {
+    private List<String> getSubstitution(final List<Token> tokenList, Redundancy redondance) {
         List<String> substitutionList = new ArrayList<String>();
         int duplicatedTokenNumber = redondance.getDuplicatedTokenNumber();
         List<Integer> firstTokenList = redondance.getStartRedundancyList();
@@ -139,7 +139,7 @@ public class ReportingImplBeta implements Reporting {
         return nombreLigne > nombreLigneMin;
     }
 
-    public void afficherCodeRedondant(final List<Token> tokenList, Redondance redondance) {
+    public void afficherCodeRedondant(final List<Token> tokenList, Redundancy redondance) {
         if (LOG_RESULTAT.isInfoEnabled()) {
 
             List<String> substitutionList = getSubstitution(tokenList, redondance);
@@ -209,13 +209,13 @@ public class ReportingImplBeta implements Reporting {
         }
     }
 
-    public void afficherMethodeDupliqueAvecSubtitution(final List<Token> tokenList, Redondance redondance) {
+    public void afficherMethodeDupliqueAvecSubtitution(final List<Token> tokenList, Redundancy redondance) {
         if (redondance.getStartRedundancyList().size() > 0 && isFullMethodDuplicated(tokenList, redondance)) {
             afficherCodeRedondant(tokenList, redondance);
         }
     }
 
-    private boolean isFullMethodDuplicated(final List<Token> tokenList, Redondance redondance) {
+    private boolean isFullMethodDuplicated(final List<Token> tokenList, Redundancy redondance) {
         List<Integer> firstTokenList = redondance.getStartRedundancyList();
         for (Integer firstTokenPosition : firstTokenList) {
             Integer ligneDebut = tokenList.get(firstTokenPosition).getLigneDebut();
@@ -349,8 +349,8 @@ public class ReportingImplBeta implements Reporting {
 
     public Map<MethodLocalisation, Set<IntRange>> getDuplicationWithMethod(MethodLocalisation methodA) {
         Map<MethodLocalisation, Set<IntRange>> duplicatedMethodMap = new HashMap<MethodLocalisation, Set<IntRange>>();
-        Set<Redondance> methodARedondanceList = methodA.getRedondanceList();
-        for (Redondance redondance : methodARedondanceList) {
+        Set<Redundancy> methodARedondanceList = methodA.getRedondanceList();
+        for (Redundancy redondance : methodARedondanceList) {
             IntRange duplicatedRange = findDuplicatedRange(methodA, redondance);
             LOG.debug(methodA.getMethodName() + " " + methodA.getTokenRange().getMinimumInteger());
             LOG.debug("Redondance :" + redondance.getDuplicatedTokenNumber() + " " + redondance.getRedundancyNumber());
@@ -407,8 +407,8 @@ public class ReportingImplBeta implements Reporting {
 
     public Map<MethodLocalisation, Set<CommunRange>> getDuplicationWithMethodFull(MethodLocalisation methodA) {
         Map<MethodLocalisation, Set<CommunRange>> duplicatedMethodMap = new HashMap<MethodLocalisation, Set<CommunRange>>();
-        Set<Redondance> methodARedondanceList = methodA.getRedondanceList();
-        for (Redondance redondance : methodARedondanceList) {
+        Set<Redundancy> methodARedondanceList = methodA.getRedondanceList();
+        for (Redundancy redondance : methodARedondanceList) {
             IntRange duplicatedRange = findDuplicatedRange(methodA, redondance);
             LOG.debug(methodA.getMethodName() + " " + methodA.getTokenRange().getMinimumInteger());
             LOG.debug("Redondance :" + redondance.getDuplicatedTokenNumber() + " " + redondance.getRedundancyNumber());
@@ -457,7 +457,7 @@ public class ReportingImplBeta implements Reporting {
         return duplicatedMethodList;
     }
 
-    public IntRange findDuplicatedRange(MethodLocalisation methodLocalisation, Redondance redondance) {
+    public IntRange findDuplicatedRange(MethodLocalisation methodLocalisation, Redundancy redondance) {
         for (Integer firstTokenPosition : redondance.getStartRedundancyList()) {
             if (methodLocalisation.containsPosition(firstTokenPosition)) {
                 return new IntRange(firstTokenPosition.intValue(), firstTokenPosition + redondance.getDuplicatedTokenNumber() - 1);

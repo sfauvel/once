@@ -9,6 +9,11 @@ import fr.sf.once.core.ListeSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 
+/**
+ * A comparator that allow subsitutions to all token except syntax element.
+ * The list of non substituable token:
+ * ":", "(", ")", "{", "}", "[", "]", ";", "new", "."
+ */
 public class ComparatorWithSubstitution extends CodeComparator {
 
     public static final Logger LOG = Logger.getLogger(ComparatorWithSubstitution.class);

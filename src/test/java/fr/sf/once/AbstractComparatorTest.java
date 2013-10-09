@@ -3,7 +3,6 @@ package fr.sf.once;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import org.fest.assertions.api.ListAssert;
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.Localisation;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 import fr.sf.once.test.UtilsToken;
@@ -56,23 +54,9 @@ public abstract class AbstractComparatorTest {
     }    
     
     protected Code createCode(String... tokenList) {
-        return new Code(createTokenList(tokenList));
+        return new Code(UtilsToken.createTokenList(tokenList));
     }
 
-    /**
-     * Create a token list from a string array. Each string can contains tokens separates by space.
-     * @param stringTokenList
-     * @return
-     */
-    protected List<Token> createTokenList(String... stringTokenList) {
-        ArrayList<Token> resultatList = new ArrayList<Token>();
-        for (String oneStringToken : stringTokenList) {
-            for (String tokenValue : oneStringToken.split(" ")) {
-                int index = resultatList.size();
-                resultatList.add(new Token(new Localisation("", index, 0), String.valueOf(tokenValue), Type.VALEUR));
-            }
-        }
-        return resultatList;
-    }
+    
 
 }

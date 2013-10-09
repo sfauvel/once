@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.Redondance;
+import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 import fr.sf.once.report.ReportingImpl;
@@ -23,12 +23,12 @@ public class ManagerToken extends Code {
         super(tokenList);
     }
 
-    public List<Redondance> getRedondance(int tailleMin) {
+    public List<Redundancy> getRedondance(int tailleMin) {
         return getRedondance(new Configuration(ComparatorWithSubstitution.class)
                 .withTailleMin(tailleMin));
     }
 
-    public List<Redondance> getRedondance(Configuration configuration) {
+    public List<Redundancy> getRedondance(Configuration configuration) {
         List<Integer> positionList = getPositionToManage();
         CodeComparator comparator = configuration.getComparateur(this);
         LOG.info("Tri des " + positionList.size() + " tokens...");
@@ -39,7 +39,7 @@ public class ManagerToken extends Code {
         traceTailleRedondance(positionList, redundancySize);
 
         LOG.info("Calcul des redondances...");
-        List<Redondance> listeRedondance = calculerRedondance(positionList, redundancySize, configuration.getTailleMin());
+        List<Redundancy> listeRedondance = calculerRedondance(positionList, redundancySize, configuration.getTailleMin());
         LOG.info("Suppression des chevauchements...");
         listeRedondance = removeOverlap(listeRedondance);
         LOG.info("Suppression des doublons...");
@@ -49,10 +49,10 @@ public class ManagerToken extends Code {
 
     }
 
-    private List<Redondance> removeOverlap(List<Redondance> redundancyList) {
+    private List<Redundancy> removeOverlap(List<Redundancy> redundancyList) {
         LOG.info("Nombre de redondance avant suppression des chevauchements: " + redundancyList.size());
-        for (Iterator<Redondance> iterator = redundancyList.iterator(); iterator.hasNext();) {
-            Redondance redondance = iterator.next();
+        for (Iterator<Redundancy> iterator = redundancyList.iterator(); iterator.hasNext();) {
+            Redundancy redondance = iterator.next();
             redondance.removeOverlapRedundancy();
             if (redondance.getStartRedundancyList().size() <= 1) {
                 iterator.remove();
@@ -96,9 +96,9 @@ public class ManagerToken extends Code {
         }
     }
 
-    public List<Redondance> supprimerDoublon(List<Redondance> redundancyList) {
+    public List<Redundancy> supprimerDoublon(List<Redundancy> redundancyList) {
         LOG.info("Nombre de redondance avant suppression des doublons: " + redundancyList.size());
-        Redondance.removeDuplicatedList(redundancyList);
+        Redundancy.removeDuplicatedList(redundancyList);
         LOG.info("Nombre de redondance après suppression des doublons: " + redundancyList.size());
         return redundancyList;
     }
@@ -147,8 +147,8 @@ public class ManagerToken extends Code {
         }
     }
 
-    public List<Redondance> calculerRedondance(List<Integer> positionList, int[] tailleRedondance, int tailleMin) {
-        List<Redondance> listeRedondance = new ArrayList<Redondance>();
+    public List<Redundancy> calculerRedondance(List<Integer> positionList, int[] tailleRedondance, int tailleMin) {
+        List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
         ajouterRedondanceInterne(positionList, listeRedondance, tailleRedondance, 0, 0, 0);
         for (int i = 1; i < tailleRedondance.length; i++) {
             if (LOG.isDebugEnabled()) {
@@ -161,7 +161,7 @@ public class ManagerToken extends Code {
         return listeRedondance;
     }
 
-    public void ajouterRedondanceInterne(List<Integer> positionList, List<Redondance> listeRedondance, int[] listeTailleRedondance, int indexDepart, int indexCourant, int tailleMin) {
+    public void ajouterRedondanceInterne(List<Integer> positionList, List<Redundancy> listeRedondance, int[] listeTailleRedondance, int indexDepart, int indexCourant, int tailleMin) {
         if (indexCourant >= listeTailleRedondance.length) {
             return;
         }
@@ -177,7 +177,7 @@ public class ManagerToken extends Code {
             LOG.debug("ajout depart=" + indexDepart + " nombre=" + (indexCourant - indexDepart + 1) + " taille=" + tailleInitiale);
         }
 
-        listeRedondance.add(createRedondance(tailleInitiale, positionList.subList(indexDepart, indexCourant + 1)));
+        listeRedondance.add(createRedundancy(tailleInitiale, positionList.subList(indexDepart, indexCourant + 1)));
 
         if (LOG.isDebugEnabled()) {
             for (Integer i : positionList.subList(indexDepart, indexCourant + 1)) {
@@ -188,8 +188,8 @@ public class ManagerToken extends Code {
         ajouterRedondanceInterne(positionList, listeRedondance, listeTailleRedondance, indexDepart, indexCourant, tailleMin);
     }
 
-    Redondance createRedondance(int redondanceSize, List<Integer> subList) {
-        Redondance redondance = new Redondance(redondanceSize);
+    Redundancy createRedundancy(int redondanceSize, List<Integer> subList) {
+        Redundancy redondance = new Redundancy(redondanceSize);
         redondance.getStartRedundancyList().addAll(subList);
         return redondance;
     }

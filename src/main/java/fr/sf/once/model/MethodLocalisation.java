@@ -13,7 +13,7 @@ public class MethodLocalisation {
     private final Localisation localisationDebut;
     private final Localisation localisationFin;
     private final IntRange tokenRange;
-    private final Set<Redondance> redondanceList = new HashSet<Redondance>();
+    private final Set<Redundancy> redondanceList = new HashSet<Redundancy>();
     
     
     public MethodLocalisation(String methodName, Localisation localisationDebut, Localisation localisationFin) {
@@ -50,10 +50,10 @@ public class MethodLocalisation {
         return localisationFin;
     }
 
-    public Set<Redondance> getRedondanceList() {
+    public Set<Redundancy> getRedondanceList() {
         return redondanceList;
     }
-    public void setRedondanceList(Set<Redondance> redondanceList) {
+    public void setRedondanceList(Set<Redundancy> redondanceList) {
         this.redondanceList.clear();
         this.redondanceList.addAll(redondanceList);
     }

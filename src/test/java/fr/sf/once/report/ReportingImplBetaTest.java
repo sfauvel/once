@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import fr.sf.once.model.Code;
 import fr.sf.once.model.MethodLocalisation;
-import fr.sf.once.model.Redondance;
+import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
@@ -82,7 +82,7 @@ public class ReportingImplBetaTest {
         methodList.add(methodB);
         ReportingImplBeta report = new ReportingImplBeta(methodList);
         
-        Redondance redondance = new Redondance(2);
+        Redundancy redondance = new Redundancy(2);
         redondance.getStartRedundancyList().addAll(Arrays.asList(2, 10));
         
         methodA.getRedondanceList().add(redondance);
@@ -103,10 +103,10 @@ public class ReportingImplBetaTest {
         methodList.add(methodB);
         ReportingImplBeta report = new ReportingImplBeta(methodList);
         
-        Redondance redondance1 = new Redondance(3);
+        Redundancy redondance1 = new Redundancy(3);
         redondance1.getStartRedundancyList().addAll(Arrays.asList(2, 35));
         
-        Redondance redondance2 = new Redondance(5);
+        Redundancy redondance2 = new Redundancy(5);
         redondance2.getStartRedundancyList().addAll(Arrays.asList(12, 40));
         
         methodA.getRedondanceList().add(redondance1);
@@ -133,7 +133,7 @@ public class ReportingImplBetaTest {
         methodList.add(methodC);
         ReportingImplBeta report = new ReportingImplBeta(methodList);
                 
-        Redondance redondance = new Redondance(2);
+        Redundancy redondance = new Redundancy(2);
         redondance.getStartRedundancyList().addAll(Arrays.asList(2, 10, 45));
         
         methodA.getRedondanceList().add(redondance);
@@ -151,8 +151,8 @@ public class ReportingImplBetaTest {
     @Test
     public void testFindDuplicatedRange() {
 
-        ArrayList<Redondance> redundancyList = new ArrayList<Redondance>();
-        Redondance redondance = new Redondance(2);
+        ArrayList<Redundancy> redundancyList = new ArrayList<Redundancy>();
+        Redundancy redondance = new Redundancy(2);
         redondance.getStartRedundancyList().addAll(Arrays.asList(5, 15));
         redundancyList.add(redondance);
         

@@ -12,6 +12,7 @@ import fr.sf.once.AbstractComparatorTest;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
+import fr.sf.once.test.UtilsToken;
 
 public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
 
@@ -130,7 +131,7 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
     @Test
     public void testGetRedundancySizeWithBreak() throws Exception {
 
-        List<Token> tokenList = createTokenList("a a X c c c X z");
+        List<Token> tokenList = UtilsToken.createTokenList("a a X c c c X z");
         changeTokenType(tokenList, 2, Type.BREAK);
         changeTokenType(tokenList, 6, Type.BREAK);
         CodeComparator comparateur = new ComparatorWithSubstitution(new Code(tokenList));
@@ -141,7 +142,7 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
 
     @Test
     public void testCompareWithBreak() throws Exception {
-        List<Token> tokenList = createTokenList("a a X c c c X z");
+        List<Token> tokenList = UtilsToken.createTokenList("a a X c c c X z");
         changeTokenType(tokenList, 2, Type.BREAK);
         changeTokenType(tokenList, 6, Type.BREAK);
         CodeComparator comparateur = new ComparatorWithSubstitution(new Code(tokenList));

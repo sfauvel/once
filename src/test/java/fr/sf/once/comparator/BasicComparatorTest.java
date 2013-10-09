@@ -13,6 +13,7 @@ import fr.sf.once.AbstractComparatorTest;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
+import fr.sf.once.test.UtilsToken;
 
 public class BasicComparatorTest extends AbstractComparatorTest {
 
@@ -71,7 +72,7 @@ public class BasicComparatorTest extends AbstractComparatorTest {
      */
     @Test
     public void when_a_break_token_is_present_the_comparaison_stop() throws Exception {
-        List<Token> tokenList = createTokenList("a a X a a a X z");
+        List<Token> tokenList = UtilsToken.createTokenList("a a X a a a X z");
         changeTokenType(tokenList, 2, Type.BREAK);
         changeTokenType(tokenList, 6, Type.BREAK);
         CodeComparator comparateur = new BasicComparator(new Code(tokenList));
@@ -95,7 +96,7 @@ public class BasicComparatorTest extends AbstractComparatorTest {
      */
     @Test
     public void a_break_token_is_always_less_than_other_token() throws Exception {
-        List<Token> tokenList = createTokenList("a a X a a a X z");
+        List<Token> tokenList = UtilsToken.createTokenList("a a X a a a X z");
         changeTokenType(tokenList, 2, Type.BREAK);
         changeTokenType(tokenList, 6, Type.BREAK);
         CodeComparator comparateur = new BasicComparator(new Code(tokenList));
