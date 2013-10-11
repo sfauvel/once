@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.sf.once</groupId>
 	<artifactId>once-core</artifactId>
-	<version>0.0.8</version>
+	<version>0.0.9-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
@@ -109,7 +109,7 @@
 		<url>https://github.com/sfauvel/once</url>
 		<connection>scm:git:ssh://git@github.com/sfauvel/once.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/sfauvel/once.git</developerConnection>
-		<tag>once-core-0.0.8</tag>
+		<tag>once-core-0.0.5-SNAPSHOT</tag>
 	</scm>
 	<distributionManagement>
 		<downloadUrl>https://github.com/sfauvel/once</downloadUrl>
