@@ -1,21 +1,21 @@
-once
+ï»¿once
 ====
-Version gérer via GitHub/CloudBees
+Version gÃ©rer via GitHub/CloudBees (en cours).
 
 Ce programme permet de chercher les redondances dans un programme.
 Il ne cherche pas les copier/coller mais les structures de programme identique. 
-Des codes seront considérés identiques même si les nom de variables, méthodes ou classes sont différents. 
+Des codes seront considÃ©rÃ©s identiques mÃªme si les nom de variables, mÃ©thodes ou classes sont diffÃ©rents. 
 
-Cette version est fonctionnelle mais est pour l'instant très rudimentaire. N'hésitez pas à donner votre feedback. 
+Cette version est fonctionnelle mais est pour l'instant trÃ¨s rudimentaire. N'hÃ©sitez pas Ã  donner votre feedback. 
 
-Pour constuire le programme, exécuter la commande:
+Pour constuire le programme, exÃ©cuter la commande:
 mvn compile assembly:single
 
-Exécuter le programme avec la commande (après avoir renommer le jar présent dans target):
+ExÃ©cuter le programme avec la commande (aprÃ¨s avoir renommer le jar prÃ©sent dans target):
 java -jar ./once-0.0.1-beta.jar %SRC_DIR%
 
-La variable %SRC_DIR% correspond au répertoire contenant les sources à analyser.
-Un répertoire result est créé et contient un fichier once.txt contenant le résultat.
+La variable %SRC_DIR% correspond au rÃ©pertoire contenant les sources Ã  analyser.
+Un rÃ©pertoire result est crÃ©Ã© et contient un fichier once.txt contenant le rÃ©sultat.
 Le format de sortie est :
 
 Taille:317 Longueur:2 Substitutions:1
@@ -23,30 +23,30 @@ Taille:317 Longueur:2 Substitutions:1
   32% 207 lignes(ReportingImpl.java:1478) <-> (ReportingImpl.java:1545) display(1377 <-> 1584) 
     2 valeurs: else, conn
 
-Première ligne:
-	Taille: nombre d'élément unitaire qui sont identiques
-	Longueur: nombre de zone contenant la même structure
-	Substitution: nombre d'éléments qui ont fait l'objet d'une substitution. O correspond à un copié/coller
+PremiÃ¨re ligne:
+	Taille: nombre d'Ã©lÃ©ment unitaire qui sont identiques
+	Longueur: nombre de zone contenant la mÃªme structure
+	Substitution: nombre d'Ã©lÃ©ments qui ont fait l'objet d'une substitution. O correspond Ã  un copiÃ©/coller
 
-Liste des zones dupliquées
-	Pourcentage: pourcentage de la méthode qui est dupliqué
-	Nombre de lignes: Le nombre de lignes dupliquées
-	Emplacement de début: Nom du fichier et de la ligne de début
+Liste des zones dupliquÃ©es
+	Pourcentage: pourcentage de la mÃ©thode qui est dupliquÃ©
+	Nombre de lignes: Le nombre de lignes dupliquÃ©es
+	Emplacement de dÃ©but: Nom du fichier et de la ligne de dÃ©but
 	Emplacement de fin: Nom du fichier et de la ligne de fin
-	Nom de la méthode avec la ligne de début et de fin
+	Nom de la mÃ©thode avec la ligne de dÃ©but et de fin
 	
 Liste des substitutions
-	Nombre de valeurs dfférentes
+	Nombre de valeurs dffÃ©rentes
 	Liste des valeurs qui ont fait l'objet d'une substitution
 
 ====
-Reste à faire
+Reste Ã  faire
 
-- Paramétrer les critères de pertinence incluant les substitutions, le taux de redondance.
-- Calculer le taux de duplication entre 2 méthodes en comptant l'ensemble des redondance mêmes non consécutives 
-- Lorsqu'une variable porte le nom d'une méthode, on considère qu'il s'agit du même élément. Cela entraine une coupure dans la recherche !!!
-- Faire la partie de parsing des fichier en multithreadé
-- Passer à slf4J / logback
-- Gérer les paramètres d'entrée du programme
+- ParamÃ©trer les critÃ¨res de pertinence incluant les substitutions, le taux de redondance.
+- Calculer le taux de duplication entre 2 mÃ©thodes en comptant l'ensemble des redondance mÃªmes non consÃ©cutives 
+- Lorsqu'une variable porte le nom d'une mÃ©thode, on considÃ¨re qu'il s'agit du mÃªme Ã©lÃ©ment. Cela entraine une coupure dans la recherche !!!
+- Faire la partie de parsing des fichier en multithreadÃ©
+- Passer Ã  slf4J / logback
+- GÃ©rer les paramÃ¨tres d'entrÃ©e du programme
 
  
