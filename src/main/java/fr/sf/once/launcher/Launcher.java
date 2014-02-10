@@ -58,7 +58,7 @@ public class Launcher {
         if (propertiesFile.exists()) {
             InputStream resourceAsStream = new FileInputStream(propertiesFile);
             applicationProperties.load(resourceAsStream);
-            applicationProps = new Properties(applicationProperties);
+            applicationProps = new Properties(applicationProperties); 
         }
 
         LOG.debug("Properties:");
@@ -85,20 +85,20 @@ public class Launcher {
         activeLog(ManagerToken.LOG, Level.INFO, null);
         activeLog(LOG, Level.INFO, null);
 
-        // String dir = args[0];
         LOG.info("Source directory:" + sourceDir);
         ExtractTokenFileVisitor extractToken = new ExtractTokenFileVisitor(sourceDir, sourceEncoding);
         Files.visitFile(sourceDir, extractToken);
 
-        Reporting reporting = new ReportingImpl(extractToken.getMethodList());
-        reporting.display(new Code(extractToken.getTokenList(), extractToken.getMethodList()));
+        Class<ComparateurAvecSubstitutionEtType> comparator = ComparateurAvecSubstitutionEtType.class;
+        int tailleMin = 20;
+        Configuration configuration = new Configuration(comparator).withTailleMin(tailleMin);
 
         ManagerToken manager = new ManagerToken(extractToken.getTokenList());
-        List<Redundancy> listeRedondance = manager.getRedondance(
-                new Configuration(ComparateurAvecSubstitutionEtType.class)
-                        .withTailleMin(20));
+        List<Redundancy> listeRedondance = manager.getRedondance(configuration);
 
         LOG.info("Affichage des resultats...");
+        Reporting reporting = new ReportingImpl(extractToken.getMethodList());
+        reporting.display(new Code(extractToken.getTokenList(), extractToken.getMethodList()));
         reporting.afficherRedondance(manager, 20, listeRedondance);
 
         LOG.info("Fin");
