@@ -1,6 +1,5 @@
 package fr.sf.once.report;
 
-import java.util.Arrays;
 import java.util.List;
 
 import fr.sf.once.core.ManagerToken;
