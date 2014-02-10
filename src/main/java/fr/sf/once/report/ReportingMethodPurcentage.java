@@ -18,20 +18,24 @@ public class ReportingMethodPurcentage {
     }
 
     public int getPurcentageBetween(MethodDefinition methodA, MethodDefinition methodB) {
-        int redundancyNumber = 0; 
+        int totalTokenRedundancy = 0;
         for (Redundancy redundancy : redundancyList) {
-            boolean isInMethodA = false;
-            boolean isInMethodB = false;
-            for (Integer startToken : redundancy.getStartRedundancyList()) {
-                isInMethodA |= isRedundancyIsInMethod(methodA, startToken);
-                isInMethodB |= isRedundancyIsInMethod(methodB, startToken);
-            }
-            
-            if (isInMethodA && isInMethodB) {
-                redundancyNumber = redundancy.getDuplicatedTokenNumber() * 100 / methodA.tokenNumber();
+            if (isRedundancyBetweenMethods(methodA, methodB, redundancy)) {
+                totalTokenRedundancy += redundancy.getDuplicatedTokenNumber();
             }
         }
-        return redundancyNumber;
+        return totalTokenRedundancy * 100 / methodA.tokenNumber();
+    }
+
+    private boolean isRedundancyBetweenMethods(MethodDefinition methodA, MethodDefinition methodB, Redundancy redundancy) {
+        boolean isInMethodA = false;
+        boolean isInMethodB = false;
+        for (Integer startToken : redundancy.getStartRedundancyList()) {
+            isInMethodA |= isRedundancyIsInMethod(methodA, startToken);
+            isInMethodB |= isRedundancyIsInMethod(methodB, startToken);
+        }
+
+        return isInMethodA && isInMethodB;
     }
 
     private boolean isRedundancyIsInMethod(MethodDefinition method, Integer startToken) {
