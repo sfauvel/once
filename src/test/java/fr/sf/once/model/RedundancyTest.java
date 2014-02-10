@@ -1,20 +1,25 @@
 package fr.sf.once.model;
 
-import static org.junit.Assert.*;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
-import org.omg.CORBA.IdentifierHelper;
-
-import fr.sf.once.model.Redundancy;
 
 public class RedundancyTest {
+    @Test
+    public void redundancy_between_5_and_20() {
+        Redundancy redundancy = new Redundancy(4).between(5, 20);
+        
+        assertThat(redundancy.getStartRedundancyList()).containsExactly(5, 20);
+    }
+
     @Test
     public void testContainsWhenRedundancyIsBigger() {
         Redundancy referenceRedundancy = new Redundancy(5);

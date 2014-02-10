@@ -1,0 +1,73 @@
+package fr.sf.once.report;
+
+import static org.fest.assertions.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Test;
+
+import fr.sf.once.core.ManagerToken;
+import fr.sf.once.model.MethodDefinition;
+import fr.sf.once.model.Redundancy;
+import fr.sf.once.model.Token;
+
+public class ReportingMethodPurcentageTest {
+
+    @Test
+    public void purcentage_redundancy_is_0_when_there_is_no_redundency() {
+        List<Redundancy> redundancyList = new ArrayList<Redundancy>();
+        
+        List<Token> tokenList = new ArrayList<Token>();
+        ManagerToken manager = new ManagerToken(tokenList);
+
+        ReportingMethodPurcentage report = new ReportingMethodPurcentage(manager, redundancyList);
+        MethodDefinition methodA = new MethodDefinition("fileA", "methodA", 1, 100);
+        MethodDefinition methodB = new MethodDefinition("fileA", "methodB", 101, 200);
+        assertThat(report.getPurcentageBetween(methodA, methodB)).isEqualTo(0);
+    }
+    
+    @Test
+    public void with_no_redundancy_between_methods_purcentage_is_0() {
+        final int DUPLICATED_TOKEN_NUMBER = 20;
+        Redundancy redundancy = new Redundancy(DUPLICATED_TOKEN_NUMBER).between(5, 1005);
+        
+        List<Token> tokenList = new ArrayList<Token>();
+        ManagerToken manager = new ManagerToken(tokenList);
+        ReportingMethodPurcentage report = new ReportingMethodPurcentage(manager, Arrays.<Redundancy>asList(redundancy));
+        
+        MethodDefinition methodA = new MethodDefinition("fileA", "methodA", 1, 100);
+        MethodDefinition methodB = new MethodDefinition("fileA", "methodB", 101, 300);
+        assertThat(report.getPurcentageBetween(methodA, methodB)).isEqualTo(0);
+    }
+    
+    @Test
+    public void with_one_redundancy_purcentage_of_duplication_is_redundancy_size_divided_by_method_size() {
+        final int DUPLICATED_TOKEN_NUMBER = 20;
+        Redundancy redundancy = new Redundancy(DUPLICATED_TOKEN_NUMBER).between(5, 105);
+        
+        List<Token> tokenList = new ArrayList<Token>();
+        ManagerToken manager = new ManagerToken(tokenList);
+        ReportingMethodPurcentage report = new ReportingMethodPurcentage(manager, Arrays.<Redundancy>asList(redundancy));
+        
+        MethodDefinition methodA = new MethodDefinition("fileA", "methodA", 1, 100);
+        MethodDefinition methodB = new MethodDefinition("fileA", "methodB", 101, 300);
+        assertThat(report.getPurcentageBetween(methodA, methodB)).isEqualTo(20);
+        assertThat(report.getPurcentageBetween(methodB, methodA)).isEqualTo(10);
+    }
+    
+//    @Test
+//    public void with_several_() {
+//        final int DUPLICATED_TOKEN_NUMBER = 20;
+//        Redundancy redundancy = new Redundancy(DUPLICATED_TOKEN_NUMBER).between(5, 105);
+//        
+//        List<Token> tokenList = new ArrayList<Token>();
+//        ManagerToken manager = new ManagerToken(tokenList);
+//        ReportingMethodPurcentage report = new ReportingMethodPurcentage(manager, Arrays.<Redundancy>asList(redundancy));
+//        
+//        MethodDefinition methodA = new MethodDefinition("fileA", "methodA", 1, 100);
+//        MethodDefinition methodB = new MethodDefinition("fileA", "methodB", 101, 200);
+//        assertThat(report.getPurcentageBetween(methodA, methodB)).isEqualTo(20);
+//    }
+}

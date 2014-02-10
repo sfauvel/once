@@ -133,4 +133,11 @@ public class Redundancy {
         return firstTokenList.size();
     }
 
+    public Redundancy between(int... tokenPositionList) {
+        for (int tokenPosition : tokenPositionList) {
+            getStartRedundancyList().add(tokenPosition);
+        }
+        return this;
+    }
+
 }

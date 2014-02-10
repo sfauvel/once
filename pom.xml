@@ -133,7 +133,7 @@
 		<repository>
 			<id>sfauvel-cloudbees-release</id>
 			<name>sfauvel-cloudbees-release</name>
-			<url>https://repository-sfauvel.forge.cloudbees.com//release/</url>
+			<url>https://repository-sfauvel.forge.cloudbees.com/release/</url>
 		</repository>
 	</repositories>
 </project>
