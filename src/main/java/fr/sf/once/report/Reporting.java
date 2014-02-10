@@ -14,7 +14,7 @@ public interface Reporting {
     Logger TRACE_TOKEN = Logger.getLogger("TOKEN");
     Logger LOG_RESULTAT = Logger.getLogger("RESULTAT");
     Logger LOG_CSV = Logger.getLogger("CSV");
-    void afficherRedondance(final ManagerToken manager, int tailleMin, List<Redundancy> listeRedondance);
+    void afficherRedondance(final Code code, int tailleMin, List<Redundancy> listeRedondance);
     void afficherCodeRedondant(final List<Token> tokenList, Redundancy redondance);
     void afficheListeToken(List<Token> listeToken);
     void display(final Code code);

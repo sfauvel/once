@@ -79,7 +79,6 @@ public class ManagerTokenSampleTest {
 
         assertEquals(4, nombreParentheseOuvrante);
         for (int i = premiereParenthese; i < premiereParenthese + nombreParentheseOuvrante; i++) {
-            // FIXME Test à réactiver avant le commit
             assertEquals("Le token n°" + i + " n'est pas '(':", "(", manager.getToken(positionList.get(i)).getValeurToken());
 
         }

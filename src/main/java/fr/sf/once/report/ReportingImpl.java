@@ -28,8 +28,8 @@ public class ReportingImpl implements Reporting {
         this.tokenLogger = TRACE_TOKEN;
     }
 
-    public void afficherRedondance(final ManagerToken manager, final int tailleMin, List<Redundancy> listeRedondance) {
-        afficherRedondance(manager.getTokenList(), tailleMin, listeRedondance);
+    public void afficherRedondance(final Code code, final int tailleMin, List<Redundancy> listeRedondance) {
+        afficherRedondance(code.getTokenList(), tailleMin, listeRedondance);
     }
 
     public void afficherRedondance(final List<Token> tokenList, final int tailleMin, List<Redundancy> listeRedondance) {

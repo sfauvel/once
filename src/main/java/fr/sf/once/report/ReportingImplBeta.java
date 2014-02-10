@@ -37,10 +37,9 @@ public class ReportingImplBeta implements Reporting {
         this.tokenLogger = TRACE_TOKEN;
     }
 
-    public void afficherRedondance(final ManagerToken manager, final int tailleMin, List<Redundancy> listeRedondance) {
-        afficherRedondance(manager.getTokenList(), tailleMin, listeRedondance);
-        displayFullDuplicationBetweenMethods(manager);
-            
+    public void afficherRedondance(final Code code, final int tailleMin, List<Redundancy> listeRedondance) {
+        afficherRedondance(code.getTokenList(), tailleMin, listeRedondance);
+        displayFullDuplicationBetweenMethods(code);
     }
 
     public void afficherRedondance(final List<Token> tokenList, final int tailleMin, List<Redundancy> listeRedondance) {
@@ -544,8 +543,8 @@ public class ReportingImplBeta implements Reporting {
         return false;
     }
 
-    public void displayFullDuplicationBetweenMethods(ManagerToken manager) {
-        List<MethodLocalisation> methodList = manager.getMethodList();
+    public void displayFullDuplicationBetweenMethods(Code code) {
+        List<MethodLocalisation> methodList = code.getMethodList();
         for (MethodLocalisation methodLocalisation : methodList) {
             if (methodLocalisation.getMethodName().equals("getPrerequisList")) {
                 LOG.debug("Début de recherche sur la méthode " + methodLocalisation.getMethodName());
@@ -575,10 +574,10 @@ public class ReportingImplBeta implements Reporting {
                     LOG.info(methodLocalisation.getMethodName() + " with " + duplicationMethod.getKey().getMethodName() + ": "
                             + totalDuplication + " tokens " + pourcentage + "%   range number:" + rangeNumber + " (" + StringUtils.join(sizeList, "% ") + "%)");
 
-                    ComparateurAvecSubstitutionEtType comparator = new ComparateurAvecSubstitutionEtType(manager);
+                    ComparateurAvecSubstitutionEtType comparator = new ComparateurAvecSubstitutionEtType(code);
                     for (ReportingImplBeta.CommunRange intRange : sortedRangeList) {
                         int redundancy = comparator.getRedundancySizeWithPreviousSubstitution(intRange.rangeA.getMinimumInteger(), intRange.rangeB.getMinimumInteger());
-                        int redundancyWithNew = new ComparateurAvecSubstitutionEtType(manager).getRedundancySizeWithPreviousSubstitution(intRange.rangeA.getMinimumInteger(), intRange.rangeB.getMinimumInteger());
+                        int redundancyWithNew = new ComparateurAvecSubstitutionEtType(code).getRedundancySizeWithPreviousSubstitution(intRange.rangeA.getMinimumInteger(), intRange.rangeB.getMinimumInteger());
                         LOG.info("redundancy: " + redundancy + "/" + redundancyWithNew);
                     }
                 }

@@ -15,12 +15,17 @@ import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 import fr.sf.once.report.ReportingImpl;
 
-public class ManagerToken extends Code {
+public class ManagerToken {
 
     public static final Logger LOG = Logger.getLogger(ManagerToken.class);
-
+    private final Code code;
+    
     public ManagerToken(final List<Token> tokenList) {
-        super(tokenList);
+        this(new Code(tokenList));
+    }
+
+    public ManagerToken(Code code) {
+        this.code = code;
     }
 
     public List<Redundancy> getRedondance(int tailleMin) {
@@ -30,7 +35,7 @@ public class ManagerToken extends Code {
 
     public List<Redundancy> getRedondance(Configuration configuration) {
         List<Integer> positionList = getPositionToManage();
-        CodeComparator comparator = configuration.getComparateur(this);
+        CodeComparator comparator = configuration.getComparateur(code);
         LOG.info("Tri des " + positionList.size() + " tokens...");
         sortPositionList(positionList, comparator);
         traceSortedToken(positionList);
@@ -80,6 +85,14 @@ public class ManagerToken extends Code {
             position++;
         }
         return positionList;
+    }
+
+    private List<Token> getTokenList() {
+        return code.getTokenList();
+    }
+    
+    public Token getToken(Integer position) {
+        return code.getToken(position);
     }
 
     private void traceTailleRedondance(List<Integer> positionList, int[] tailleRedondance) {

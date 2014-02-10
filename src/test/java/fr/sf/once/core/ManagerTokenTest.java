@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
+import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import fr.sf.once.test.LogRule;
@@ -88,14 +89,13 @@ public class ManagerTokenTest {
     @Test
     public void testTrierListeTokenSansModifierListeOrigine() {
 
-        List<Token> listeTokenOrigine = createUnmodifiableTokenList("A", "A", "B");
-        ManagerToken manager = new ManagerToken(listeTokenOrigine);
-        CodeComparator comparator = new ComparatorWithSubstitution(manager);
-
+        Code code = new Code(createUnmodifiableTokenList("A", "A", "B"));
+        ManagerToken manager = new ManagerToken(code);
+        
         List<Integer> positionList = Arrays.asList(0, 1, 2);
-        manager.sortPositionList(positionList, comparator);
+        manager.sortPositionList(positionList, new ComparatorWithSubstitution(code));
         assertEquals(3, positionList.size());
-        UtilsToken.afficher(listeTokenOrigine, positionList);
+        UtilsToken.afficher(code.getTokenList(), positionList);
         assertEquals(2, positionList.get(0).intValue());
         assertEquals(0, positionList.get(1).intValue());
         assertEquals(1, positionList.get(2).intValue());
@@ -107,15 +107,15 @@ public class ManagerTokenTest {
      */
     @Test
     public void testTrierSurPlusieursTokens() {
-        List<Token> listeTokenOrigine = createUnmodifiableTokenList("A", "E", "A", "B", "A", "C");
-        ManagerToken manager = new ManagerToken(listeTokenOrigine);
+        Code code = new Code(createUnmodifiableTokenList("A", "E", "A", "B", "A", "C"));
+        ManagerToken manager = new ManagerToken(code);
 
-        CodeComparator comparator = new ComparatorWithSubstitution(manager);
+        CodeComparator comparator = new ComparatorWithSubstitution(code);
 
         List<Integer> positionList = Arrays.asList(0, 1, 2, 3, 4, 5);
         manager.sortPositionList(positionList, comparator);
 
-        assertEquals("C", listeTokenOrigine.get(positionList.get(0)).getValeurToken());
+        assertEquals("C", code.getToken(positionList.get(0)).getValeurToken());
 
         assertEquals(5, positionList.get(0).intValue());
         assertEquals(4, positionList.get(1).intValue());

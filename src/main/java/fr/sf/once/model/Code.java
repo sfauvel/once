@@ -1,13 +1,12 @@
 package fr.sf.once.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 
 /**
- * Classe de manipulation du code source.
+ * Structure to handle source tokens.
  */
 public class Code {
     

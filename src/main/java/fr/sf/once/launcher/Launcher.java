@@ -26,6 +26,7 @@ import fr.sf.once.core.Configuration;
 import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
+import fr.sf.once.model.Token;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingImpl;
 
@@ -93,13 +94,14 @@ public class Launcher {
         int tailleMin = 20;
         Configuration configuration = new Configuration(comparator).withTailleMin(tailleMin);
 
-        ManagerToken manager = new ManagerToken(extractToken.getTokenList());
+        Code code = new Code(extractToken.getTokenList());
+        ManagerToken manager = new ManagerToken(code);
         List<Redundancy> listeRedondance = manager.getRedondance(configuration);
 
         LOG.info("Affichage des resultats...");
         Reporting reporting = new ReportingImpl(extractToken.getMethodList());
         reporting.display(new Code(extractToken.getTokenList(), extractToken.getMethodList()));
-        reporting.afficherRedondance(manager, 20, listeRedondance);
+        reporting.afficherRedondance(code, 20, listeRedondance);
 
         LOG.info("Fin");
 
