@@ -2,6 +2,7 @@ package fr.sf.once.launcher;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -46,6 +47,14 @@ public class Launcher {
 
     public static final Logger LOG = Logger.getLogger(Launcher.class);
 
+    private String sourceDir;
+
+    private String sourceEncoding;
+
+    private Class<? extends CodeComparator> comparator;
+
+    private int minimalSize;
+
     /**
      * @param args
      * @throws IOException
@@ -87,12 +96,39 @@ public class Launcher {
         activeLog(LOG, Level.INFO, null);
 
         LOG.info("Source directory:" + sourceDir);
-        ExtractTokenFileVisitor extractToken = new ExtractTokenFileVisitor(sourceDir, sourceEncoding);
-        Files.visitFile(sourceDir, extractToken);
-
+        
         Class<ComparateurAvecSubstitutionEtType> comparator = ComparateurAvecSubstitutionEtType.class;
         int tailleMin = 20;
-        Configuration configuration = new Configuration(comparator).withTailleMin(tailleMin);
+        Launcher launcher = new Launcher()
+            .withSource(sourceDir, sourceEncoding)
+            .withComparator(comparator)
+            .withMinimalSize(tailleMin);
+        launcher.execute();
+
+        LOG.info("Fin");
+
+    }
+
+    public Launcher withMinimalSize(int minimalSize) {
+        this.minimalSize = minimalSize;
+        return this;
+    }
+
+    public Launcher withComparator(Class<? extends CodeComparator> comparator) {
+        this.comparator = comparator;
+        return this;
+    }
+
+    public Launcher withSource(String sourceDir, String sourceEncoding) {
+        this.sourceDir = sourceDir;
+        this.sourceEncoding = sourceEncoding;
+        return this;
+    }
+
+    public void execute() throws FileNotFoundException {
+        ExtractTokenFileVisitor extractToken = new ExtractTokenFileVisitor(sourceDir, sourceEncoding);
+        Files.visitFile(sourceDir, extractToken);
+        Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);
 
         Code code = new Code(extractToken.getTokenList());
         ManagerToken manager = new ManagerToken(code);
@@ -102,9 +138,6 @@ public class Launcher {
         Reporting reporting = new ReportingImpl(extractToken.getMethodList());
         reporting.display(new Code(extractToken.getTokenList(), extractToken.getMethodList()));
         reporting.afficherRedondance(code, 20, listeRedondance);
-
-        LOG.info("Fin");
-
     }
 
     private static void activeComparateurLog(Level level, String filename) throws IOException {

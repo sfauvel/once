@@ -1,6 +1,7 @@
 package fr.sf.commons;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.apache.log4j.Logger;
 
@@ -12,8 +13,11 @@ public class Files {
         void visit(File file);
     }
 
-    public static void visitFile(String dir, Files.FileVisitor visitor) {
+    public static void visitFile(String dir, Files.FileVisitor visitor) throws FileNotFoundException {
         File file = new File(dir);
+        if (!file.exists()) {
+            throw new FileNotFoundException(dir);
+        }
         File[] files = file.listFiles();
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
