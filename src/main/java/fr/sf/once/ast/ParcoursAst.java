@@ -1,9 +1,5 @@
 package fr.sf.once.ast;
 
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
-import japa.parser.ast.CompilationUnit;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +7,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.model.Token;
+import japa.parser.JavaParser;
+import japa.parser.ParseException;
+import japa.parser.ast.CompilationUnit;
 
 public class ParcoursAst {
     public static final Logger LOG = Logger.getLogger(ParcoursAst.class);

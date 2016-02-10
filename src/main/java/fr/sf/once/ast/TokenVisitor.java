@@ -1,9 +1,20 @@
 package fr.sf.once.ast;
 
-import japa.parser.ast.BlockComment;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+import org.apache.commons.lang.math.IntRange;
+import org.apache.log4j.Logger;
+
+import fr.sf.once.model.Localisation;
+import fr.sf.once.model.MethodLocalisation;
+import fr.sf.once.model.Token;
+import japa.parser.ast.comments.BlockComment;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.ImportDeclaration;
-import japa.parser.ast.LineComment;
+import japa.parser.ast.comments.LineComment;
 import japa.parser.ast.Node;
 import japa.parser.ast.PackageDeclaration;
 import japa.parser.ast.TypeParameter;
@@ -18,8 +29,9 @@ import japa.parser.ast.body.EnumConstantDeclaration;
 import japa.parser.ast.body.EnumDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.InitializerDeclaration;
-import japa.parser.ast.body.JavadocComment;
+import japa.parser.ast.comments.JavadocComment;
 import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.body.MultiTypeParameter;
 import japa.parser.ast.body.Parameter;
 import japa.parser.ast.body.TypeDeclaration;
 import japa.parser.ast.body.VariableDeclarator;
@@ -88,18 +100,6 @@ import japa.parser.ast.type.VoidType;
 import japa.parser.ast.type.WildcardType;
 import japa.parser.ast.visitor.VoidVisitor;
 
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
-import org.apache.commons.lang.math.IntRange;
-import org.apache.log4j.Logger;
-
-import fr.sf.once.model.Localisation;
-import fr.sf.once.model.MethodLocalisation;
-import fr.sf.once.model.Token;
-
 public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     static final Logger logSortie = Logger.getLogger("SORTIE");
@@ -131,6 +131,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         LOG.trace("");
     }
 
+    @Override
     public void visit(AnnotationDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -148,6 +149,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(AnnotationMemberDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -164,6 +166,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(ArrayAccessExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getName().accept(this, arg);
@@ -173,6 +176,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     }
 
+    @Override
     public void visit(ArrayCreationExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.NEW, arg);
@@ -191,6 +195,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     }
 
+    @Override
     public void visit(ArrayInitializerExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.ACCOLADE_OUVRANTE, arg);
@@ -200,6 +205,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     }
 
+    @Override
     public void visit(AssertStmt n, List<Token> arg) {
         genericVisit(n, arg);
         n.getCheck().accept(this, arg);
@@ -208,6 +214,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(AssignExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getTarget().accept(this, arg);
@@ -215,6 +222,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getValue().accept(this, arg);
     }
 
+    @Override
     public void visit(BinaryExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getLeft().accept(this, arg);
@@ -222,10 +230,12 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getRight().accept(this, arg);
     }
 
+    @Override
     public void visit(BlockComment n, List<Token> arg) {
         genericVisit(n, arg);
     }
 
+    @Override
     public void visit(BlockStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.ACCOLADE_OUVRANTE, arg);
@@ -237,17 +247,20 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(finNode(n), TokenJava.ACCOLADE_FERMANTE, arg);
     }
 
+    @Override
     public void visit(BooleanLiteralExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, n.toString(), arg);
     }
 
+    @Override
     public void visit(BreakStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.BREAK, arg);
         addToken(n, TokenJava.FIN_INSTRUCTION, arg);
     }
 
+    @Override
     public void visit(CastExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.PARENTHESE_OUVRANTE, arg);
@@ -256,20 +269,21 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getExpr().accept(this, arg);
     }
 
+    @Override
     public void visit(CatchClause n, List<Token> arg) {
         genericVisit(n, arg);
 
-        addToken(avantToken(n.getExcept(), TokenJava.PARENTHESE_OUVRANTE), TokenJava.PARENTHESE_OUVRANTE, arg);
         n.getExcept().accept(this, arg);
-        addToken(nextNode(n.getExcept()), TokenJava.PARENTHESE_FERMANTE, arg);
         n.getCatchBlock().accept(this, arg);
     }
 
+    @Override
     public void visit(CharLiteralExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, "'" + n.getValue() + "'", arg);
     }
 
+    @Override
     public void visit(ClassExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getType().accept(this, arg);
@@ -278,6 +292,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(n, TokenJava.CLASS, arg);
     }
 
+    @Override
     public void visit(ClassOrInterfaceDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -337,6 +352,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         currentClassList.pop();
     }
 
+    @Override
     public void visit(ClassOrInterfaceType n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getScope() != null) {
@@ -353,6 +369,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(CompilationUnit n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getPackage() != null) {
@@ -370,6 +387,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(ConditionalExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getCondition().accept(this, arg);
@@ -377,6 +395,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getElseExpr().accept(this, arg);
     }
 
+    @Override
     public void visit(ConstructorDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -415,20 +434,24 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getBlock().accept(this, arg);
     }
 
+    @Override
     public void visit(ContinueStmt n, List<Token> arg) {
         genericVisit(n, arg);
     }
 
+    @Override
     public void visit(DoStmt n, List<Token> arg) {
         genericVisit(n, arg);
         n.getBody().accept(this, arg);
         n.getCondition().accept(this, arg);
     }
 
+    @Override
     public void visit(DoubleLiteralExpr n, List<Token> arg) {
         genericVisit(n, arg);
     }
 
+    @Override
     public void visit(EmptyMemberDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -436,10 +459,12 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(EmptyStmt n, List<Token> arg) {
         genericVisit(n, arg);
     }
 
+    @Override
     public void visit(EmptyTypeDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -447,6 +472,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(EnclosedExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.PARENTHESE_OUVRANTE, arg);
@@ -454,6 +480,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(finNode(n), TokenJava.PARENTHESE_FERMANTE, arg);
     }
 
+    @Override
     public void visit(EnumConstantDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -476,6 +503,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(EnumDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -503,6 +531,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(ExplicitConstructorInvocationStmt n, List<Token> arg) {
         genericVisit(n, arg);
         if (!n.isThis()) {
@@ -522,12 +551,14 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(ExpressionStmt n, List<Token> arg) {
         genericVisit(n, arg);
         n.getExpression().accept(this, arg);
         addToken(finNode(n), TokenJava.FIN_INSTRUCTION, arg);
     }
 
+    @Override
     public void visit(FieldAccessExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getScope().accept(this, arg);
@@ -535,6 +566,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(n, n.getField(), arg);
     }
 
+    @Override
     public void visit(FieldDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -551,6 +583,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(finNode(n), TokenJava.FIN_INSTRUCTION, arg);
     }
 
+    @Override
     public void visit(ForeachStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.FOR, arg);
@@ -562,6 +595,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getBody().accept(this, arg);
     }
 
+    @Override
     public void visit(ForStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.FOR, arg);
@@ -596,6 +630,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getBody().accept(this, arg);
     }
 
+    @Override
     public void visit(IfStmt n, List<Token> arg) {
         genericVisit(n, arg);
 
@@ -612,6 +647,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(ImportDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.IMPORT, arg);
@@ -619,6 +655,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(finNode(n), TokenJava.FIN_INSTRUCTION, arg);
     }
 
+    @Override
     public void visit(InitializerDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -629,6 +666,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getBlock().accept(this, arg);
     }
 
+    @Override
     public void visit(InstanceOfExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getExpr().accept(this, arg);
@@ -636,46 +674,56 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getType().accept(this, arg);
     }
 
+    @Override
     public void visit(IntegerLiteralExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, n.getValue(), arg);
     }
 
+    @Override
     public void visit(IntegerLiteralMinValueExpr n, List<Token> arg) {
         genericVisit(n, arg);
     }
 
+    @Override
     public void visit(JavadocComment n, List<Token> arg) {
         genericVisit(n, arg);
     }
 
+    @Override
     public void visit(LabeledStmt n, List<Token> arg) {
         genericVisit(n, arg);
         n.getStmt().accept(this, arg);
     }
 
+    @Override
     public void visit(LineComment n, List<Token> arg) {
         genericVisit(n, arg);
     }
 
+    @Override
     public void visit(LongLiteralExpr n, List<Token> arg) {
         genericVisit(n, arg);
     }
 
+    @Override
     public void visit(LongLiteralMinValueExpr n, List<Token> arg) {
         genericVisit(n, arg);
     }
 
+    @Override
     public void visit(MarkerAnnotationExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getName().accept(this, arg);
     }
 
+    @Override
     public void visit(MemberValuePair n, List<Token> arg) {
         genericVisit(n, arg);
         n.getValue().accept(this, arg);
     }
 
+    @Override
     public void visit(MethodCallExpr n, List<Token> arg) {
         genericVisit(n, arg);
         Position currentPosition = position(n);
@@ -700,6 +748,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(finNode(n), TokenJava.PARENTHESE_FERMANTE, arg);
     }
 
+    @Override
     public void visit(MethodDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -766,11 +815,29 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
+    public void visit(MultiTypeParameter n, List<Token> arg) {
+        genericVisit(n, arg);
+
+        List<Type> types = n.getTypes();
+
+        addToken(avantToken(types.get(0), TokenJava.PARENTHESE_OUVRANTE), TokenJava.PARENTHESE_OUVRANTE, arg);
+        for (Type c : types) {
+            c.accept(this, arg);
+        }
+
+        n.getId().accept(this, arg);        
+
+        addToken(this.nextNode(n.getId()), TokenJava.PARENTHESE_FERMANTE, arg);
+    }
+    
+    @Override
     public void visit(NameExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, n.getName(), arg);
     }
 
+    @Override
     public void visit(NormalAnnotationExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getName().accept(this, arg);
@@ -781,12 +848,14 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(NullLiteralExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.NULL, arg);
 
     }
 
+    @Override
     public void visit(ObjectCreationExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.NEW, arg);
@@ -815,6 +884,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     }
 
+    @Override
     public void visit(PackageDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getAnnotations() != null) {
@@ -828,6 +898,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(finNode(n), TokenJava.FIN_INSTRUCTION, arg);
     }
 
+    @Override
     public void visit(Parameter n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getAnnotations() != null) {
@@ -839,11 +910,13 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getId().accept(this, arg);
     }
 
+    @Override
     public void visit(PrimitiveType n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, n.getType().name().toLowerCase(), arg);
     }
 
+    @Override
     public void visit(QualifiedNameExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getQualifier().accept(this, arg);
@@ -851,6 +924,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(n.getEndLine(), n.getEndColumn() - n.getName().length() + 1, n.getName(), arg);
     }
 
+    @Override
     public void visit(ReferenceType n, List<Token> arg) {
         genericVisit(n, arg);
         n.getType().accept(this, arg);
@@ -861,6 +935,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(ReturnStmt n, List<Token> arg) {
         genericVisit(n, arg);
 
@@ -872,18 +947,21 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(finNode(n), TokenJava.FIN_INSTRUCTION, arg);
     }
 
+    @Override
     public void visit(SingleMemberAnnotationExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getName().accept(this, arg);
         n.getMemberValue().accept(this, arg);
     }
 
+    @Override
     public void visit(StringLiteralExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, "\"" + n.getValue() + "\"", TypeJava.STRING, arg);
 
     }
 
+    @Override
     public void visit(SuperExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.SUPER, arg);
@@ -893,6 +971,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(SwitchEntryStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.CASE, arg);
@@ -907,6 +986,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(SwitchStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.SWITCH, arg);
@@ -923,6 +1003,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(n, TokenJava.ACCOLADE_FERMANTE, arg);
     }
 
+    @Override
     public void visit(SynchronizedStmt n, List<Token> arg) {
         genericVisit(n, arg);
         n.getExpr().accept(this, arg);
@@ -930,6 +1011,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     }
 
+    @Override
     public void visit(ThisExpr n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.THIS, arg);
@@ -938,11 +1020,13 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(ThrowStmt n, List<Token> arg) {
         genericVisit(n, arg);
         n.getExpr().accept(this, arg);
     }
 
+    @Override
     public void visit(TryStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.TRY, arg);
@@ -960,11 +1044,13 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(TypeDeclarationStmt n, List<Token> arg) {
         genericVisit(n, arg);
         n.getTypeDeclaration().accept(this, arg);
     }
 
+    @Override
     public void visit(TypeParameter n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getTypeBound() != null) {
@@ -974,6 +1060,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(UnaryExpr n, List<Token> arg) {
         genericVisit(n, arg);
 
@@ -987,6 +1074,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     }
 
+    @Override
     public void visit(VariableDeclarationExpr n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getAnnotations() != null) {
@@ -999,6 +1087,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     }
 
+    @Override
     public void visit(VariableDeclarator n, List<Token> arg) {
         genericVisit(n, arg);
         n.getId().accept(this, arg);
@@ -1008,16 +1097,19 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
     }
 
+    @Override
     public void visit(VariableDeclaratorId n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, n.getName(), TypeJava.VARIABLE, arg);
     }
 
+    @Override
     public void visit(VoidType n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.VOID, arg);
     }
 
+    @Override
     public void visit(WhileStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.WHILE, arg);
@@ -1027,6 +1119,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getBody().accept(this, arg);
     }
 
+    @Override
     public void visit(WildcardType n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getExtends() != null) {
@@ -1036,7 +1129,8 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             n.getSuper().accept(this, arg);
         }
     }
-
+    
+    
     private void addOperator(Position position, List<Token> arg, BinaryExpr.Operator operator) {
         SymboleOperator symbole = SymboleOperator.valueOf(operator.toString());
         addToken(position, symbole.toString(), arg);
@@ -1210,4 +1304,6 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     private Position avantToken(Node n, Token token) {
         return new Position(n.getBeginLine(), n.getBeginColumn() - token.getValeurToken().length() - 1);
     }
+
+ 
 }

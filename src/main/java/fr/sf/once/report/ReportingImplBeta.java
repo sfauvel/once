@@ -8,16 +8,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
 
-import fr.sf.once.ast.ExtractTokenFileVisitor;
 import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
-import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.MethodLocalisation;

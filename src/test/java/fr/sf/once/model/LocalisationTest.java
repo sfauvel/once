@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import fr.sf.once.model.Localisation;
-
 
 public class LocalisationTest {
     @Test

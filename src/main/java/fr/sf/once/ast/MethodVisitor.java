@@ -1,12 +1,11 @@
 package fr.sf.once.ast;
 
-import japa.parser.ast.body.MethodDeclaration;
-import japa.parser.ast.visitor.VoidVisitorAdapter;
-
 import java.util.List;
 
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.MethodLocalisation;
+import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.visitor.VoidVisitorAdapter;
 
 /**
  * Simple visitor implementation for visiting MethodDeclaration nodes.

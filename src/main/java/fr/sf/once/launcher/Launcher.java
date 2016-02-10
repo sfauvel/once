@@ -18,16 +18,15 @@ import org.apache.log4j.SimpleLayout;
 
 import fr.sf.commons.Files;
 import fr.sf.once.ast.ExtractTokenFileVisitor;
-import fr.sf.once.comparator.CodeComparator;
-import fr.sf.once.comparator.ComparatorWithSubstitution;
-import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
 import fr.sf.once.comparator.BasicComparator;
+import fr.sf.once.comparator.CodeComparator;
+import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
 import fr.sf.once.comparator.ComparateurSimpleSansString;
+import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
-import fr.sf.once.model.Token;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingImpl;
 

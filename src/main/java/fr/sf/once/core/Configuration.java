@@ -2,8 +2,8 @@ package fr.sf.once.core;
 
 import java.lang.reflect.Constructor;
 
-import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.BasicComparator;
+import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.model.Code;
 
 public class Configuration {

@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import fr.sf.once.model.Type;
-
 
 public class TypeTest {
    

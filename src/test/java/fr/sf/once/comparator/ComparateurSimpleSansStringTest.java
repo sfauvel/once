@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 import fr.sf.once.ast.TypeJava;
-import fr.sf.once.comparator.ComparateurSimpleSansString;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;

@@ -11,11 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -289,6 +285,28 @@ public class ParcoursAstTest {
             .assertNextToken("(", 3, 28)
             .assertNextToken(")", 3, 29)
             .assertNextToken(";", 3, 30);
+    }
+    
+    @Test
+    public void testAppelMethodeEnchainePositionSurPlusieursLignes() throws Exception {
+        String code = code(
+                "class MaClasse {",
+                "  public void maMethode() {",
+                "    autreMethode()",
+                "         .toString();",
+                "  }",
+                "}");
+        List<? extends Token> listToken = extraireToken(code);
+
+        assertListToken(listToken)
+            .assertToken(10, "autreMethode", 3, 5)
+            .assertNextToken("(", 3, 17)
+            .assertNextToken(")", 3, 18)
+            .assertNextToken(".", 3, 19)
+            .assertNextToken("toString", 3, 20) // Il y quelques problèmes lorsque les appels ne sont pas sur la même ligne.
+            .assertNextToken("(", 3, 28)
+            .assertNextToken(")", 4, 20)
+            .assertNextToken(";", 4, 21);
     }
     
     @Test

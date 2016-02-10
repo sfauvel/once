@@ -1,7 +1,7 @@
 package fr.sf.once.test;
 
-import org.fest.assertions.api.AbstractAssert;
-import org.fest.assertions.api.Assertions;
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
 
 import fr.sf.once.model.Token;
 
