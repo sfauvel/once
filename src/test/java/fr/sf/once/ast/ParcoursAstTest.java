@@ -7,8 +7,11 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.channels.NonWritableChannelException;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.naming.NoPermissionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -684,6 +687,7 @@ public class ParcoursAstTest {
                 "}",
                 "}", TokenJava.METHOD_LIMIT.getValeurToken(),
                 "}");
+   
     }
     
     @Test
@@ -737,6 +741,56 @@ public class ParcoursAstTest {
                 "}",
                 "}", TokenJava.METHOD_LIMIT.getValeurToken(),
                 "}");
+    }
+
+    @Test
+    public void testTryMultiCatch() throws Exception {
+        String code = ""
+                + "class MaClasse {"
+                + "  public void maMethode() {"
+                + "    try {"
+                + "    } catch (FunctionalException | TechnicalException e) { "
+                + "    }"
+                + "  }"
+                + "}";
+        List<? extends Token> listToken = extraireToken(code);
+
+        assertToken(listToken,
+                "class", "MaClasse", "{",
+                "public", "void", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
+                "try", "{",
+                "}", "catch", "(", "FunctionalException", "|", "TechnicalException", "e", ")", "{",
+                "}",
+                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
+                "}");
+    }
+    
+    @Test
+    public void testTryMultiCatchPosition() throws Exception {
+        String code = code(
+                "class MaClasse {",
+                "  public void maMethode() {",
+                "    try {",
+                "    } catch (FunctionalException | TechnicalException e) { ",
+                "    } finally {",
+                "    }",
+                "  }",
+                "}");
+        List<? extends Token> listToken = extraireToken(code);
+
+        assertListToken(listToken)
+            .assertToken(13, "catch", 4, 7)
+            .assertNextToken("(", 4, 12)
+            .assertNextToken("FunctionalException", 4, 14)
+            .assertNextToken("|", 4, 34)
+            .assertNextToken("TechnicalException", 4, 36)
+            .assertNextToken("e", 4, 55)
+            .assertNextToken(")", 4, 56)
+            .assertNextToken("{", 4, 58)
+            .assertNextToken("}", 5, 5)
+            .assertNextToken("finally", 5, 7)
+            .assertNextToken("{", 5, 15)
+            .assertNextToken("}", 6, 5);
     }
 
     @Test

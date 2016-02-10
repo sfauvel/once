@@ -44,6 +44,7 @@ public class TokenJava extends Token {
     public static final TokenJava SUPER = new TokenJava("super");
     public static final TokenJava TRY = new TokenJava("try");
     public static final TokenJava CATCH = new TokenJava("catch");
+    public static final TokenJava EXCEPTION_SEPARATOR = new TokenJava("|");
     public static final TokenJava FINALLY = new TokenJava("finally");
     public static final TokenJava PACKAGE = new TokenJava("package");
     public static final TokenJava IMPORT = new TokenJava("import");

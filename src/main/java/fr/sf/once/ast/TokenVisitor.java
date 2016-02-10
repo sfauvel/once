@@ -821,8 +821,11 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
         List<Type> types = n.getTypes();
 
-        addToken(avantToken(types.get(0), TokenJava.PARENTHESE_OUVRANTE), TokenJava.PARENTHESE_OUVRANTE, arg);
-        for (Type c : types) {
+        Type firstException = types.get(0);
+        addToken(avantToken(firstException, TokenJava.PARENTHESE_OUVRANTE), TokenJava.PARENTHESE_OUVRANTE, arg);
+        firstException.accept(this, arg);
+        for (Type c : types.subList(1, types.size())) {
+            addToken(this.avantToken(c, TokenJava.EXCEPTION_SEPARATOR), TokenJava.EXCEPTION_SEPARATOR, arg);
             c.accept(this, arg);
         }
 
