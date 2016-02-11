@@ -1,14 +1,11 @@
-﻿# Once: detect duplication in source code
 language: java
-
-# Commande Maven executée par défaut
 script: mvn test
-
-# Deploy
 deploy:
   provider: releases
-  api_key: "GITHUB OAUTH TOKEN"
+  user: sfauvel
   file: target/once-core-0.0.9.2-jar-with-dependencies.jar
   skip_cleanup: true
   on:
     tags: true
+  password:
+    secure: eIOL2jEUz8xMX46hTMKw1UCTWIA8+au2t9+DFHieE9Lmsr/0i1dUyufo5+gA772cPfFVsTwim6zBpZ+HayMfoAA8nri1v0/ap6wp+HGeYiSlwUBmqKvo4nM7qh40RM6jQvJbkdLz0QOyd1EVB6ZaFzWSFs0DUZaiMxDHtIgIJuhOlyAKLUC5P85ZUXtdpo4+DzH8ndqAc5KGwMaDrjQ9ZwhoaCrc6vDp2x9Emizmyvd5oNTma1+cuiuyX+Vm7VHt/lKEYOaABuicBJZ/BW2BFm9WYd6vEOWKIeZqEdLMXDI5+qDsuLc8wWqPtZENEm/EgLSGr3spm2nKvh7tN1CeoElXF2qcSzuBAotrJhkCCq6NmPyf1fV+DElVaF4xA0DvvVGqgBi9kzm1Zeznvhg790pWd8z8Fj7jCgTpKuRhX7Uvf4I2chyAo4eZUqZ+4IhOkqsHoqy4/imPH5AgWmtusv08AXLfGK4BND6x412jwpYNCXFfrzCmGig4B4Q8YPTK9pIupSik0gA/QfGoZuIVqWso2UzoAl3OM/q25I5ZFi1VvaRSjgXTjVEciTttWyKAqcgcf0DfrtqTVQLqgqRl4FTbsCbD5I5vgB+13+ap4J1hd8CXBUXRn9+D+FiWk+Qfd50f5n6K7TSKOVnyyCwgYEsuPVJTIiT8og6jgX+DleA=
