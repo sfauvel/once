@@ -2,4 +2,4 @@
 language: java
 
 # Commande Maven executée par défaut
-# mvn test
+script: mvn test
