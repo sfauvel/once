@@ -3,3 +3,6 @@ language: java
 
 # Commande Maven executée par défaut
 script: mvn test
+
+deploy:
+	skip_cleanup: true
