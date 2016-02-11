@@ -1,9 +1,9 @@
 language: java
-script: mvn test
+script: mvn install
 deploy:
   provider: releases
   user: sfauvel
-  file: target/once-core-0.0.9.2-jar-with-dependencies.jar
+  file: target/once-core-0.0.9.2.jar
   skip_cleanup: true
   on:
     tags: true
