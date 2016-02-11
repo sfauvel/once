@@ -1,3 +1,5 @@
 # Once: detect duplication in source code
 language: java
-mvn test
+
+# Commande Maven executée par défaut
+# mvn test
