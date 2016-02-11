@@ -1,8 +1,14 @@
-# Once: detect duplication in source code
+ï»¿# Once: detect duplication in source code
 language: java
 
-# Commande Maven executée par défaut
+# Commande Maven executÃ©e par dÃ©faut
 script: mvn test
 
+# Deploy
 deploy:
-	skip_cleanup: true
+  provider: releases
+  api_key: "GITHUB OAUTH TOKEN"
+  file: target/once-core-0.0.9.2-jar-with-dependencies.jar
+  skip_cleanup: true
+  on:
+    tags: true
