@@ -1,2 +1,3 @@
+# Once: detect duplication in source code
 language: java
 mvn test
