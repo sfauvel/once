@@ -2,6 +2,7 @@ package fr.sf.commons;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
@@ -13,23 +14,32 @@ public class Files {
         void visit(File file);
     }
 
+    /**
+     * @param dir
+     * @param visitor
+     * @throws FileNotFoundException
+     */
     public static void visitFile(String dir, Files.FileVisitor visitor) throws FileNotFoundException {
-        File file = new File(dir);
-        if (!file.exists()) {
-            throw new FileNotFoundException(dir);
-        }
-        File[] files = file.listFiles();
-        if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                visitor.visit(files[i]);
-                if (files[i].isFile()) {
-                    LOG.debug("File: " + files[i].getName());
-                } else if (files[i].isDirectory()) {
-                    LOG.debug("Dir: " + files[i].getName());
-                    visitFile(files[i].getAbsolutePath(), visitor);
-                    LOG.debug("End of dir: " + files[i].getName());
-                }
+        visitFile(new File(dir), visitor);
+    }
+
+    public static void visitFile(File rootFile, Files.FileVisitor visitor) throws FileNotFoundException {
+        LOG.debug("Resource: " + rootFile.getName());
+        if (!rootFile.isFile()) {
+
+            for (File file : getFiles(rootFile)) {
+                visitor.visit(file);
+                visitFile(file, visitor);
             }
         }
+        LOG.debug("End of resource: " + rootFile.getName());
+    }
+
+    private static File[] getFiles(File file) throws FileNotFoundException {
+        if (!file.exists()) {
+            throw new FileNotFoundException(file.getName());
+        }
+
+        return Optional.ofNullable(file.listFiles()).orElse(new File[0]);
     }
 }
