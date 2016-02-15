@@ -1,6 +1,7 @@
 package fr.sf.once.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -208,11 +209,7 @@ public class ManagerToken {
     }
 
     public int min(int[] tableauValeur, int debut, int fin) {
-        int min = tableauValeur[debut];
-        for (int i = debut + 1; i <= fin; i++) {
-            min = Math.min(min, tableauValeur[i]);
-        }
-        return min;
+        return Arrays.stream(tableauValeur, debut, fin+1).min().orElse(0);
     }
 
 }
