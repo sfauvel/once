@@ -14,6 +14,7 @@ import fr.sf.once.model.Token;
 public class ExtractTokenFileVisitor extends ParcoursAst implements Files.FileVisitor {
     private final List<Token> tokenList = new ArrayList<Token>();
     private List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
+    private TokenVisitorBuilder tokenVisitorBuilder;
     private String rootPath;
 
     public ExtractTokenFileVisitor() {
@@ -21,34 +22,34 @@ public class ExtractTokenFileVisitor extends ParcoursAst implements Files.FileVi
     }
 
     public ExtractTokenFileVisitor(String rootPath, String sourceEncoding) {
-        super(sourceEncoding);
-        this.rootPath = rootPath.replaceAll("/", "\\\\") + "\\";
+        this(rootPath, sourceEncoding, new TokenVisitorBuilder());
     }
 
+    public ExtractTokenFileVisitor(String rootPath, String sourceEncoding, TokenVisitorBuilder tokenVisitorBuilder) {
+        super(sourceEncoding);
+        this.rootPath = rootPath.replaceAll("/", "\\\\") + "\\";
+        this.tokenVisitorBuilder = tokenVisitorBuilder;
+    }
+    
     public void visit(final File file) {
-        String fileName = file.getName();
-        if (file.isFile() && fileName.endsWith(".java")) {
-            FileInputStream in = null;
-            try {
-                in = new FileInputStream(file);
-                TokenVisitor tokenVisitor = new TokenVisitorInMethod(file.getPath().replace(rootPath, ""), methodList, tokenList.size());
+        if (isJavaFile(file)) {
+            try (FileInputStream in = new FileInputStream(file)) {
+                TokenVisitor tokenVisitor = tokenVisitorBuilder.build(file, file.getPath().replace(rootPath, ""), methodList, tokenList.size());
                 tokenList.addAll(extraireToken(in, tokenVisitor));
-                LOG.info(fileName + ": " + tokenList.size());
+                LOG.info(file.getName() + ": " + tokenList.size());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                LOG.error("Erreur de lecture du fichier " + fileName, e);
+                LOG.error("Erreur de lecture du fichier " + file.getName(), e);
             } catch (Error e) {
-                LOG.error("Erreur de parsing du fichier " + fileName, e);
-            } finally {
-                try {
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException e) {
-                    LOG.error("Erreur de fermeture du fichier " + fileName, e);
-                }
+                LOG.error("Erreur de parsing du fichier " + file.getName(), e);
+            } catch (IOException e) {
+                LOG.error("Erreur de fermeture du fichier " + file.getName(), e);
             }
         }
+    }
+
+    private boolean isJavaFile(final File file) {
+        return file.isFile() && file.getName().endsWith(".java");
     }
 
     public List<Token> getTokenList() {

@@ -13,8 +13,8 @@ import org.apache.log4j.Logger;
 import fr.sf.once.model.Token;
 
 public class ParcoursAst {
-    public static final Logger LOG = Logger.getLogger(ParcoursAst.class);
     
+    public static final Logger LOG = Logger.getLogger(ParcoursAst.class);
     private final String sourceEncoding;
     
     public ParcoursAst() {

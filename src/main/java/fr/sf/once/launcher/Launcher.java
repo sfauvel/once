@@ -16,11 +16,10 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.SimpleLayout;
 
-import fr.sf.commons.Files;
-import fr.sf.once.ast.ExtractTokenFileVisitor;
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
+import fr.sf.once.ast.ExtractCode;
 import fr.sf.once.comparator.BasicComparator;
 import fr.sf.once.comparator.ComparateurSimpleSansString;
 import fr.sf.once.core.Configuration;
@@ -126,17 +125,16 @@ public class Launcher {
     }
 
     public void execute() throws FileNotFoundException {
-        ExtractTokenFileVisitor extractToken = new ExtractTokenFileVisitor(sourceDir, sourceEncoding);
-        Files.visitFile(sourceDir, extractToken);
+        Code code = new ExtractCode().extract(sourceDir, sourceEncoding);
+        
         Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);
 
-        Code code = new Code(extractToken.getTokenList());
         ManagerToken manager = new ManagerToken(code);
         List<Redundancy> listeRedondance = manager.getRedondance(configuration);
 
         LOG.info("Affichage des resultats...");
-        Reporting reporting = new ReportingImpl(extractToken.getMethodList());
-        reporting.display(new Code(extractToken.getTokenList(), extractToken.getMethodList()));
+        Reporting reporting = new ReportingImpl(code.getMethodList());
+        reporting.display(code);
         reporting.afficherRedondance(code, 20, listeRedondance);
     }
 
