@@ -1,12 +1,12 @@
 package fr.sf.once;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.fest.assertions.api.ListAssert;
+import org.assertj.core.api.AbstractListAssert;
 
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
@@ -37,7 +37,7 @@ public abstract class AbstractComparatorTest {
      * @param positionArray
      * @return
      */
-    protected ListAssert<Integer> assertThatSortedPosition(CodeComparator comparateur, Integer... positionArray) {
+    protected AbstractListAssert<?, ? extends List<? extends Integer>, Integer> assertThatSortedPosition(CodeComparator comparateur, Integer... positionArray) {
         List<Integer> positionList = Arrays.asList(positionArray);
         comparateur.sortList(positionList);
         return assertThat(positionList);

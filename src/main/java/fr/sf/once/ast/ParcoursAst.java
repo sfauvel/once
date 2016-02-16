@@ -26,16 +26,16 @@ public class ParcoursAst {
     }
     
     public List<Token> extraireToken(InputStream input, TokenVisitor tokenVisitor) {
-        CompilationUnit cu = null;
+        List<Token> listeToken = new ArrayList<Token>();
+        tokenVisitor.visit(getParser(input), listeToken);
+        return listeToken;
+    }
+
+    private CompilationUnit getParser(InputStream input) throws Error {
         try {
-            cu = JavaParser.parse(input, sourceEncoding);
+            return JavaParser.parse(input, sourceEncoding);
         } catch (ParseException e) {
             throw new Error(e);
         }
-       
-        List<Token> listeToken = new ArrayList<Token>();
-        tokenVisitor.visit(cu, listeToken);
-
-        return listeToken;
     }
 }

@@ -2,7 +2,7 @@ package fr.sf.once.core;
 
 import static fr.sf.once.test.OnceAssertions.assertThat;
 import static fr.sf.once.test.UtilsToken.createUnmodifiableTokenList;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
