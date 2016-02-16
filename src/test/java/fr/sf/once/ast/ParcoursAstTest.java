@@ -1,5 +1,6 @@
 package fr.sf.once.ast;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -7,15 +8,12 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -32,35 +30,32 @@ public class ParcoursAstTest {
     
     public static final Logger LOG = Logger.getLogger(ParcoursAstTest.class);
 
+    private String __ = " ";
+    private String getCode(String... lines) {
+        return String.join("\n", Arrays.asList(lines));
+    }
+    private AssertToken assertCode(String... lines) throws UnsupportedEncodingException {
+        return assertListToken(extraireToken(getCode(lines)));
+    }
+
     @Test
     public void testDeclarationClassPostion() throws Exception {
-        String code = ""
-                + "class MaClasse {\n"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .assertNextToken("class", 1, 1)
-                .assertNextToken("MaClasse", 1, 6)
-                .assertNextToken("{", 2, 0)
-                .assertNextToken("}", 2, 1);
+        assertCode( 
+                "class MaClasse {",
+                "}")
+            .hasTokens("class", __ , "MaClasse", "{")
+            .hasTokens("}");
     }
 
     @Test
     public void testDeclarationClassExtendPostion() throws Exception {
-        String code = ""
-                + "class MaClasse extends Base {\n"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .assertNextToken("class", 1, 1)
-                .assertNextToken("MaClasse", 1, 6)
-                .assertNextToken("extends", 1, 16)
-                .assertNextToken("Base", 1, 24)
-                .assertNextToken("{", 2, 0)
-                .assertNextToken("}", 2, 1);
+        assertCode(
+                "class MaClasse extends Base {",
+                "}")
+            .hasTokens("class", __ , "MaClasse", __ , "extends", __ , "Base", "{")
+            .hasTokens("}");
     }
+    
 
     @Test
     public void testDeclarationMethode() throws Exception {
@@ -96,22 +91,22 @@ public class ParcoursAstTest {
 
         assertListToken(listToken)
                 .assertToken(3, "public", 2, 3)
-                .assertNextToken("void", 2, 10)
-                .assertNextToken("maMethode", 2, 14)
-                .assertNextToken("(", 2, 24)
-                .assertNextToken(")", 2, 25);
+                .hasToken("void", 2, 10)
+                .hasToken("maMethode", 2, 14)
+                .hasToken("(", 2, 24)
+                .hasToken(")", 2, 25);
 
         assertListToken(listToken)
                 .assertToken(12, "public", 4, 3)
-                .assertNextToken("void", 4, 10)
-                .assertNextToken("maMethode", 4, 14)
-                .assertNextToken("(", 4, 24)
-                .assertNextToken("int", 4, 25)
-                .assertNextToken("param1", 4, 29)
-                .assertNextToken(",", 4, 35)
-                .assertNextToken("String", 4, 37)
-                .assertNextToken("param2", 4, 44)
-                .assertNextToken(")", 4, 50);
+                .hasToken("void", 4, 10)
+                .hasToken("maMethode", 4, 14)
+                .hasToken("(", 4, 24)
+                .hasToken("int", 4, 25)
+                .hasToken("param1", 4, 29)
+                .hasToken(",", 4, 35)
+                .hasToken("String", 4, 37)
+                .hasToken("param2", 4, 44)
+                .hasToken(")", 4, 50);
     }
 
     class AssertToken {
@@ -122,7 +117,26 @@ public class ParcoursAstTest {
             this.tokenList = tokenList;
         }
 
-        public AssertToken assertNextToken(String token, int line, int column) {
+        public AssertToken hasNewLine() {
+           currentLine++;
+            return this;
+        }
+
+        int currentLine = 0;
+        public AssertToken hasTokens(String... tokens) {
+            int currentColumn = 1;
+            currentLine++;
+            for (String token : tokens) {
+//                System.out.println(token + " " + currentColumn);
+                if (!_.equals(token)) {
+                    hasToken(token.trim(), currentLine, currentColumn);
+                }
+                currentColumn += token.length();
+            }
+            return this;
+        }
+
+        public AssertToken hasToken(String token, int line, int column) {
             currentPosition++;
             return assertToken(currentPosition, token, line, column);
         }
@@ -139,8 +153,9 @@ public class ParcoursAstTest {
             if (type != null) {
                 assertEquals(type, tokenJava.getType());
             }
-            assertEquals(line, tokenJava.getlocalisation().getLigne());
-            assertEquals(column, tokenJava.getlocalisation().getColonne());
+            Localisation localisation = tokenJava.getlocalisation();
+            assertThat(localisation.getLigne()).as("Error on line with token:" + token).isEqualTo(line);
+            assertThat(localisation.getColonne()).as("Error on column with token:" + token).isEqualTo(column);
             return this;
         }
         
@@ -193,16 +208,16 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
         assertListToken(listToken)
                 .assertToken(3, "public", 2, 3)
-                .assertNextToken("void", 2, 10)
-                .assertNextToken("maMethode", 2, 14)
-                .assertNextToken("(", 2, 24)
-                .assertNextToken(")", 2, 25)
-                .assertNextToken("throws", 2, 27)
-                .assertNextToken("NullPointerException", 2, 34)
-                .assertNextToken(",", 2, 54)
-                .assertNextToken("SQLException", 2, 56)
-                .assertNextToken(TokenJava.METHOD_LIMIT.getValeurToken(), 2, 69)
-                .assertNextToken("{", 2, 69);
+                .hasToken("void", 2, 10)
+                .hasToken("maMethode", 2, 14)
+                .hasToken("(", 2, 24)
+                .hasToken(")", 2, 25)
+                .hasToken("throws", 2, 27)
+                .hasToken("NullPointerException", 2, 34)
+                .hasToken(",", 2, 54)
+                .hasToken("SQLException", 2, 56)
+                .hasToken(TokenJava.METHOD_LIMIT.getValeurToken(), 2, 69)
+                .hasToken("{", 2, 69);
     }
 
     @Test
@@ -235,14 +250,14 @@ public class ParcoursAstTest {
 
         assertListToken(listToken)
                 .assertToken(10, "autreMethode", 3, 5)
-                .assertNextToken("(", 3, 17)
-                .assertNextToken("1", 3, 18)
-                .assertNextToken(",", 3, 19)
-                .assertNextToken("2", 3, 21)
-                .assertNextToken(",", 3, 22)
-                .assertNextToken("3", 3, 24)
-                .assertNextToken(")", 3, 25)
-                .assertNextToken(";", 3, 26);
+                .hasToken("(", 3, 17)
+                .hasToken("1", 3, 18)
+                .hasToken(",", 3, 19)
+                .hasToken("2", 3, 21)
+                .hasToken(",", 3, 22)
+                .hasToken("3", 3, 24)
+                .hasToken(")", 3, 25)
+                .hasToken(";", 3, 26);
 
         assertToken(listToken,
                 "class", "MaClasse", "{",
@@ -282,13 +297,13 @@ public class ParcoursAstTest {
 
         assertListToken(listToken)
             .assertToken(10, "autreMethode", 3, 5)
-            .assertNextToken("(", 3, 17)
-            .assertNextToken(")", 3, 18)
-            .assertNextToken(".", 3, 19)
-            .assertNextToken("toString", 3, 20)
-            .assertNextToken("(", 3, 28)
-            .assertNextToken(")", 3, 29)
-            .assertNextToken(";", 3, 30);
+            .hasToken("(", 3, 17)
+            .hasToken(")", 3, 18)
+            .hasToken(".", 3, 19)
+            .hasToken("toString", 3, 20)
+            .hasToken("(", 3, 28)
+            .hasToken(")", 3, 29)
+            .hasToken(";", 3, 30);
     }
     
     @Test
@@ -377,29 +392,29 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
         assertListToken(listToken)
             .assertToken(10, "int", 3, 5)
-            .assertNextToken("i", 3, 9)
-            .assertNextToken("=", 3, 10)
-            .assertNextToken("0", 3, 13)
-            .assertNextToken(";", 3, 14)
-            .assertNextToken("i", 4, 5)
-            .assertNextToken("=", 4, 6)
-            .assertNextToken("2", 4, 9)
-            .assertNextToken(";", 4, 10)
-            .assertNextToken("int", 5, 5)
-            .assertNextToken("j", 5, 9)
-            .assertNextToken("=", 5, 10)
-            .assertNextToken("init", 5, 13)
-            .assertNextToken("(", 5, 17)
-            .assertNextToken(")", 5, 18)
-            .assertNextToken(";", 5, 19)
-            .assertNextToken("String", 6, 5)
-            .assertNextToken("s", 6, 12)
-            .assertNextToken("=", 6, 13)
-            .assertNextToken("new", 6, 16)
-            .assertNextToken("String", 6, 20)
-            .assertNextToken("(", 6, 26)
-            .assertNextToken(")", 6, 27)
-            .assertNextToken(";", 6, 28);
+            .hasToken("i", 3, 9)
+            .hasToken("=", 3, 10)
+            .hasToken("0", 3, 13)
+            .hasToken(";", 3, 14)
+            .hasToken("i", 4, 5)
+            .hasToken("=", 4, 6)
+            .hasToken("2", 4, 9)
+            .hasToken(";", 4, 10)
+            .hasToken("int", 5, 5)
+            .hasToken("j", 5, 9)
+            .hasToken("=", 5, 10)
+            .hasToken("init", 5, 13)
+            .hasToken("(", 5, 17)
+            .hasToken(")", 5, 18)
+            .hasToken(";", 5, 19)
+            .hasToken("String", 6, 5)
+            .hasToken("s", 6, 12)
+            .hasToken("=", 6, 13)
+            .hasToken("new", 6, 16)
+            .hasToken("String", 6, 20)
+            .hasToken("(", 6, 26)
+            .hasToken(")", 6, 27)
+            .hasToken(";", 6, 28);
     }
 
     @Test
@@ -469,14 +484,14 @@ public class ParcoursAstTest {
 
         assertListToken(listToken)
                 .assertToken(10, "if", 3, 5)
-                .assertNextToken("(", 3, 7) // On prend la caractère après le if
-                .assertNextToken("var1", 3, 9)
-                .assertNextToken("&&", 3, 13)
-                .assertNextToken("var2", 3, 17)
-                .assertNextToken(")", 3, 21)
-                .assertNextToken("{", 3, 23)
-                .assertNextToken("}", 4, 5)
-                .assertNextToken("else", 4, 6);
+                .hasToken("(", 3, 7) // On prend la caractère après le if
+                .hasToken("var1", 3, 9)
+                .hasToken("&&", 3, 13)
+                .hasToken("var2", 3, 17)
+                .hasToken(")", 3, 21)
+                .hasToken("{", 3, 23)
+                .hasToken("}", 4, 5)
+                .hasToken("else", 4, 6);
     }
 
     @Test
@@ -493,16 +508,16 @@ public class ParcoursAstTest {
 
         assertListToken(listToken)
                 .assertToken(10, "if", 3, 5)
-                .assertNextToken("(", 3, 7) 
-                .assertNextToken("(", 3, 9)  
-                .assertNextToken("var1", 3, 10)
-                .assertNextToken(")", 3, 14)
-                .assertNextToken("&&", 3, 15)
-                .assertNextToken("var2", 3, 19)
-                .assertNextToken(")", 3, 23)
-                .assertNextToken("{", 3, 25)
-                .assertNextToken("}", 4, 5)
-                .assertNextToken("else", 4, 6);
+                .hasToken("(", 3, 7) 
+                .hasToken("(", 3, 9)  
+                .hasToken("var1", 3, 10)
+                .hasToken(")", 3, 14)
+                .hasToken("&&", 3, 15)
+                .hasToken("var2", 3, 19)
+                .hasToken(")", 3, 23)
+                .hasToken("{", 3, 25)
+                .hasToken("}", 4, 5)
+                .hasToken("else", 4, 6);
     }
     
     @Test
@@ -578,21 +593,21 @@ public class ParcoursAstTest {
 
         assertListToken(listToken)
             .assertToken(10, "for", 3, 5)
-            .assertNextToken("(", 3, 8)
-            .assertNextToken("int", 3, 10)
-            .assertNextToken("i", 3, 14)
-            .assertNextToken("=", 3, 15)
-            .assertNextToken("0", 3, 18)
-            .assertNextToken(";", 3, 19)
-            .assertNextToken("i", 3, 21)
-            .assertNextToken("<", 3, 22)
-            .assertNextToken("10", 3, 25)
-            .assertNextToken(";", 3, 27)
-            .assertNextToken("i", 3, 29)
-            .assertNextToken("++", 3, 30)
-            .assertNextToken(")", 3, 32)
-            .assertNextToken("{", 3, 34)
-            .assertNextToken("}", 4, 5);
+            .hasToken("(", 3, 8)
+            .hasToken("int", 3, 10)
+            .hasToken("i", 3, 14)
+            .hasToken("=", 3, 15)
+            .hasToken("0", 3, 18)
+            .hasToken(";", 3, 19)
+            .hasToken("i", 3, 21)
+            .hasToken("<", 3, 22)
+            .hasToken("10", 3, 25)
+            .hasToken(";", 3, 27)
+            .hasToken("i", 3, 29)
+            .hasToken("++", 3, 30)
+            .hasToken(")", 3, 32)
+            .hasToken("{", 3, 34)
+            .hasToken("}", 4, 5);
     }
     @Test
     public void testWhile() throws Exception {
@@ -633,16 +648,16 @@ public class ParcoursAstTest {
 
         assertListToken(listToken)
             .assertToken(15, "while", 4, 5)
-            .assertNextToken("(", 4, 10)
-            .assertNextToken("i", 4, 12)
-            .assertNextToken("<", 4, 13)
-            .assertNextToken("10", 4, 16)
-            .assertNextToken(")", 4, 18)
-            .assertNextToken("{", 4, 20)
-            .assertNextToken("i", 5, 8)
-            .assertNextToken("++", 5, 9)
-            .assertNextToken(";", 5, 11)
-            .assertNextToken("}", 6, 5);
+            .hasToken("(", 4, 10)
+            .hasToken("i", 4, 12)
+            .hasToken("<", 4, 13)
+            .hasToken("10", 4, 16)
+            .hasToken(")", 4, 18)
+            .hasToken("{", 4, 20)
+            .hasToken("i", 5, 8)
+            .hasToken("++", 5, 9)
+            .hasToken(";", 5, 11)
+            .hasToken("}", 6, 5);
                 
     }
 
@@ -683,18 +698,18 @@ public class ParcoursAstTest {
 
         assertListToken(listToken)
             .assertToken(10, "try", 3, 5)
-            .assertNextToken("{", 3, 9)
-            .assertNextToken("}", 4, 5)
-            .assertNextToken("catch", 4, 7)
-            .assertNextToken("(", 4, 12)
-            .assertNextToken("Exception", 4, 14)
-            .assertNextToken("e", 4, 24)
-            .assertNextToken(")", 4, 25)
-            .assertNextToken("{", 4, 27)
-            .assertNextToken("}", 5, 5)
-            .assertNextToken("finally", 5, 7)
-            .assertNextToken("{", 5, 15)
-            .assertNextToken("}", 6, 5);
+            .hasToken("{", 3, 9)
+            .hasToken("}", 4, 5)
+            .hasToken("catch", 4, 7)
+            .hasToken("(", 4, 12)
+            .hasToken("Exception", 4, 14)
+            .hasToken("e", 4, 24)
+            .hasToken(")", 4, 25)
+            .hasToken("{", 4, 27)
+            .hasToken("}", 5, 5)
+            .hasToken("finally", 5, 7)
+            .hasToken("{", 5, 15)
+            .hasToken("}", 6, 5);
     }
 
     @Test
@@ -821,6 +836,7 @@ public class ParcoursAstTest {
                 + "    return true;"
                 + "  }"
                 + "}";
+        
         List<? extends Token> listToken = extraireToken(code);
 
         assertToken(listToken,
@@ -842,8 +858,8 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
         assertListToken(listToken)
             .assertToken(10, "return",  3,  5)
-            .assertNextToken("true", 3, 12)
-            .assertNextToken(";", 3, 16);
+            .hasToken("true", 3, 12)
+            .hasToken(";", 3, 16);
     }
 
     @Test
@@ -894,11 +910,11 @@ public class ParcoursAstTest {
 
         assertListToken(listToken)
             .assertToken(10, "return", 3, 5)
-            .assertNextToken("(", 3, 12)
-            .assertNextToken("MaClasse", 3, 13)
-            .assertNextToken(")", 3, 21)
-            .assertNextToken("this", 3, 23)
-            .assertNextToken(";", 3, 27);
+            .hasToken("(", 3, 12)
+            .hasToken("MaClasse", 3, 13)
+            .hasToken(")", 3, 21)
+            .hasToken("this", 3, 23)
+            .hasToken(";", 3, 27);
     }
 
     @Test
@@ -958,13 +974,13 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
 
         assertListToken(listToken)
-                .assertNextToken("package", 1, 1)
-                .assertNextToken("com", 1, 9)
-                .assertNextToken(".", 1, 12)
-                .assertNextToken("orange", 1, 13)
-                .assertNextToken(".", 1, 19)
-                .assertNextToken("ast", 1, 20)
-                .assertNextToken(";", 1, 23);
+                .hasToken("package", 1, 1)
+                .hasToken("com", 1, 9)
+                .hasToken(".", 1, 12)
+                .hasToken("orange", 1, 13)
+                .hasToken(".", 1, 19)
+                .hasToken("ast", 1, 20)
+                .hasToken(";", 1, 23);
     }
 
     @Test
@@ -990,13 +1006,13 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
 
         assertListToken(listToken)
-                .assertNextToken("import", 1, 1)
-                .assertNextToken("com", 1, 8)
-                .assertNextToken(".", 1, 11)
-                .assertNextToken("orange", 1, 12)
-                .assertNextToken(".", 1, 18)
-                .assertNextToken("ast", 1, 19)
-                .assertNextToken(";", 1, 22);
+                .hasToken("import", 1, 1)
+                .hasToken("com", 1, 8)
+                .hasToken(".", 1, 11)
+                .hasToken("orange", 1, 12)
+                .hasToken(".", 1, 18)
+                .hasToken("ast", 1, 19)
+                .hasToken(";", 1, 22);
     }
 
     @Test
@@ -1054,8 +1070,8 @@ public class ParcoursAstTest {
         assertListToken(listToken)
                 .assertToken(3, "String", TypeJava.CLASS, 1, 19)
                 .assertNextToken("chaine", TypeJava.VARIABLE, 1, 26)
-                .assertNextToken("=", 1, 32)
-                .assertNextToken("\"valeur\"", 1, 35);
+                .hasToken("=", 1, 32)
+                .hasToken("\"valeur\"", 1, 35);
     }
 
     @Test
@@ -1095,12 +1111,12 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
         assertListToken(listToken)
                 .assertToken(3, "String", 2, 3)
-                .assertNextToken("chaine", 2, 10)
-                .assertNextToken("=", 2, 16)
-                .assertNextToken("appelMethode", 2, 19)
-                .assertNextToken("(", 2, 31)
-                .assertNextToken(")", 2, 32)
-                .assertNextToken(";", 2, 33);
+                .hasToken("chaine", 2, 10)
+                .hasToken("=", 2, 16)
+                .hasToken("appelMethode", 2, 19)
+                .hasToken("(", 2, 31)
+                .hasToken(")", 2, 32)
+                .hasToken(";", 2, 33);
     }
 
     @Test

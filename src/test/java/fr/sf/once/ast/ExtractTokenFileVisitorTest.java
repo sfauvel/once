@@ -42,7 +42,7 @@ public class ExtractTokenFileVisitorTest {
     }
 
     @Test
-    public void should_do_XXX_when_java_file() throws Exception {
+    public void should_call_build_when_java_file() throws Exception {
         createVisitor().visit(tmp.newFile("file.java"));
         
         Mockito.verify(tokenVisitorBuidler).build(any(File.class), anyString(), any(List.class), anyInt());
