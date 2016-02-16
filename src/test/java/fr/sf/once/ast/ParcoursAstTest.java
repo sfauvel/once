@@ -128,7 +128,7 @@ public class ParcoursAstTest {
             currentLine++;
             for (String token : tokens) {
 //                System.out.println(token + " " + currentColumn);
-                if (!_.equals(token)) {
+                if (!__.equals(token)) {
                     hasToken(token.trim(), currentLine, currentColumn);
                 }
                 currentColumn += token.length();
