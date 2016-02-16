@@ -3,6 +3,7 @@ package fr.sf.once.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -39,12 +40,10 @@ public class Code {
     }
 
     public MethodLocalisation getMethodAtTokenPosition(int tokenPosition) {
-        for (MethodLocalisation methodLocalisation : methodList) {
-            if (methodLocalisation.containsPosition(tokenPosition)) {
-                return methodLocalisation;
-            }
-        }
-        return null;
+        return methodList.stream()
+                .filter(m -> m.containsPosition(tokenPosition))
+                .findFirst()
+                .orElse(null);
     }
 
 
