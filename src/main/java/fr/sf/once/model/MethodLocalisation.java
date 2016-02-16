@@ -10,32 +10,22 @@ import org.apache.commons.lang.math.IntRange;
 public class MethodLocalisation {
 
     private final String methodName;
-    private final Localisation localisationDebut;
-    private final Localisation localisationFin;
+    private final Localisation start;
+    private final Localisation end;
     private final IntRange tokenRange;
     private final Set<Redundancy> redondanceList = new HashSet<Redundancy>();
     
-    
     public MethodLocalisation(String methodName, Localisation localisationDebut, Localisation localisationFin) {
-        super();
-        this.methodName = methodName;
-        this.localisationDebut = localisationDebut;
-        this.localisationFin = localisationFin;
-        this.tokenRange = null;
+        this(methodName, localisationDebut, localisationFin, null);
     }
     public MethodLocalisation(String methodName, IntRange tokenRange) {
-        super();
-        this.methodName = methodName;
-        this.localisationDebut = null;
-        this.localisationFin = null;
-        this.tokenRange = tokenRange;
+        this(methodName, null, null, tokenRange);
     }
     
     public MethodLocalisation(String methodName, Localisation localisationDebut, Localisation localisationFin, IntRange tokenRange) {
-        super();
         this.methodName = methodName;
-        this.localisationDebut = localisationDebut;
-        this.localisationFin = localisationFin;
+        this.start = localisationDebut;
+        this.end = localisationFin;
         this.tokenRange = tokenRange;
     }
     public String getMethodName() {
@@ -43,16 +33,17 @@ public class MethodLocalisation {
     }
 
     public Localisation getLocalisationDebut() {
-        return localisationDebut;
+        return start;
     }
 
     public Localisation getLocalisationFin() {
-        return localisationFin;
+        return end;
     }
 
     public Set<Redundancy> getRedondanceList() {
         return redondanceList;
     }
+
     public void setRedondanceList(Set<Redundancy> redondanceList) {
         this.redondanceList.clear();
         this.redondanceList.addAll(redondanceList);
@@ -60,7 +51,7 @@ public class MethodLocalisation {
        
     public static MethodLocalisation findMethod(List<MethodLocalisation> methodList, Token token) {
         for (MethodLocalisation methodLocalisation : methodList) {            
-            if (methodLocalisation.localisationDebut.getNomFichier().equals(token.getlocalisation().getNomFichier())
+            if (methodLocalisation.start.getNomFichier().equals(token.getlocalisation().getNomFichier())
                     && methodLocalisation.getLocalisationDebut().getLigne() <= token.getLigneDebut() 
                     && methodLocalisation.getLocalisationFin().getLigne() >=  token.getLigneDebut() ) {
                 return methodLocalisation;

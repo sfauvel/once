@@ -6,8 +6,6 @@ import fr.sf.once.model.Type;
 
 
 public class TokenJava extends Token {
-
-    
     
     public static final TokenJava ACCOLADE_OUVRANTE = new TokenJava("{", Type.VALEUR);
     public static final TokenJava ACCOLADE_FERMANTE = new TokenJava("}", Type.VALEUR);
@@ -54,7 +52,7 @@ public class TokenJava extends Token {
     public static final TokenJava METHOD_LIMIT = new TokenJava("[METHOD LIMIT]", Type.BREAK);
 
     private TokenJava(String token) {
-        super(new Localisation("", 0, 0), token, Type.VALEUR);
+        this(token, Type.VALEUR);
     }
 
     private TokenJava(String token, Type type) {
