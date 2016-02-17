@@ -325,14 +325,11 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             }
         }
 
-        if (n.getMembers() != null && !n.getMembers().isEmpty()) {
-            BodyDeclaration bodyDeclaration = n.getMembers().get(0);
-            addToken(bodyDeclaration.getBeginLine(), bodyDeclaration.getBeginColumn() - 1, TokenJava.ACCOLADE_OUVRANTE, arg);
-        } else {
-//            addToken(n.getEndLine(), n.getEndColumn() - 1, TokenJava.ACCOLADE_OUVRANTE, arg);
-            addToken(n.getBeginLine(), endColumn, TokenJava.ACCOLADE_OUVRANTE, arg);
-
-        }
+        addToken(n.getBeginLine(), endColumn, TokenJava.ACCOLADE_OUVRANTE, arg);
+//        if (n.getMembers() != null && !n.getMembers().isEmpty()) {
+//            BodyDeclaration bodyDeclaration = n.getMembers().get(0);
+//        }
+        
         if (n.getMembers() != null) {
             for (BodyDeclaration member : n.getMembers()) {
                 member.accept(this, arg);
@@ -726,7 +723,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
         n.getType().accept(this, arg);
 
-        addToken(nextNode(n.getType()), n.getName(), arg);
+        addToken(afterWithSpace(n.getType()), n.getName(), arg);
 
         int line = n.getType().getEndLine();
         int column = n.getType().getEndColumn() + n.getName().length() + 1;
@@ -746,14 +743,18 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
         column++;
         addToken(line, column, TokenJava.PARENTHESE_FERMANTE, arg);
-
+        int currentColumn = column+TokenJava.PARENTHESE_FERMANTE.getValeurToken().length();
+        
         if (n.getThrows() != null && !n.getThrows().isEmpty()) {
             addToken(avantToken(n.getThrows().get(0), TokenJava.THROWS), TokenJava.THROWS, arg);
             addParameterList(n.getThrows(), arg);
-        }
+            currentColumn = n.getThrows().get(n.getThrows().size()-1).getEndColumn()+1;
+        }        
+        addToken(line, currentColumn, TokenJava.METHOD_LIMIT, arg);
+        
         if (n.getBody() != null) {
             Position startPosition = position(n.getBody());
-            addToken(startPosition, TokenJava.METHOD_LIMIT, arg);
+//            addToken(startPosition, TokenJava.METHOD_LIMIT, arg);
             int startTokenPosition = firstTokenNumber + arg.size() - 1;
             n.getBody().accept(this, arg);
             Position endPosition = nextNode(n.getBody());
@@ -1204,9 +1205,16 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     private Position finNode(Node node) {
         return new Position(node.getEndLine(), node.getEndColumn());
     }
-
+    
     private Position nextNode(Node node) {
         return new Position(node.getEndLine(), node.getEndColumn() + 1);
+    }
+    
+    private Position afterWithSpace(Node node) {
+        // EndColumn is the position of the last character of the token. 
+        // +1 to have the position after.
+        // +1 to add a space.
+        return new Position(node.getEndLine(), node.getEndColumn() + 2);
     }
 
     private Position finToken(Node n, Token token) {
