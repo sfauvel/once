@@ -380,6 +380,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getElseExpr().accept(this, arg);
     }
 
+    // TODO mutualiser avec visit(MethodDeclaration
     public void visit(ConstructorDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -392,11 +393,17 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
 
         addModifier(n, n.getModifiers(), arg);
+        int modifierSize = Modifier.toString(n.getModifiers()).length();
+        int column = n.getBeginColumn();
+        column += (modifierSize==0?0:modifierSize+1);
+        
+        addToken(n.getBeginLine(), column, n.getName(), arg);
 
-        addToken(n, n.getName(), arg);
-
-        addToken(n, TokenJava.PARENTHESE_OUVRANTE, arg);
-
+        column += n.getName().length();
+        
+        addToken(new Position(n.getBeginLine(), column), TokenJava.PARENTHESE_OUVRANTE, arg);
+        column += TokenJava.PARENTHESE_OUVRANTE.getValeurToken().length();
+                
         if (n.getTypeParameters() != null) {
             for (TypeParameter t : n.getTypeParameters()) {
                 t.accept(this, arg);
@@ -408,13 +415,16 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             }
         }
 
-        addToken(n, TokenJava.PARENTHESE_FERMANTE, arg);
-
-        if (n.getThrows() != null) {
-            for (NameExpr name : n.getThrows()) {
-                name.accept(this, arg);
-            }
-        }
+        addToken(new Position(n.getBeginLine(), column), TokenJava.PARENTHESE_FERMANTE, arg);
+        int currentColumn = column+TokenJava.PARENTHESE_FERMANTE.getValeurToken().length();
+        
+        if (n.getThrows() != null && !n.getThrows().isEmpty()) {
+            addToken(avantToken(n.getThrows().get(0), TokenJava.THROWS), TokenJava.THROWS, arg);
+            addParameterList(n.getThrows(), arg);
+            currentColumn = n.getThrows().get(n.getThrows().size()-1).getEndColumn()+1;
+        }        
+        addToken(n.getBeginLine(), currentColumn, TokenJava.METHOD_LIMIT, arg);
+        
         n.getBlock().accept(this, arg);
     }
 
@@ -703,6 +713,8 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(finNode(n), TokenJava.PARENTHESE_FERMANTE, arg);
     }
 
+    
+    
     public void visit(MethodDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
         if (n.getJavaDoc() != null) {
@@ -1173,7 +1185,12 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     
     private void addModifier(Node n, int modifier, List<Token> arg) {
         if (modifier != 0) {
-            addToken(n, Modifier.toString(modifier), arg);
+            String[] modifiers = Modifier.toString(modifier).split(" ");
+            int column = n.getBeginColumn();
+            for (String modifierText : modifiers) {
+                addToken(n.getBeginLine(), column, modifierText, arg);
+                column += modifierText.length() + 1;
+            }
         }
     }
 

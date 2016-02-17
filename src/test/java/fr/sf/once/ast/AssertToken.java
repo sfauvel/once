@@ -14,6 +14,7 @@ import fr.sf.once.model.Type;
 import junit.framework.Assert;
 
 public class AssertToken {
+    private static final int TAB = 2;
     private List<? extends Token> tokenList;
     private int currentPosition = 0;
 
@@ -43,9 +44,15 @@ public class AssertToken {
         Assertions.fail("No token found on line " + line);
         throw null;
     }
+    public AssertToken indent() {
+        return indent(TAB);
+    }
     public AssertToken indent(int tab) {
         currentTab += tab;
         return this;
+    }
+    public AssertToken unindent() {
+        return unindent(TAB);
     }
     public AssertToken unindent(int tab) {            
         return indent(-tab);
@@ -88,8 +95,8 @@ public class AssertToken {
             assertEquals(type, tokenJava.getType());
         }
         Localisation localisation = tokenJava.getlocalisation();
-        assertThat(localisation.getLigne()).as("Error on line with token:" + token).isEqualTo(line);
-        assertThat(localisation.getColonne()).as("Error on column with token:" + token).isEqualTo(column);
+        assertThat(localisation.getLigne()).as("Error on line with token '" + token + "'").isEqualTo(line);
+        assertThat(localisation.getColonne()).as("Error on column with token '" + token + "'").isEqualTo(column);
         currentPosition = position + 1;
         return this;
     }
