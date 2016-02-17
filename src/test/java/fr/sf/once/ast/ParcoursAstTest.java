@@ -188,69 +188,17 @@ public class ParcoursAstTest {
                 "  public void maMethode() {",
                 "    int i = 0;",
                 "    i = 2;",
+                "    int j = init();",
+                "    String s = new String();",
                 "  }",
                 "}")
             .fromLine(3).indent().indent()
             // TODO problème sur la position des espaces.
             .hasTokens("int",__,"i","=",__,__,"0",";")
-            .hasTokens("i","=",__,__,"2",";");
-
-        
-        String code = ""
-                + "class MaClasse {"
-                + "  public void maMethode() {"
-                + "    int i = 0;"
-                + "    i = 2;"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "void", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "int", "i", "=", "0", ";",
-                "i", "=", "2", ";",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
-    }
-    
-    @Test
-    public void testAffectationPosition() throws Exception {
-        String code = code(
-                "class MaClasse {",
-                "  public void maMethode() {",
-                "    int i = 0;",
-                "    i = 2;",
-                "    int j = init();",
-                "    String s = new String();",
-                "  }",
-                "}");
-        List<? extends Token> listToken = extraireToken(code);
-        assertListToken(listToken)
-            .assertToken(10, "int", 3, 5)
-            .hasToken("i", 3, 9)
-            .hasToken("=", 3, 10)
-            .hasToken("0", 3, 13)
-            .hasToken(";", 3, 14)
-            .hasToken("i", 4, 5)
-            .hasToken("=", 4, 6)
-            .hasToken("2", 4, 9)
-            .hasToken(";", 4, 10)
-            .hasToken("int", 5, 5)
-            .hasToken("j", 5, 9)
-            .hasToken("=", 5, 10)
-            .hasToken("init", 5, 13)
-            .hasToken("(", 5, 17)
-            .hasToken(")", 5, 18)
-            .hasToken(";", 5, 19)
-            .hasToken("String", 6, 5)
-            .hasToken("s", 6, 12)
-            .hasToken("=", 6, 13)
-            .hasToken("new", 6, 16)
-            .hasToken("String", 6, 20)
-            .hasToken("(", 6, 26)
-            .hasToken(")", 6, 27)
-            .hasToken(";", 6, 28);
+            .hasTokens("i","=",__,__,"2",";")
+            .hasTokens("int",__,"j","=",__,__,"init","(",")",";")
+            .hasTokens("String",__,"s","=",__,__,"new",__,"String","(",")",";")
+            ;
     }
 
     @Test
