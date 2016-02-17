@@ -183,6 +183,19 @@ public class ParcoursAstTest {
     
     @Test
     public void testAffectation() throws Exception {
+        assertCode(
+                "class MaClasse {",
+                "  public void maMethode() {",
+                "    int i = 0;",
+                "    i = 2;",
+                "  }",
+                "}")
+            .fromLine(3).indent().indent()
+            // TODO problème sur la position des espaces.
+            .hasTokens("int",__,"i","=",__,__,"0",";")
+            .hasTokens("i","=",__,__,"2",";");
+
+        
         String code = ""
                 + "class MaClasse {"
                 + "  public void maMethode() {"
