@@ -245,7 +245,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     public void visit(BreakStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.BREAK, arg);
-        addToken(n, TokenJava.FIN_INSTRUCTION, arg);
+        addToken(finToken(n, TokenJava.BREAK), TokenJava.FIN_INSTRUCTION, arg);
     }
 
     public void visit(CastExpr n, List<Token> arg) {
@@ -918,7 +918,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         if (n.getLabel() != null) {
             n.getLabel().accept(this, arg);
         }
-        addToken(n, TokenJava.CASE_SEPARATEUR, arg);
+        addToken(nextNode(n.getLabel()), TokenJava.CASE_SEPARATEUR, arg);
         if (n.getStmts() != null) {
             for (Statement s : n.getStmts()) {
                 s.accept(this, arg);
@@ -929,11 +929,14 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     public void visit(SwitchStmt n, List<Token> arg) {
         genericVisit(n, arg);
         addToken(n, TokenJava.SWITCH, arg);
-        addToken(n, TokenJava.PARENTHESE_OUVRANTE, arg);
-        n.getSelector().accept(this, arg);
-        addToken(n, TokenJava.PARENTHESE_FERMANTE, arg);
+        
+        addToken(finToken(n, TokenJava.SWITCH), TokenJava.PARENTHESE_OUVRANTE, arg);
+        n.getSelector().accept(this, arg);  
+        Position endParenthese = nextNode(n.getSelector());
+        addToken(endParenthese, TokenJava.PARENTHESE_FERMANTE, arg);
 
-        addToken(n, TokenJava.ACCOLADE_OUVRANTE, arg);
+        Position position = new Position(endParenthese.line, endParenthese.column+TokenJava.PARENTHESE_FERMANTE.getValeurToken().length());
+        addToken(position, TokenJava.ACCOLADE_OUVRANTE, arg);
         if (n.getEntries() != null) {
             for (SwitchEntryStmt e : n.getEntries()) {
                 e.accept(this, arg);

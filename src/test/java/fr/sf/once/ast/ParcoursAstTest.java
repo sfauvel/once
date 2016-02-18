@@ -193,7 +193,7 @@ public class ParcoursAstTest {
                 "  }",
                 "}")
             .fromLine(3).indent().indent()
-            // TODO problème sur la position des espaces.
+            // TODO problème sur la position des espaces avant ou après le égale.
             .hasTokens("int",__,"i","=",__,__,"0",";")
             .hasTokens("i","=",__,__,"2",";")
             .hasTokens("int",__,"j","=",__,__,"init","(",")",";")
@@ -203,26 +203,22 @@ public class ParcoursAstTest {
 
     @Test
     public void testSwitch() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public void maMethode() {"
-                + "    switch (variable) {"
-                + "      case CONSTANTE:"
-                + "         break;"
-                + "    }"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "void", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "switch", "(", "variable", ")", "{",
-                "case", "CONSTANTE", ":",
-                "break", ";",
-                "}",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  public void maMethode() {",
+                "    switch (variable) {",
+                "      case CONSTANTE:",
+                "        break;",
+                "    }",
+                "  }",
+                "}")
+            .fromLine(3).indent().indent()
+            .hasTokens("switch","(",__,"variable",")","{")
+            .indent()
+            .hasTokens("case",__,"CONSTANTE", ":")
+            .indent()
+            .hasTokens("break", ";")
+            ;
     }
 
     @Test
