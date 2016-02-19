@@ -10,10 +10,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang.math.IntRange;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.w3c.dom.ranges.RangeException;
 
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
@@ -84,45 +90,42 @@ public class ManagerTokenTest {
     }
 
     /**
-     * A A B 0: 1 1 2 -> 1 1: 1 2 -> 2 2: 1 -> 0
+     * 0 1 2
+     * A A B 
+     * 0: 1 1 2 -> 1
+     * 1: 1 2   -> 2
+     * 2: 1     -> 0
      */
     @Test
     public void testTrierListeTokenSansModifierListeOrigine() {
-
-        Code code = new Code(createUnmodifiableTokenList("A", "A", "B"));
-        ManagerToken manager = new ManagerToken(code);
+        Code code = createCodeWith("A", "A", "B");
+        List<Integer> positionList = range(code.getSize());
         
-        List<Integer> positionList = Arrays.asList(0, 1, 2);
-        manager.sortPositionList(positionList, new ComparatorWithSubstitution(code));
-        assertEquals(3, positionList.size());
-        UtilsToken.afficher(code.getTokenList(), positionList);
-        assertEquals(2, positionList.get(0).intValue());
-        assertEquals(0, positionList.get(1).intValue());
-        assertEquals(1, positionList.get(2).intValue());
+        Collections.sort(positionList, new ComparatorWithSubstitution(code));
+        
+        assertThat(positionList).containsExactly(2, 0, 1);  
+        assertThat(tokensMapToPosition(code, positionList)).containsExactly("B", "A", "A");      
     }
 
     /**
-     * A E A B A C 0:1 2 1 3 1 4 -> 3 1: 1 2 3 2 4 -> 5 2: 1 2 1 3 -> 2 3: 1 2 3
-     * -> 4 4: 1 2 -> 1 5: 1 -> 0
+     * 0 1 2 3 4 5
+     * A E A B A C 
+     * 0: 1 2 1 3 1 4 -> 3
+     * 1: 1 2 3 2 4   -> 5
+     * 2: 1 2 1 3     -> 2 
+     * 3: 1 2 3       -> 4 
+     * 4: 1 2         -> 1 
+     * 5: 1           -> 0
      */
     @Test
     public void testTrierSurPlusieursTokens() {
-        Code code = new Code(createUnmodifiableTokenList("A", "E", "A", "B", "A", "C"));
-        ManagerToken manager = new ManagerToken(code);
+        Code code = createCodeWith("A", "E", "A", "B", "A", "C");
+        List<Integer> positionList = range(code.getSize());
+        
+        Collections.sort(positionList, new ComparatorWithSubstitution(code));
 
-        CodeComparator comparator = new ComparatorWithSubstitution(code);
-
-        List<Integer> positionList = Arrays.asList(0, 1, 2, 3, 4, 5);
-        manager.sortPositionList(positionList, comparator);
-
-        assertEquals("C", code.getToken(positionList.get(0)).getValeurToken());
-
-        assertEquals(5, positionList.get(0).intValue());
-        assertEquals(4, positionList.get(1).intValue());
-        assertEquals(2, positionList.get(2).intValue());
-        assertEquals(0, positionList.get(3).intValue());
-        assertEquals(3, positionList.get(4).intValue());
-        assertEquals(1, positionList.get(5).intValue());
+        assertThat(positionList).containsExactly(5, 4, 2, 0, 3, 1);        
+        assertThat(tokensMapToPosition(code, positionList)).containsExactly("C", "A", "A", "A", "B", "E");
     }
 
     /**
@@ -250,6 +253,19 @@ public class ManagerTokenTest {
         List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
         List<Redundancy> listeObtenue = managerToken.supprimerDoublon(listeRedondance);
         assertEquals(true, listeObtenue.isEmpty());
+    }
+    
+
+    private Stream<String> tokensMapToPosition(Code code, List<Integer> positionList) {
+        return positionList.stream().map(p -> code.getToken(p).getValeurToken());
+    }
+
+    private Code createCodeWith(String... tokenValues) {
+        return new Code(createUnmodifiableTokenList(tokenValues));
+    }
+
+    private List<Integer> range(int endExclusive) {
+        return IntStream.range(0, endExclusive).boxed().collect(Collectors.toList());
     }
 
 }
