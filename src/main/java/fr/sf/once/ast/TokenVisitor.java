@@ -133,14 +133,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(AnnotationDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
-        if (n.getAnnotations() != null) {
-            for (AnnotationExpr a : n.getAnnotations()) {
-                a.accept(this, arg);
-            }
-        }
+        visitBodyHeader(n, arg);
         if (n.getMembers() != null) {
             for (BodyDeclaration member : n.getMembers()) {
                 member.accept(this, arg);
@@ -150,14 +143,8 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(AnnotationMemberDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
-        if (n.getAnnotations() != null) {
-            for (AnnotationExpr a : n.getAnnotations()) {
-                a.accept(this, arg);
-            }
-        }
+        visitBodyHeader(n, arg);
+        
         n.getType().accept(this, arg);
         if (n.getDefaultValue() != null) {
             n.getDefaultValue().accept(this, arg);
@@ -280,14 +267,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(ClassOrInterfaceDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
-        if (n.getAnnotations() != null) {
-            for (AnnotationExpr a : n.getAnnotations()) {
-                a.accept(this, arg);
-            }
-        }
+        visitBodyHeader(n, arg);
 
         int endColumn = n.getBeginColumn();
         addModifier(n, n.getModifiers(), arg);
@@ -384,14 +364,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     // TODO mutualiser avec visit(MethodDeclaration
     public void visit(ConstructorDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
-        if (n.getAnnotations() != null) {
-            for (AnnotationExpr a : n.getAnnotations()) {
-                a.accept(this, arg);
-            }
-        }
+        visitBodyHeader(n, arg);
 
         addModifier(n, n.getModifiers(), arg);
         int modifierSize = Modifier.toString(n.getModifiers()).length();
@@ -445,9 +418,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(EmptyMemberDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
+        visitBodyHeader(n, arg);
     }
 
     public void visit(EmptyStmt n, List<Token> arg) {
@@ -456,9 +427,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(EmptyTypeDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
+        visitBodyHeader(n, arg);
     }
 
     public void visit(EnclosedExpr n, List<Token> arg) {
@@ -470,14 +439,8 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(EnumConstantDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
-        if (n.getAnnotations() != null) {
-            for (AnnotationExpr a : n.getAnnotations()) {
-                a.accept(this, arg);
-            }
-        }
+        visitBodyHeader(n, arg); 
+        
         if (n.getArgs() != null) {
             for (Expression e : n.getArgs()) {
                 e.accept(this, arg);
@@ -492,14 +455,8 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(EnumDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
-        if (n.getAnnotations() != null) {
-            for (AnnotationExpr a : n.getAnnotations()) {
-                a.accept(this, arg);
-            }
-        }
+        visitBodyHeader(n, arg);
+        
         if (n.getImplements() != null) {
             for (ClassOrInterfaceType c : n.getImplements()) {
                 c.accept(this, arg);
@@ -551,14 +508,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(FieldDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
-        if (n.getAnnotations() != null) {
-            for (AnnotationExpr a : n.getAnnotations()) {
-                a.accept(this, arg);
-            }
-        }
+        visitBodyHeader(n, arg);
         addModifier(n, n.getModifiers(), arg);
         n.getType().accept(this, arg);
         addParameterList(n.getVariables(), arg);
@@ -635,9 +585,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(InitializerDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
+        visitBodyHeader(n, arg);
 
         addIfTrue(n, TokenJava.STATIC, arg, n.isStatic());
         n.getBlock().accept(this, arg);
@@ -716,14 +664,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(MethodDeclaration n, List<Token> arg) {
         genericVisit(n, arg);
-        if (n.getJavaDoc() != null) {
-            n.getJavaDoc().accept(this, arg);
-        }
-        if (n.getAnnotations() != null) {
-            for (AnnotationExpr a : n.getAnnotations()) {
-                a.accept(this, arg);
-            }
-        }
+        visitBodyHeader(n, arg);
         if (n.getTypeParameters() != null) {
             for (TypeParameter t : n.getTypeParameters()) {
                 t.accept(this, arg);
@@ -1054,6 +995,18 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             n.getSuper().accept(this, arg);
         }
     }
+    
+    private void visitBodyHeader(BodyDeclaration n, List<Token> arg) {
+        if (n.getJavaDoc() != null) {
+            n.getJavaDoc().accept(this, arg);
+        }
+        if (n.getAnnotations() != null) {
+            for (AnnotationExpr a : n.getAnnotations()) {
+                a.accept(this, arg);
+            }
+        }
+    }
+
 
     private void addOperator(Position position, List<Token> arg, BinaryExpr.Operator operator) {
         SymboleOperator symbole = SymboleOperator.valueOf(operator.toString());
