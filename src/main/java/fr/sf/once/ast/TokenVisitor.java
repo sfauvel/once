@@ -971,7 +971,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         Token tokenToAdd = new Token(new Localisation(fileName, beginLine, beginColumn), token, type);
 
         if (!arg.isEmpty()) {
-            Token lastToken = arg.get(arg.size() - 1);
+            Token lastToken = getLastToken(arg);
 
             if (lastToken.getlocalisation().getNomFichier().equals(fileName)) {
                 int tailleToken = lastToken.getType().is(fr.sf.once.model.Type.BREAK) ? 0 : lastToken.getValeurToken().length();
@@ -1070,9 +1070,9 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
      * @return
      */
     private Position endOfToken(List<Token> arg) {
-        return endOfToken(arg.get(arg.size()-1));
+        return endOfToken(getLastToken(arg));
     }
-    
+
     private Position endOfToken(Token token) {
         return new Position(token.getLigneDebut(), token.getColonneDebut() + token.getValeurToken().length());
     }
@@ -1082,8 +1082,8 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
      * @param arg
      * @return
      */
-    private Position nextToken(List<Token> arg) {
-        return nextToken(arg.get(arg.size()-1));
+    private Position nextToken(List<Token> arg) {       
+        return nextToken(getLastToken(arg));
     }
     
     private Position nextToken(Token token) {
@@ -1098,7 +1098,16 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         return new Position(n.getBeginLine(), n.getBeginColumn() - token.getValeurToken().length() - 1);
     }
 
-
+    public static final Token NO_TOKEN = new Token(new Localisation("", 0, 0),"", fr.sf.once.model.Type.NON_SIGNIFICATIF);
+    private Token getLastToken(List<Token> arg) {
+        if (arg.isEmpty()) {
+            return NO_TOKEN;
+        } else {
+            return arg.get(arg.size()-1);
+        }
+    }
+    
+    
     private void acceptList(List<? extends Node> nodeList, List<Token> arg) {        
         for (Node node : notNull(nodeList)) {
             node.accept(this, arg);
