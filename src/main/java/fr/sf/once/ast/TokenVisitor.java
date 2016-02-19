@@ -268,10 +268,17 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
         int endColumn = n.getBeginColumn();
         addModifier(n, n.getModifiers(), arg);
+        
+        Position position = position(n);      
+        if (n.getModifiers()!=0) {
+            position = nextToken(arg);
+        }
+        
         TokenJava typeObjet = n.isInterface() ? TokenJava.INTERFACE : TokenJava.CLASS;
         endColumn += typeObjet.getValeurToken().length() + 1;
-        addToken(n, typeObjet, arg);
-        addToken(n.getBeginLine(), endColumn, n.getName(), arg);
+        addToken(position, typeObjet, arg);
+        position = nextToken(arg);
+        addToken(position, n.getName(), arg);
         endColumn += n.getName().length();
 
         if (currentClassList.isEmpty()) {
@@ -288,16 +295,16 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             endColumn = c.getEndColumn() + 1;
         }
 
-        if (n.getImplements() != null) {
-            addToken(n, TokenJava.IMPLEMENTS, arg);
+        if (n.getImplements() != null) {            
+            addToken(nextToken(arg), TokenJava.IMPLEMENTS, arg);
             boolean first = true;
             for (ClassOrInterfaceType c : n.getImplements()) {
-                first = addIfTrue(n, TokenJava.SEPARATEUR_PARAMETRE, arg, !first);
+                first = addIfTrue(endOfToken(arg), TokenJava.SEPARATEUR_PARAMETRE, arg, !first);
                 c.accept(this, arg);
             }
         }
 
-        addToken(n.getBeginLine(), endColumn, TokenJava.ACCOLADE_OUVRANTE, arg);
+        addToken(endOfToken(arg), TokenJava.ACCOLADE_OUVRANTE, arg);
 
         acceptList(notNull(n.getMembers()), arg);
 
@@ -308,20 +315,24 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     public void visit(ClassOrInterfaceType n, List<Token> arg) {
         genericVisit(n, arg);
         notNull(n.getScope()).accept(this, arg);
-
-        addToken(n, n.getName(), TypeJava.CLASS, arg);
+        
+        Position position = position(n);
+       
+        if (n.getScope() != null) {
+            position = finNode(n.getScope());
+        }
+        addToken(position, n.getName(), TypeJava.CLASS, arg);
         if (n.getTypeArgs() != null) {
-
-            addToken(n, TokenJava.GENERIQUE_OUVRANTE, arg);
+            
+            addToken(endOfToken(arg), TokenJava.GENERIQUE_OUVRANTE, arg);
             acceptList(n.getTypeArgs(), arg);
-            addToken(n, TokenJava.GENERIQUE_FERMANTE, arg);
+            addToken(endOfToken(arg), TokenJava.GENERIQUE_FERMANTE, arg);
         }
     }
 
     public void visit(CompilationUnit n, List<Token> arg) {
         genericVisit(n, arg);
         notNull(n.getPackage()).accept(this, arg);
-
         acceptList(n.getImports(), arg);
         acceptList(n.getTypes(), arg);
     }
@@ -1053,6 +1064,32 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         return new Position(node.getEndLine(), node.getEndColumn() + 2);
     }
 
+    /**
+     * Position just after the token (no space).
+     * @param arg
+     * @return
+     */
+    private Position endOfToken(List<Token> arg) {
+        return endOfToken(arg.get(arg.size()-1));
+    }
+    
+    private Position endOfToken(Token token) {
+        return new Position(token.getLigneDebut(), token.getColonneDebut() + token.getValeurToken().length());
+    }
+    
+    /**
+     * Position after the token with space.
+     * @param arg
+     * @return
+     */
+    private Position nextToken(List<Token> arg) {
+        return nextToken(arg.get(arg.size()-1));
+    }
+    
+    private Position nextToken(Token token) {
+        return new Position(token.getLigneDebut(), token.getColonneDebut() + token.getValeurToken().length() + 1);
+    }    
+    
     private Position finToken(Node n, Token token) {
         return new Position(n.getBeginLine(), n.getBeginColumn() + token.getValeurToken().length());
     }

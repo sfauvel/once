@@ -765,14 +765,11 @@ public class ParcoursAstTest {
 
     @Test
     public void testImplements() throws Exception {
-        String code = ""
-                + "abstract class MaClasse implements List<String>, Runnable {"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "abstract", "class", "MaClasse", "implements", "List", "<", "String", ">", ",", "Runnable", "{",
-                "}");
+        assertCode(
+                "abstract class MaClasse implements List<String>, Runnable {",              
+                "}")                        
+                        .hasTokens("abstract",__,"class",__,"MaClasse",__,
+                                "implements",__,"List", "<","String",">",",",__,"Runnable","{");
     }
 
     @Test
