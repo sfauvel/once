@@ -300,88 +300,32 @@ public class ParcoursAstTest {
                 "  }",
                 "}")
                         .fromLine(3).indent().indent()
-                        .hasTokens("for", "(", __, "int", __, "i","=",__,__,"0",
-                                ";",__,"i","<",__,__,"10",";",__,"i","++",")", __, "{")
+                        .hasTokens("for", "(", __, "int", __, "i", "=", __, __, "0",
+                                ";", __, "i", "<", __, __, "10", ";", __, "i", "++", ")", __, "{")
                         .hasTokens("}");
     }
 
     @Test
     public void testWhile() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public void maMethode() {"
-                + "    int i = 0;"
-                + "    while (i < 10) {"
-                + "       i++;"
-                + "    }"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "void", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "int", "i", "=", "0", ";",
-                "while", "(", "i", "<", "10", ")", "{",
-                "i", "++", ";",
-                "}",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
-    }
-
-    @Test
-    public void testWhilePosition() throws Exception {
-        String code = code(
+        assertCode(
                 "class MaClasse {",
                 "  public void maMethode() {",
                 "    int i = 0;",
                 "    while (i < 10) {",
-                "       i++;",
+                "      i++;",
                 "    }",
                 "  }",
-                "}");
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .assertToken(15, "while", 4, 5)
-                .hasToken("(", 4, 10)
-                .hasToken("i", 4, 12)
-                .hasToken("<", 4, 13)
-                .hasToken("10", 4, 16)
-                .hasToken(")", 4, 18)
-                .hasToken("{", 4, 20)
-                .hasToken("i", 5, 8)
-                .hasToken("++", 5, 9)
-                .hasToken(";", 5, 11)
-                .hasToken("}", 6, 5);
-
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("int", __, "i", "=", __, __, "0", ";")
+                        .hasTokens("while", "(", __, "i", "<", __, __, "10", ")", __, "{")
+                        .hasTokens(____, "i", "++", ";")
+                        .hasTokens("}");
     }
 
     @Test
-    public void testTryCatch() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public void maMethode() {"
-                + "    try {"
-                + "    } catch (Exception e) { "
-                + "    }"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "void", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "try", "{",
-                "}", "catch", "(", "Exception", "e", ")", "{",
-                "}",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
-    }
-
-    @Test
-    public void testTryCatchFinallyPosition() throws Exception {
-        String code = code(
+    public void testTryCatchFinally() throws Exception {
+        assertCode(
                 "class MaClasse {",
                 "  public void maMethode() {",
                 "    try {",
@@ -389,115 +333,62 @@ public class ParcoursAstTest {
                 "    } finally {",
                 "    }",
                 "  }",
-                "}");
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .assertToken(10, "try", 3, 5)
-                .hasToken("{", 3, 9)
-                .hasToken("}", 4, 5)
-                .hasToken("catch", 4, 7)
-                .hasToken("(", 4, 12)
-                .hasToken("Exception", 4, 14)
-                .hasToken("e", 4, 24)
-                .hasToken(")", 4, 25)
-                .hasToken("{", 4, 27)
-                .hasToken("}", 5, 5)
-                .hasToken("finally", 5, 7)
-                .hasToken("{", 5, 15)
-                .hasToken("}", 6, 5);
-    }
-
-    @Test
-    public void testTryPlusieursCatch() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public void maMethode() {"
-                + "    try {"
-                + "    } catch (FunctionalException e) { "
-                + "    } catch (TechnicalException e) { "
-                + "    }"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "void", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "try", "{",
-                "}", "catch", "(", "FunctionalException", "e", ")", "{",
-                "}", "catch", "(", "TechnicalException", "e", ")", "{",
-                "}",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("try", __, "{")
+                        .hasTokens("}", __, "catch", "(", __, "Exception", __, "e", ")", __, "{")
+                        .hasTokens("}", __, "finally", __, "{")
+                        .hasTokens("}");
     }
 
     @Test
     public void testTryFinally() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public void maMethode() {"
-                + "    try {"
-                + "    } finally {"
-                + "    }"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "void", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "try", "{",
-                "}", "finally", "{",
-                "}",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  public void maMethode() {",
+                "    try {",
+                "    } finally {",
+                "    }",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("try", __, "{")
+                        .hasTokens("}", __, "finally", __, "{")
+                        .hasTokens("}");
     }
 
     @Test
-    public void testTryCatchFinally() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public void maMethode() {"
-                + "    try {"
-                + "    } catch (Exception e) { "
-                + "    } finally {"
-                + "    }"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "void", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "try", "{",
-                "}", "catch", "(", "Exception", "e", ")", "{",
-                "}", "finally", "{",
-                "}",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+    public void testTrySeveralCatch() throws Exception {
+        assertCode(
+                "class MaClasse {",
+                "  public void maMethode() {",
+                "    try {",
+                "    } catch (Exception e) { ",
+                "    } catch (TechnicalException e) {",
+                "    }",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("try", __, "{")
+                        .hasTokens("}", __, "catch", "(", __, "Exception", __, "e", ")", __, "{")
+                        .hasTokens("}", __, "catch", "(", __, "TechnicalException", __, "e", ")", __, "{")
+                        .hasTokens("}");
     }
 
     @Test
     public void testIncrement() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public boolean maMethode() {"
-                + "    int i = 0; "
-                + "    i++;"
-                + "    ++i;"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "boolean", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "int", "i", "=", "0", ";",
-                "i", "++", ";",
-                "++", "i", ";",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  public boolean maMethode() {",
+                "    int i = 0; ",
+                "    i++;",
+                "    ++i;",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("int",__,"i","=",__,__,"0",";")
+                        .hasTokens("i","++",";")
+                        .hasTokens("++","i",";");
     }
 
     @Test
