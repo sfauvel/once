@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.apache.log4j.Logger;
 import org.assertj.core.api.Assertions;
 
 import fr.sf.once.model.Localisation;
@@ -14,7 +15,10 @@ import fr.sf.once.model.Type;
 import junit.framework.Assert;
 
 public class AssertToken {
-    private static final int TAB = 2;
+
+    static final Logger LOG = Logger.getLogger(AssertToken.class);
+    
+    public static final int TAB = 2;
     private List<? extends Token> tokenList;
     private int currentPosition = 0;
 
@@ -64,9 +68,10 @@ public class AssertToken {
     private AssertToken hasTokens(int currentColumn, String... tokens) {
        
         for (String token : tokens) {
-           System.out.println(token + " " + currentColumn);
-            if (!ParcoursAstTest.__.equals(token)) {
-                hasToken(token.trim(), currentLine, currentColumn);
+           LOG.debug(token + " " + currentColumn);
+           String justToken = token.trim();
+            if (!justToken.isEmpty()) {
+                hasToken(justToken, currentLine, currentColumn);
             }
             if (!isTechnicalToken(token)) {
                 currentColumn += token.length();

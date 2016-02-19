@@ -12,7 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -20,31 +22,33 @@ import fr.sf.once.model.Localisation;
 import fr.sf.once.model.Token;
 import fr.sf.once.test.LogRule;
 
-
 public class ParcoursAstTest {
 
     @ClassRule
-    public static final LogRule LOG_RULE = new LogRule(); 
-    
+    public static final LogRule LOG_RULE = new LogRule();
+
     public static final Logger LOG = Logger.getLogger(ParcoursAstTest.class);
 
     public static final String $METHOD_LIMIT = TokenJava.METHOD_LIMIT.getValeurToken();
     public static final String __ = " ";
-    
+    public static final String ____ = "  ";
+    public static final String TAB = ____;
+
     private String getCode(String... lines) {
         return String.join("\n", Arrays.asList(lines));
     }
+
     private AssertToken assertCode(String... lines) throws UnsupportedEncodingException {
         return assertListToken(extraireToken(getCode(lines)));
     }
 
     @Test
     public void testDeclarationClassPostion() throws Exception {
-        assertCode( 
+        assertCode(
                 "class MaClasse {",
                 "}")
-            .hasTokens("class", __ , "MaClasse", "{")
-            .hasTokens("}");
+                        .hasTokens("class", __, "MaClasse", "{")
+                        .hasTokens("}");
     }
 
     @Test
@@ -52,12 +56,12 @@ public class ParcoursAstTest {
         assertCode(
                 "class MaClasse extends Base {",
                 "}")
-            .hasTokens("class", __ , "MaClasse", __ , "extends", __ , "Base", "{")
-            .hasTokens("}");
+                        .hasTokens("class", __, "MaClasse", __, "extends", __, "Base", "{")
+                        .hasTokens("}");
     }
-    
+
     @Test
-    public void testDeclarationMethode() throws Exception {         
+    public void testDeclarationMethode() throws Exception {
         assertCode(
                 "class MaClasse {",
                 "  public void maMethode() {",
@@ -65,11 +69,12 @@ public class ParcoursAstTest {
                 "  public void maMethode(int param1, String param2) {",
                 "  }",
                 "}")
-            .fromLine(2).indent(2)
-            .hasTokens("public",__, "void",__, "maMethode", "(", ")", $METHOD_LIMIT,__,"{")
-            .hasTokens("}",$METHOD_LIMIT)
-            .hasTokens("public",__, "void",__,"maMethode","(","int",__,"param1",",",__,"String",__,"param2",")",$METHOD_LIMIT,__,"{")
-            .hasTokens("}",$METHOD_LIMIT);      
+                        .fromLine(2).indent(2)
+                        .hasTokens("public", __, "void", __, "maMethode", "(", ")", $METHOD_LIMIT, __, "{")
+                        .hasTokens("}", $METHOD_LIMIT)
+                        .hasTokens("public", __, "void", __, "maMethode", "(", "int", __, "param1", ",", __, "String", __, "param2", ")", $METHOD_LIMIT, __,
+                                "{")
+                        .hasTokens("}", $METHOD_LIMIT);
     }
 
     @Test
@@ -79,12 +84,11 @@ public class ParcoursAstTest {
                 "  public void maMethode() throws NullPointerException, SQLException {",
                 "  }",
                 "}")
-            .fromLine(2).indent(2)
-            .hasTokens("public",__, "void",__,"maMethode","(",")",__,
-                    "throws",__,"NullPointerException",",",__,"SQLException",$METHOD_LIMIT,__,"{")
-            .hasTokens("}",$METHOD_LIMIT);    
+                        .fromLine(2).indent(2)
+                        .hasTokens("public", __, "void", __, "maMethode", "(", ")", __,
+                                "throws", __, "NullPointerException", ",", __, "SQLException", $METHOD_LIMIT, __, "{")
+                        .hasTokens("}", $METHOD_LIMIT);
     }
-
 
     @Test
     public void testAppelMethode() throws Exception {
@@ -94,10 +98,10 @@ public class ParcoursAstTest {
                 "    autreMethode(1, 2, 3);",
                 "  }",
                 "}")
-            .fromLine(2)
-            .indent().hasTokens("public",__,"void",__,"maMethode","(",")",$METHOD_LIMIT,__,"{")
-            .indent().hasTokens("autreMethode","(","1",",",__,"2",",",__,"3",")",";")
-            .unindent().hasTokens("}", $METHOD_LIMIT); 
+                        .fromLine(2)
+                        .indent().hasTokens("public", __, "void", __, "maMethode", "(", ")", $METHOD_LIMIT, __, "{")
+                        .indent().hasTokens("autreMethode", "(", "1", ",", __, "2", ",", __, "3", ")", ";")
+                        .unindent().hasTokens("}", $METHOD_LIMIT);
     }
 
     @Test
@@ -108,8 +112,8 @@ public class ParcoursAstTest {
                 "    autreMethode(1, this, 3);",
                 "  }",
                 "}")
-            .fromLine(3).indent()
-            .indent().hasTokens("autreMethode","(","1",",",__,"this",",",__,"3",")",";");
+                        .fromLine(3).indent()
+                        .indent().hasTokens("autreMethode", "(", "1", ",", __, "this", ",", __, "3", ")", ";");
     }
 
     @Test
@@ -120,10 +124,10 @@ public class ParcoursAstTest {
                 "    autreMethode().toString();",
                 "  }",
                 "}")
-            .fromLine(3).indent().indent()
-            .hasTokens("autreMethode","(",")",".","toString","(",")",";");
+                        .fromLine(3).indent().indent()
+                        .hasTokens("autreMethode", "(", ")", ".", "toString", "(", ")", ";");
     }
-    
+
     @Test
     public void testAppelConstructeur() throws Exception {
         assertCode(
@@ -132,8 +136,8 @@ public class ParcoursAstTest {
                 "    new Classe(1, 2, 3);",
                 "  }",
                 "}")
-            .fromLine(3).indent().indent()
-            .hasTokens("new",__,"Classe","(","1",",",__,"2",",",__,"3",")",";");
+                        .fromLine(3).indent().indent()
+                        .hasTokens("new", __, "Classe", "(", "1", ",", __, "2", ",", __, "3", ")", ";");
     }
 
     @Test
@@ -144,8 +148,8 @@ public class ParcoursAstTest {
                 "    super.maMethode();",
                 "  }",
                 "}")
-            .fromLine(3).indent().indent()
-            .hasTokens("super",".","maMethode","(",")",";");
+                        .fromLine(3).indent().indent()
+                        .hasTokens("super", ".", "maMethode", "(", ")", ";");
     }
 
     @Test
@@ -155,10 +159,10 @@ public class ParcoursAstTest {
                 "  public MaClasse() {",
                 "  }",
                 "}")
-            .fromLine(2).indent()
-            .hasTokens("public",__,"MaClasse","(",")",$METHOD_LIMIT,__,"{");
+                        .fromLine(2).indent()
+                        .hasTokens("public", __, "MaClasse", "(", ")", $METHOD_LIMIT, __, "{");
     }
-    
+
     @Test
     public void testConstructorWithoutModifier() throws Exception {
         assertCode(
@@ -166,10 +170,10 @@ public class ParcoursAstTest {
                 "  MaClasse() {",
                 "  }",
                 "}")
-            .fromLine(2).indent()
-            .hasTokens("MaClasse","(",")",$METHOD_LIMIT,__,"{");
+                        .fromLine(2).indent()
+                        .hasTokens("MaClasse", "(", ")", $METHOD_LIMIT, __, "{");
     }
-  
+
     @Test
     public void testConstructorWithSeveralModifiers() throws Exception {
         assertCode(
@@ -177,10 +181,10 @@ public class ParcoursAstTest {
                 "  public static MaClasse() {",
                 "  }",
                 "}")
-            .fromLine(2).indent()
-            .hasTokens("public",__,"static",__,"MaClasse","(",")",$METHOD_LIMIT,__,"{");
+                        .fromLine(2).indent()
+                        .hasTokens("public", __, "static", __, "MaClasse", "(", ")", $METHOD_LIMIT, __, "{");
     }
-    
+
     @Test
     public void testAffectation() throws Exception {
         assertCode(
@@ -192,13 +196,12 @@ public class ParcoursAstTest {
                 "    String s = new String();",
                 "  }",
                 "}")
-            .fromLine(3).indent().indent()
-            // TODO problème sur la position des espaces avant ou après le égale.
-            .hasTokens("int",__,"i","=",__,__,"0",";")
-            .hasTokens("i","=",__,__,"2",";")
-            .hasTokens("int",__,"j","=",__,__,"init","(",")",";")
-            .hasTokens("String",__,"s","=",__,__,"new",__,"String","(",")",";")
-            ;
+                        .fromLine(3).indent().indent()
+                        // TODO problème sur la position des espaces avant ou après le égale.
+                        .hasTokens("int", __, "i", "=", __, __, "0", ";")
+                        .hasTokens("i", "=", __, __, "2", ";")
+                        .hasTokens("int", __, "j", "=", __, __, "init", "(", ")", ";")
+                        .hasTokens("String", __, "s", "=", __, __, "new", __, "String", "(", ")", ";");
     }
 
     @Test
@@ -212,94 +215,46 @@ public class ParcoursAstTest {
                 "    }",
                 "  }",
                 "}")
-            .fromLine(3).indent().indent()
-            .hasTokens("switch","(",__,"variable",")","{")
-            .indent()
-            .hasTokens("case",__,"CONSTANTE", ":")
-            .indent()
-            .hasTokens("break", ";")
-            ;
+                        .fromLine(3).indent().indent()
+                        .hasTokens("switch", "(", __, "variable", ")", "{")
+                        .indent()
+                        .hasTokens("case", __, "CONSTANTE", ":")
+                        .hasTokens(____, "break", ";")
+                        .unindent()
+                        .hasTokens("}");
     }
 
     @Test
     public void testIfElse() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public boolean maMethode() {"
-                + "    if (variable) {"
-                + "    } else {"
-                + "    }"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "boolean", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "if", "(", "variable", ")", "{",
-                "}", "else", "{",
-                "}",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
-    }
-
-    /**
-     * Le "else" ne peut pas être localisé. Il se trouve entre la fin du bloc
-     * "if" et le début du bloc "else". On va prendre la finc du bloc "if" comme
-     * reférence.
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testIfElsePosition() throws Exception {
-        String code = code(
+        assertCode(
                 "class MaClasse {",
                 "  public boolean maMethode() {",
                 "    if (var1 && var2) {",
                 "    } else {",
                 "    }",
                 "  }",
-                "}");
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .assertToken(10, "if", 3, 5)
-                .hasToken("(", 3, 7) // On prend la caractère après le if
-                .hasToken("var1", 3, 9)
-                .hasToken("&&", 3, 13)
-                .hasToken("var2", 3, 17)
-                .hasToken(")", 3, 21)
-                .hasToken("{", 3, 23)
-                .hasToken("}", 4, 5)
-                .hasToken("else", 4, 6);
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("if","(",__,"var1","&&",__,__,"var2",")",__,"{")
+                        // TODO un problème dans les espaces
+                        .hasTokens("}","else",__,__,"{")
+                        .hasTokens("}");              
     }
-
+    
     @Test
     public void testIfElseConditionPosition() throws Exception {
-        String code = code(
+        assertCode(
                 "class MaClasse {",
                 "  public boolean maMethode() {",
                 "    if ((var1) && var2) {",
                 "    } else {",
                 "    }",
                 "  }",
-                "}");
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .assertToken(10, "if", 3, 5)
-                .hasToken("(", 3, 7) 
-                .hasToken("(", 3, 9)  
-                .hasToken("var1", 3, 10)
-                .hasToken(")", 3, 14)
-                .hasToken("&&", 3, 15)
-                .hasToken("var2", 3, 19)
-                .hasToken(")", 3, 23)
-                .hasToken("{", 3, 25)
-                .hasToken("}", 4, 5)
-                .hasToken("else", 4, 6);
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("if","(",__,"(","var1",")","&&",__,__,"var2",")",__,"{");            
     }
-    
+
     @Test
     public void testIfElseSurLigneSeulePosition() throws Exception {
         String code = ""
@@ -359,7 +314,7 @@ public class ParcoursAstTest {
                 "}", TokenJava.METHOD_LIMIT.getValeurToken(),
                 "}");
     }
-    
+
     @Test
     public void testForPosition() throws Exception {
         String code = code(
@@ -372,23 +327,24 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
 
         assertListToken(listToken)
-            .assertToken(10, "for", 3, 5)
-            .hasToken("(", 3, 8)
-            .hasToken("int", 3, 10)
-            .hasToken("i", 3, 14)
-            .hasToken("=", 3, 15)
-            .hasToken("0", 3, 18)
-            .hasToken(";", 3, 19)
-            .hasToken("i", 3, 21)
-            .hasToken("<", 3, 22)
-            .hasToken("10", 3, 25)
-            .hasToken(";", 3, 27)
-            .hasToken("i", 3, 29)
-            .hasToken("++", 3, 30)
-            .hasToken(")", 3, 32)
-            .hasToken("{", 3, 34)
-            .hasToken("}", 4, 5);
+                .assertToken(10, "for", 3, 5)
+                .hasToken("(", 3, 8)
+                .hasToken("int", 3, 10)
+                .hasToken("i", 3, 14)
+                .hasToken("=", 3, 15)
+                .hasToken("0", 3, 18)
+                .hasToken(";", 3, 19)
+                .hasToken("i", 3, 21)
+                .hasToken("<", 3, 22)
+                .hasToken("10", 3, 25)
+                .hasToken(";", 3, 27)
+                .hasToken("i", 3, 29)
+                .hasToken("++", 3, 30)
+                .hasToken(")", 3, 32)
+                .hasToken("{", 3, 34)
+                .hasToken("}", 4, 5);
     }
+
     @Test
     public void testWhile() throws Exception {
         String code = ""
@@ -427,18 +383,18 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
 
         assertListToken(listToken)
-            .assertToken(15, "while", 4, 5)
-            .hasToken("(", 4, 10)
-            .hasToken("i", 4, 12)
-            .hasToken("<", 4, 13)
-            .hasToken("10", 4, 16)
-            .hasToken(")", 4, 18)
-            .hasToken("{", 4, 20)
-            .hasToken("i", 5, 8)
-            .hasToken("++", 5, 9)
-            .hasToken(";", 5, 11)
-            .hasToken("}", 6, 5);
-                
+                .assertToken(15, "while", 4, 5)
+                .hasToken("(", 4, 10)
+                .hasToken("i", 4, 12)
+                .hasToken("<", 4, 13)
+                .hasToken("10", 4, 16)
+                .hasToken(")", 4, 18)
+                .hasToken("{", 4, 20)
+                .hasToken("i", 5, 8)
+                .hasToken("++", 5, 9)
+                .hasToken(";", 5, 11)
+                .hasToken("}", 6, 5);
+
     }
 
     @Test
@@ -462,7 +418,7 @@ public class ParcoursAstTest {
                 "}", TokenJava.METHOD_LIMIT.getValeurToken(),
                 "}");
     }
-    
+
     @Test
     public void testTryCatchFinallyPosition() throws Exception {
         String code = code(
@@ -477,19 +433,19 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
 
         assertListToken(listToken)
-            .assertToken(10, "try", 3, 5)
-            .hasToken("{", 3, 9)
-            .hasToken("}", 4, 5)
-            .hasToken("catch", 4, 7)
-            .hasToken("(", 4, 12)
-            .hasToken("Exception", 4, 14)
-            .hasToken("e", 4, 24)
-            .hasToken(")", 4, 25)
-            .hasToken("{", 4, 27)
-            .hasToken("}", 5, 5)
-            .hasToken("finally", 5, 7)
-            .hasToken("{", 5, 15)
-            .hasToken("}", 6, 5);
+                .assertToken(10, "try", 3, 5)
+                .hasToken("{", 3, 9)
+                .hasToken("}", 4, 5)
+                .hasToken("catch", 4, 7)
+                .hasToken("(", 4, 12)
+                .hasToken("Exception", 4, 14)
+                .hasToken("e", 4, 24)
+                .hasToken(")", 4, 25)
+                .hasToken("{", 4, 27)
+                .hasToken("}", 5, 5)
+                .hasToken("finally", 5, 7)
+                .hasToken("{", 5, 15)
+                .hasToken("}", 6, 5);
     }
 
     @Test
@@ -616,7 +572,7 @@ public class ParcoursAstTest {
                 + "    return true;"
                 + "  }"
                 + "}";
-        
+
         List<? extends Token> listToken = extraireToken(code);
 
         assertToken(listToken,
@@ -626,7 +582,7 @@ public class ParcoursAstTest {
                 "}", TokenJava.METHOD_LIMIT.getValeurToken(),
                 "}");
     }
-    
+
     @Test
     public void testReturnPosition() throws Exception {
         String code = code(
@@ -637,9 +593,9 @@ public class ParcoursAstTest {
                 "}");
         List<? extends Token> listToken = extraireToken(code);
         assertListToken(listToken)
-            .assertToken(10, "return",  3,  5)
-            .hasToken("true", 3, 12)
-            .hasToken(";", 3, 16);
+                .assertToken(10, "return", 3, 5)
+                .hasToken("true", 3, 12)
+                .hasToken(";", 3, 16);
     }
 
     @Test
@@ -677,7 +633,7 @@ public class ParcoursAstTest {
                 "}", TokenJava.METHOD_LIMIT.getValeurToken(),
                 "}");
     }
-    
+
     @Test
     public void testCastPostion() throws Exception {
         String code = code(
@@ -689,12 +645,12 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = extraireToken(code);
 
         assertListToken(listToken)
-            .assertToken(10, "return", 3, 5)
-            .hasToken("(", 3, 12)
-            .hasToken("MaClasse", 3, 13)
-            .hasToken(")", 3, 21)
-            .hasToken("this", 3, 23)
-            .hasToken(";", 3, 27);
+                .assertToken(10, "return", 3, 5)
+                .hasToken("(", 3, 12)
+                .hasToken("MaClasse", 3, 13)
+                .hasToken(")", 3, 21)
+                .hasToken("this", 3, 23)
+                .hasToken(";", 3, 27);
     }
 
     @Test
@@ -845,7 +801,6 @@ public class ParcoursAstTest {
                 "class", "MaClasse", "{",
                 "String", "chaine", "=", "\"valeur\"", ";",
                 "}");
-        
 
         assertListToken(listToken)
                 .assertToken(3, "String", TypeJava.CLASS, 1, 19)
@@ -1049,7 +1004,6 @@ public class ParcoursAstTest {
     private String code(String... lineList) {
         return StringUtils.join(lineList, "\n");
     }
-    
 
     private AssertToken assertListToken(List<? extends Token> tokenList) {
         return new AssertToken(tokenList);
