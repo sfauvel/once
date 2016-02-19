@@ -235,12 +235,12 @@ public class ParcoursAstTest {
                 "  }",
                 "}")
                         .fromLine(3).indent().indent()
-                        .hasTokens("if","(",__,"var1","&&",__,__,"var2",")",__,"{")
+                        .hasTokens("if", "(", __, "var1", "&&", __, __, "var2", ")", __, "{")
                         // TODO un problème dans les espaces
-                        .hasTokens("}","else",__,__,"{")
-                        .hasTokens("}");              
+                        .hasTokens("}", "else", __, __, "{")
+                        .hasTokens("}");
     }
-    
+
     @Test
     public void testIfElseConditionPosition() throws Exception {
         assertCode(
@@ -252,97 +252,57 @@ public class ParcoursAstTest {
                 "  }",
                 "}")
                         .fromLine(3).indent().indent()
-                        .hasTokens("if","(",__,"(","var1",")","&&",__,__,"var2",")",__,"{");            
+                        .hasTokens("if", "(", __, "(", "var1", ")", "&&", __, __, "var2", ")", __, "{");
     }
 
     @Test
-    public void testIfElseSurLigneSeulePosition() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public boolean maMethode() {\n"
-                + "    if (variable) {\n"
-                + "    }\n"
-                + "    else\n"
-                + "    {\n"
-                + "    }\n"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .assertToken(10, "if", 2, 5)
-                .assertToken(16, "else", 3, 6); // Position de la fin de
-                                                // l'accolade
+    public void testIfElseSurLigneSeule() throws Exception {
+        assertCode(
+                "class MaClasse {",
+                "  public boolean maMethode() {",
+                "    if (variable) {",
+                "    }",
+                "    else",
+                "    {",
+                "    }",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("if", "(", __, "variable", ")", __, "{")
+                        .hasTokens("}", "else")
+                        // It's not possible to knom where is the 'else' between the accolade.
+                        .hasTokens()
+                        .hasTokens("{")
+                        .hasTokens("}");
     }
 
     @Test
     public void testInstanceOf() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public boolean maMethode() {"
-                + "    if (variable instanceof String) {"
-                + "    }"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "boolean", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "if", "(", "variable", "instanceof", "String", ")", "{",
-                "}",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  public boolean maMethode() {",
+                "    if (variable instanceof String) {",
+                "    }",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("if", "(", __, "variable", __, "instanceof", __, "String", ")", __, "{")
+                        .hasTokens("}");
     }
 
     @Test
     public void testFor() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public boolean maMethode() {"
-                + "    for (int i = 0; i < 10; i++) {"
-                + "    }"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "boolean", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "for", "(", "int", "i", "=", "0", ";", "i", "<", "10", ";", "i", "++", ")", "{",
-                "}",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
-    }
-
-    @Test
-    public void testForPosition() throws Exception {
-        String code = code(
+        assertCode(
                 "class MaClasse {",
                 "  public boolean maMethode() {",
                 "    for (int i = 0; i < 10; i++) {",
                 "    }",
                 "  }",
-                "}");
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .assertToken(10, "for", 3, 5)
-                .hasToken("(", 3, 8)
-                .hasToken("int", 3, 10)
-                .hasToken("i", 3, 14)
-                .hasToken("=", 3, 15)
-                .hasToken("0", 3, 18)
-                .hasToken(";", 3, 19)
-                .hasToken("i", 3, 21)
-                .hasToken("<", 3, 22)
-                .hasToken("10", 3, 25)
-                .hasToken(";", 3, 27)
-                .hasToken("i", 3, 29)
-                .hasToken("++", 3, 30)
-                .hasToken(")", 3, 32)
-                .hasToken("{", 3, 34)
-                .hasToken("}", 4, 5);
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("for", "(", __, "int", __, "i","=",__,__,"0",
+                                ";",__,"i","<",__,__,"10",";",__,"i","++",")", __, "{")
+                        .hasTokens("}");
     }
 
     @Test
@@ -766,10 +726,10 @@ public class ParcoursAstTest {
     @Test
     public void testImplements() throws Exception {
         assertCode(
-                "abstract class MaClasse implements List<String>, Runnable {",              
-                "}")                        
-                        .hasTokens("abstract",__,"class",__,"MaClasse",__,
-                                "implements",__,"List", "<","String",">",",",__,"Runnable","{");
+                "abstract class MaClasse implements List<String>, Runnable {",
+                "}")
+                        .hasTokens("abstract", __, "class", __, "MaClasse", __,
+                                "implements", __, "List", "<", "String", ">", ",", __, "Runnable", "{");
     }
 
     @Test

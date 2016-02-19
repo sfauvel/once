@@ -537,7 +537,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     public void visit(InstanceOfExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getExpr().accept(this, arg);
-        addToken(n, TokenJava.INSTANCE_OF, arg);
+        addToken(afterWithSpace(n.getExpr()), TokenJava.INSTANCE_OF, arg);
         n.getType().accept(this, arg);
     }
 
