@@ -157,16 +157,28 @@ public class ReportingImpl implements Reporting {
                     int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
 
                     buffer.append(pourcentage)
-                            .append("% ")
+                            .append("% (")
                             .append(redundancyLineNumber)
-                            .append("/")
+                            .append(" of ")
                             .append(methodLineNumber)
-                            .append(" lines ")
+                            .append(" lines)")
                             .append(method.getMethodName())
-                            .append(" ");
-                    appendString(buffer, method.getLocalisationDebut());
-                    buffer.append(" <-> ");
-                    appendString(buffer, method.getLocalisationFin());
+                            .append(" from line ")
+                            .append(tokenList.get(firstTokenPosition).getlocalisation().getLigne())
+                            .append(" to ")
+                            .append(tokenList.get(firstTokenPosition+redondance.getDuplicatedTokenNumber()).getlocalisation().getLigne())
+                            .append(" ")
+                            
+                            .append("(method from line ")
+                            .append(method.getLocalisationDebut().getLigne())
+                            .append(" to ")
+                            .append(method.getLocalisationFin().getLigne())
+                            .append(")");
+                    
+//                    appendString(buffer, method.getLocalisationDebut());
+//                    buffer.append(" <-> ");
+//                    appendString(buffer, method.getLocalisationFin());
+                    
                     
                     displayVisualRedondance(method, ligneDebut, ligneFin);
                 } else {
