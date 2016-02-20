@@ -21,7 +21,7 @@ public class LauncherITest {
         Reporting.LOG_RESULTAT.addAppender(new WriterAppender(new PatternLayout("%m\n"), writer));
         Reporting.LOG_RESULTAT.setLevel(Level.INFO);
     }
-    
+
     @Test
     public void make_a_full_execution() throws Exception {
 
@@ -34,8 +34,9 @@ public class LauncherITest {
 
         assertThat(writer.toString().split("\n")).isEqualTo(new String[] {
                 "Tokens number:63 Duplications number:2 Substitutions number:0",
-                "  100% 7/7 lines fr.sf.once.CopieMethode.firstMethod 7:51 <-> 14:6",
-                "  100% 7/7 lines fr.sf.once.CopieMethode.secondMethod 16:53 <-> 23:6" });
+                "  100% (7 of 7 lines)fr.sf.once.CopieMethode.firstMethod from line 7 to 14 (method from line 7 to 14)",
+                "  100% (7 of 7 lines)fr.sf.once.CopieMethode.secondMethod from line 16 to 23 (method from line 16 to 23)"});
+        
     }
     
 }
