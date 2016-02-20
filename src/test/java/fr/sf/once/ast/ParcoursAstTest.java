@@ -386,232 +386,112 @@ public class ParcoursAstTest {
                 "  }",
                 "}")
                         .fromLine(3).indent().indent()
-                        .hasTokens("int",__,"i","=",__,__,"0",";")
-                        .hasTokens("i","++",";")
-                        .hasTokens("++","i",";");
+                        .hasTokens("int", __, "i", "=", __, __, "0", ";")
+                        .hasTokens("i", "++", ";")
+                        .hasTokens("++", "i", ";");
     }
 
     @Test
     public void testOperateurComparaison() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public boolean different() {"
-                + "    return 1 != 2;"
-                + "  }"
-                + "  public boolean egal() {"
-                + "    return 1 == 2; "
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "boolean", "different", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "return", "1", "!=", "2", ";",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "public", "boolean", "egal", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "return", "1", "==", "2", ";",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  public boolean different() {",
+                "    return 1 != 2;",
+                "  }",
+                "  public boolean egal() {",
+                "    return 1 == 2; ",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("return", __, "1", "!=", __, __, "2", ";")
+                        .fromLine(6)
+                        .hasTokens("return", __, "1", "==", __, __, "2", ";");
     }
 
     @Test
     public void testReturn() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public boolean maMethode() {"
-                + "    return true;"
-                + "  }"
-                + "}";
-
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "boolean", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "return", "true", ";",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
-    }
-
-    @Test
-    public void testReturnPosition() throws Exception {
-        String code = code(
+        assertCode(
                 "class MaClasse {",
                 "  public boolean maMethode() {",
                 "    return true;",
                 "  }",
-                "}");
-        List<? extends Token> listToken = extraireToken(code);
-        assertListToken(listToken)
-                .assertToken(10, "return", 3, 5)
-                .hasToken("true", 3, 12)
-                .hasToken(";", 3, 16);
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("return", __, "true", ";");
     }
 
     @Test
     public void testReturnAvecScope() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public Class maMethode() {"
-                + "    return MaClasse.class;"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "Class", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "return", "MaClasse", ".", "class", ";",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  public boolean maMethode() {",
+                "    return MaClasse.class;",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("return", __, "MaClasse", ".", "class", ";");
     }
 
     @Test
     public void testCast() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public Class maMethode() {"
-                + "    return (MaClasse) this.getClass();"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "Class", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "return", "(", "MaClasse", ")", "this", ".", "getClass", "(", ")", ";",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
-    }
-
-    @Test
-    public void testCastPostion() throws Exception {
-        String code = code(
+        assertCode(
                 "class MaClasse {",
-                "  public Class maMethode() {",
-                "    return (MaClasse) this;",
+                "  public boolean maMethode() {",
+                "    return (MaClasse) this.getClass();",
                 "  }",
-                "}");
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .assertToken(10, "return", 3, 5)
-                .hasToken("(", 3, 12)
-                .hasToken("MaClasse", 3, 13)
-                .hasToken(")", 3, 21)
-                .hasToken("this", 3, 23)
-                .hasToken(";", 3, 27);
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("return", __, "(", "MaClasse", ")", __, "this", ".", "getClass", "(", ")", ";");
     }
 
     @Test
     public void testCastEtAcces() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  public String maMethode() {"
-                + "    return ((MaClasse) this.getClass()).toString();"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "public", "String", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "return", "(", "(", "MaClasse", ")", "this", ".", "getClass", "(", ")", ")", ".", "toString", "(", ")", ";",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  public boolean maMethode() {",
+                "    return ((MaClasse) this.getClass()).toString();",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("return", __, "(", "(", "MaClasse", ")", __, "this", ".", "getClass", "(", ")", ")", ".", "toString", "(", ")", ";");
     }
 
     @Test
     public void testDeclarationAttribut() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  private String attribut;"
-                + "  public static final int nombre = 2;"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "private", "String", "attribut", ";",
-                "public", "static", "final", "int", "nombre", "=", "2", ";",
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  private String attribut;",
+                "  public static final int nombre = 2;",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("private", __, "String", __, "attribut", ";")
+                        .hasTokens("public", __, "static", __, "final", __, "int", __, "nombre", "=", __, __, "2", ";");
     }
 
     @Test
     public void testPackage() throws Exception {
-        String code = ""
-                + "package com.orange.ast;"
-                + "class MaClasse {"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "package", "com", ".", "orange", ".", "ast", ";",
-                "class", "MaClasse", "{",
-                "}");
-    }
-
-    @Test
-    public void testPackagePosition() throws Exception {
-        String code = ""
-                + "package com.orange.ast;"
-                + "class MaClasse {"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .hasToken("package", 1, 1)
-                .hasToken("com", 1, 9)
-                .hasToken(".", 1, 12)
-                .hasToken("orange", 1, 13)
-                .hasToken(".", 1, 19)
-                .hasToken("ast", 1, 20)
-                .hasToken(";", 1, 23);
+        assertCode(
+                "package com.orange.ast;",
+                "class MaClasse {",
+                "}")
+                        .hasTokens("package", __, "com", ".", "orange", ".", "ast", ";");
     }
 
     @Test
     public void testImport() throws Exception {
-        String code = ""
-                + "import com.orange.ast;"
-                + "class MaClasse {"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "import", "com", ".", "orange", ".", "ast", ";",
-                "class", "MaClasse", "{",
-                "}");
-    }
-
-    @Test
-    public void testImportPosition() throws Exception {
-        String code = ""
-                + "import com.orange.ast;"
-                + "class MaClasse {"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertListToken(listToken)
-                .hasToken("import", 1, 1)
-                .hasToken("com", 1, 8)
-                .hasToken(".", 1, 11)
-                .hasToken("orange", 1, 12)
-                .hasToken(".", 1, 18)
-                .hasToken("ast", 1, 19)
-                .hasToken(";", 1, 22);
+        assertCode(
+                "import com.orange.ast;",
+                "class MaClasse {",
+                "}")
+                        .hasTokens("import", __, "com", ".", "orange", ".", "ast", ";");
     }
 
     @Test
     public void testExtends() throws Exception {
-        String code = ""
-                + "abstract class MaClasse extends Object {"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "abstract", "class", "MaClasse", "extends", "Object", "{",
-                "}");
+        assertCode(
+                "abstract class MaClasse extends Object {",
+                "}")
+                        .hasTokens("abstract", __, "class", __, "MaClasse", __, "extends", __, "Object", "{");
     }
 
     @Test
@@ -625,214 +505,118 @@ public class ParcoursAstTest {
 
     @Test
     public void testAccesClass() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  Class clazz = MaClasse.class;"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "Class", "clazz", "=", "MaClasse", ".", "class", ";",
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  Class clazz = MaClasse.class;",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("Class", __, "clazz", "=", __, __, "MaClasse", ".", "class", ";");
     }
 
     @Test
     public void testDeclarationString() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  String chaine = \"valeur\";"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "String", "chaine", "=", "\"valeur\"", ";",
-                "}");
-
-        assertListToken(listToken)
-                .assertToken(3, "String", TypeJava.CLASS, 1, 19)
-                .assertNextToken("chaine", TypeJava.VARIABLE, 1, 26)
-                .hasToken("=", 1, 32)
-                .hasToken("\"valeur\"", 1, 35);
+        assertCode(
+                "class MaClasse {",
+                "  String chaine = \"valeur\";",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("String", __, "chaine", "=", __, __, "\"valeur\"", ";");
     }
 
     @Test
     public void testDeclarationChar() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  char chaine = 'a';"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "char", "chaine", "=", "'a'", ";",
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  char chaine = 'a';",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("char", __, "chaine", "=", __, __, "'a'", ";");
     }
 
     @Test
     public void testDeclarationPlusieursString() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  String chaine = \"valeur\", message = \"vide\";"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "String", "chaine", "=", "\"valeur\"", ",", "message", "=", "\"vide\"", ";",
-                "}");
-    }
-
-    @Test
-    public void testDeclarationPosition() throws Exception {
-        String code = ""
-                + "class MaClasse {\n"
-                + "  String chaine = appelMethode();\n"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-        assertListToken(listToken)
-                .assertToken(3, "String", 2, 3)
-                .hasToken("chaine", 2, 10)
-                .hasToken("=", 2, 16)
-                .hasToken("appelMethode", 2, 19)
-                .hasToken("(", 2, 31)
-                .hasToken(")", 2, 32)
-                .hasToken(";", 2, 33);
+        assertCode(
+                "class MaClasse {",
+                "  String chaine = \"valeur\", message = \"vide\";",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("String", __, "chaine", "=", __, __, "\"valeur\"", ",", __, "message", "=", __, __, "\"vide\"", ";");
     }
 
     @Test
     public void testDeclarationPlusieursStringDansMethode() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + " void maMethode() {"
-                + "  String chaine = null, message = null;"
-                + " }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "void", "maMethode", "(", ")", TokenJava.METHOD_LIMIT.getValeurToken(), "{",
-                "String", "chaine", "=", "null", ",", "message", "=", "null", ";",
-                "}", TokenJava.METHOD_LIMIT.getValeurToken(),
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  void maMethode() {",
+                "    String chaine = null, message = null;",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("String", __, "chaine", "=", __, __, "null", ",", __, "message", "=", __, __, "null", ";");
     }
 
     @Test
     public void testAccesTableau() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  String[] chaine = new String[10];"
-                + "  {"
-                + "  chaine[2] = 3;"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "String", "[", "]", "chaine", "=", "new", "String", "[", "10", "]", ";",
-                "{",
-                "chaine", "[", "2", "]", "=", "3", ";",
-                "}",
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  String[] chaine = new String[10];",
+                "  {",
+                "  chaine[2] = 3;",
+                "  }",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("String", "[", "]", __, "chaine", "=", __, __, "new", __, "String", "[", "10", "]", ";");
     }
 
     @Test
     public void testDeclarationTableau() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  int[] chaineVide = new int[10];"
-                + "  int[] chaineInit = new int[] {3};"
-                + "  int[] chaineMultiple = new int[] {1, 2, 3};"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "int", "[", "]", "chaineVide", "=", "new", "int", "[", "10", "]", ";",
-                "int", "[", "]", "chaineInit", "=", "new", "int", "[", "]", "{", "3", "}", ";",
-                "int", "[", "]", "chaineMultiple", "=", "new", "int", "[", "]", "{", "1", ",", "2", ",", "3", "}", ";",
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  int[] chaineVide = new int[10];",
+                "  int[] chaineInit = new int[] {3};",
+                "  int[] chaineMultiple = new int[] {1, 2, 3};",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("int", "[", "]", __, "chaineVide", "=", __, __, "new", __, "int", "[", "10", "]", ";")
+                        .hasTokens("int", "[", "]", __, "chaineInit", "=", __, __, "new", __, "int", "[", "]", "{", "3", "}", ";")
+                        .hasTokens("int", "[", "]", __, "chaineMultiple", "=", __, __, "new", __, "int", "[", "]", __, "{", "3", "}", ";");
     }
 
     @Test
     public void testDeclarationTableauMultiDimension() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  int[][] chaineVide = new int[10][5];"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "int", "[", "]", "[", "]", "chaineVide", "=", "new", "int", "[", "10", "]", "[", "5", "]", ";",
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  int[][] chaineVide = new int[10][5];",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("int", "[", "]", "[", "]", __, "chaineVide", "=", __, __, "new", __, "int", "[", "10", "]", "[", "5", "]", ";");
     }
 
     @Test
     public void testDeclarationNull() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  String chaine = null;"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "String", "chaine", "=", "null", ";",
-                "}");
+        assertCode(
+                "class MaClasse {",
+                "  String chaine = null;",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("String", __, "chaine", "=", __, __, "null", ";");
     }
 
     @Test
     public void testConstructeurStatic() throws Exception {
-        String code = ""
-                + "class MaClasse {"
-                + "  int valeur;"
-                + "  static {"
-                + "     valeur = 2;"
-                + "  }"
-                + "}";
-        List<? extends Token> listToken = extraireToken(code);
-
-        assertToken(listToken,
-                "class", "MaClasse", "{",
-                "int", "valeur", ";",
-                "static", "{",
-                "valeur", "=", "2", ";",
-                "}",
-                "}");
-    }
-
-    private void assertToken(List<? extends Token> listToken, String... listeTokenAttendu) {
-        Iterator<? extends Token> iterator = listToken.iterator();
-        String messageErreur = "Expected:\n" + getListTokenToString(listeTokenAttendu) + "   but was\n" + getListTokenToString(listToken);
-        for (String token : listeTokenAttendu) {
-            assertTrue(messageErreur, iterator.hasNext());
-            assertEquals(messageErreur, token, iterator.next().getValeurToken());
-        }
-    }
-
-    private String getListTokenToString(String... listToken) {
-        StringBuffer buffer = new StringBuffer();
-        for (String token : listToken) {
-            buffer.append(token)
-                    .append(" ");
-        }
-        buffer.append("\n");
-        return buffer.toString();
-    }
-
-    private String getListTokenToString(List<? extends Token> listToken) {
-        String[] listString = new String[listToken.size()];
-        int i = 0;
-        for (Token token : listToken) {
-            listString[i] = token.getValeurToken();
-            i++;
-        }
-        return getListTokenToString(listString);
+        assertCode(
+                "class MaClasse {",
+                "  int valeur;",
+                "  static {",
+                "    valeur = 2;",
+                "  }",
+                "}")
+                        .fromLine(2).indent()
+                        .hasTokens("int", __, "valeur", ";")
+                        .hasTokens("static",__,"{")
+                        .hasTokens(____,"valeur","=",__,__,"2",";")
+                        .hasTokens("}")
+                        ;
     }
 
     private List<? extends Token> extraireToken(String code) throws UnsupportedEncodingException {
@@ -847,10 +631,6 @@ public class ParcoursAstTest {
             fail(t.getMessage());
         }
         return listToken;
-    }
-
-    private String code(String... lineList) {
-        return StringUtils.join(lineList, "\n");
     }
 
     private AssertToken assertListToken(List<? extends Token> tokenList) {

@@ -155,9 +155,9 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     public void visit(ArrayAccessExpr n, List<Token> arg) {
         genericVisit(n, arg);
         n.getName().accept(this, arg);
-        addToken(n, TokenJava.TABLEAU_OUVRANT, arg);
+        addToken(nextNode(n.getName()), TokenJava.TABLEAU_OUVRANT, arg);
         n.getIndex().accept(this, arg);
-        addToken(n, TokenJava.TABLEAU_FERMANT, arg);
+        addToken(endOfToken(arg), TokenJava.TABLEAU_FERMANT, arg);
 
     }
 
@@ -167,12 +167,12 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getType().accept(this, arg);
         if (n.getDimensions() != null) {
             for (Expression dim : n.getDimensions()) {
-                addToken(n, TokenJava.TABLEAU_OUVRANT, arg);
+                addToken(endOfToken(arg), TokenJava.TABLEAU_OUVRANT, arg);
                 dim.accept(this, arg);
-                addToken(n, TokenJava.TABLEAU_FERMANT, arg);
+                addToken(endOfToken(arg), TokenJava.TABLEAU_FERMANT, arg);
             }
         } else {
-            addToken(n, TokenJava.TABLEAU_OUVRANT, arg);
+            addToken(endOfToken(arg), TokenJava.TABLEAU_OUVRANT, arg);
             addToken(n, TokenJava.TABLEAU_FERMANT, arg);
             n.getInitializer().accept(this, arg);
         }
@@ -258,8 +258,8 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         genericVisit(n, arg);
         n.getType().accept(this, arg);
 
-        addToken(n, TokenJava.POINT, arg);
-        addToken(n, TokenJava.CLASS, arg);
+        addToken(nextNode(n.getType()), TokenJava.POINT, arg);
+        addToken(endOfToken(arg), TokenJava.CLASS, arg);
     }
 
     public void visit(ClassOrInterfaceDeclaration n, List<Token> arg) {
@@ -732,8 +732,8 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         n.getType().accept(this, arg);
         int arrayCount = n.getArrayCount();
         for (int i = 0; i < arrayCount; i++) {
-            addToken(n, TokenJava.TABLEAU_OUVRANT, arg);
-            addToken(n, TokenJava.TABLEAU_FERMANT, arg);
+            addToken(endOfToken(arg), TokenJava.TABLEAU_OUVRANT, arg);
+            addToken(endOfToken(arg), TokenJava.TABLEAU_FERMANT, arg);
         }
     }
 
