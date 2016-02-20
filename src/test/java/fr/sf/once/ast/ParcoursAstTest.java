@@ -578,8 +578,8 @@ public class ParcoursAstTest {
                 "}")
                         .fromLine(2).indent()
                         .hasTokens("int", "[", "]", __, "chaineVide", "=", __, __, "new", __, "int", "[", "10", "]", ";")
-                        .hasTokens("int", "[", "]", __, "chaineInit", "=", __, __, "new", __, "int", "[", "]", "{", "3", "}", ";")
-                        .hasTokens("int", "[", "]", __, "chaineMultiple", "=", __, __, "new", __, "int", "[", "]", __, "{", "3", "}", ";");
+                        .hasTokens("int", "[", "]", __, "chaineInit", "=", __, __, "new", __, "int", "[", "]", __,"{", "3", "}", ";")
+                        .hasTokens("int", "[", "]", __, "chaineMultiple", "=", __, __, "new", __, "int", "[", "]", __, "{", "1",",",__,"2",",",__,"3", "}", ";");
     }
 
     @Test

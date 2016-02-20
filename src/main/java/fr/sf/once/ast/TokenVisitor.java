@@ -173,7 +173,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             }
         } else {
             addToken(endOfToken(arg), TokenJava.TABLEAU_OUVRANT, arg);
-            addToken(n, TokenJava.TABLEAU_FERMANT, arg);
+            addToken(endOfToken(arg), TokenJava.TABLEAU_FERMANT, arg);
             n.getInitializer().accept(this, arg);
         }
 
@@ -184,7 +184,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(n, TokenJava.ACCOLADE_OUVRANTE, arg);
         addParameterList(n.getValues(), arg);
 
-        addToken(n, TokenJava.ACCOLADE_FERMANTE, arg);
+        addToken(endOfToken(arg), TokenJava.ACCOLADE_FERMANTE, arg);
 
     }
 
