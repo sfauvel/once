@@ -29,7 +29,7 @@ public class ParcoursAstTest {
 
     public static final Logger LOG = Logger.getLogger(ParcoursAstTest.class);
 
-    public static final String $METHOD_LIMIT = TokenJava.METHOD_LIMIT.getValeurToken();
+    public static final String $METHOD_LIMIT = "METHOD BREAK";
     public static final String __ = " ";
     public static final String ____ = "  ";
     public static final String TAB = ____;
@@ -182,7 +182,7 @@ public class ParcoursAstTest {
                 "  }",
                 "}")
                         .fromLine(2).indent()
-                        .hasTokens("public", __, "static", __, "MaClasse", "(", ")", $METHOD_LIMIT, __, "{");
+                        .hasTokens("public", __, "static", __, "MaClasse", "(", ")", $METHOD_LIMIT, __,"{");
     }
 
     @Test
@@ -578,8 +578,9 @@ public class ParcoursAstTest {
                 "}")
                         .fromLine(2).indent()
                         .hasTokens("int", "[", "]", __, "chaineVide", "=", __, __, "new", __, "int", "[", "10", "]", ";")
-                        .hasTokens("int", "[", "]", __, "chaineInit", "=", __, __, "new", __, "int", "[", "]", __,"{", "3", "}", ";")
-                        .hasTokens("int", "[", "]", __, "chaineMultiple", "=", __, __, "new", __, "int", "[", "]", __, "{", "1",",",__,"2",",",__,"3", "}", ";");
+                        .hasTokens("int", "[", "]", __, "chaineInit", "=", __, __, "new", __, "int", "[", "]", __, "{", "3", "}", ";")
+                        .hasTokens("int", "[", "]", __, "chaineMultiple", "=", __, __, "new", __, "int", "[", "]", __, "{", "1", ",", __, "2", ",", __, "3",
+                                "}", ";");
     }
 
     @Test
@@ -613,10 +614,9 @@ public class ParcoursAstTest {
                 "}")
                         .fromLine(2).indent()
                         .hasTokens("int", __, "valeur", ";")
-                        .hasTokens("static",__,"{")
-                        .hasTokens(____,"valeur","=",__,__,"2",";")
-                        .hasTokens("}")
-                        ;
+                        .hasTokens("static", __, "{")
+                        .hasTokens(____, "valeur", "=", __, __, "2", ";")
+                        .hasTokens("}");
     }
 
     private List<? extends Token> extraireToken(String code) throws UnsupportedEncodingException {

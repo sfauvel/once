@@ -37,6 +37,10 @@ public class Token {
     public Integer getColonneDebut() {
         return localisation.getColonne();
     }
+
+    public int getColonneFin() {
+        return getColonneDebut() + valeurToken.length();
+    }
     
     public String format() {
 
@@ -54,4 +58,5 @@ public class Token {
                 .append(" type:")
                 .append(getType().toString());
     }
+
 }

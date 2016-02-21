@@ -191,9 +191,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     public void visit(AssertStmt n, List<Token> arg) {
         genericVisit(n, arg);
         n.getCheck().accept(this, arg);
-        if (n.getMessage() != null) {
-            n.getMessage().accept(this, arg);
-        }
+        notNull(n.getMessage()).accept(this, arg);
     }
 
     public void visit(AssignExpr n, List<Token> arg) {
@@ -216,6 +214,9 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
     public void visit(BlockStmt n, List<Token> arg) {
         genericVisit(n, arg);
+        Position nextToken = nextToken(arg);
+        int beginLine = n.getBeginLine();
+        int beginColumn = n.getBeginColumn();
         addToken(n, TokenJava.ACCOLADE_OUVRANTE, arg);
         acceptList(n.getStmts(), arg);
         addToken(finNode(n), TokenJava.ACCOLADE_FERMANTE, arg);
@@ -770,7 +771,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         addToken(n, TokenJava.CASE, arg);
         notNull(n.getLabel()).accept(this, arg);
 
-        addToken(nextNode(n.getLabel()), TokenJava.CASE_SEPARATEUR, arg);
+        addToken(nextNode(n.getLabel()==null?n:n.getLabel()), TokenJava.CASE_SEPARATEUR, arg);
         acceptList(n.getStmts(), arg);
 
     }
@@ -968,7 +969,16 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     }
 
     protected void addToken(int beginLine, int beginColumn, String token, fr.sf.once.model.Type type, List<Token> arg) {
-        Token tokenToAdd = new Token(new Localisation(fileName, beginLine, beginColumn), token, type);
+        Token tokenToAdd = null;
+        if (fr.sf.once.model.Type.BREAK.is(type)) {
+            tokenToAdd = new Token(new Localisation(fileName, beginLine, beginColumn), "", type) {
+                public int getColonneFin() {
+                    return getColonneDebut();
+                }
+            };            
+        } else {
+            tokenToAdd = new Token(new Localisation(fileName, beginLine, beginColumn), token, type);
+        }
 
         if (!arg.isEmpty()) {
             Token lastToken = getLastToken(arg);
@@ -1074,7 +1084,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     }
 
     private Position endOfToken(Token token) {
-        return new Position(token.getLigneDebut(), token.getColonneDebut() + token.getValeurToken().length());
+        return new Position(token.getLigneDebut(), token.getColonneFin());
     }
     
     /**
@@ -1083,11 +1093,15 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
      * @return
      */
     private Position nextToken(List<Token> arg) {       
-        return nextToken(getLastToken(arg));
+        Token lastToken = getLastToken(arg);
+        if (fr.sf.once.model.Type.BREAK.is(lastToken.getType())) {
+            
+        }
+        return nextToken(lastToken);
     }
     
     private Position nextToken(Token token) {
-        return new Position(token.getLigneDebut(), token.getColonneDebut() + token.getValeurToken().length() + 1);
+        return new Position(token.getLigneDebut(), token.getColonneFin() + 1);
     }    
     
     private Position finToken(Node n, Token token) {
