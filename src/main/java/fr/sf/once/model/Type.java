@@ -6,6 +6,7 @@ public class Type {
                                                  // même si le caractère est
                                                  // identique..
     public static final Type NON_SIGNIFICATIF = new Type("Ponctuation");
+    public static final Type KEYWORD = new Type("Keyword");
 
     private final Type parentType;
     private final String name;

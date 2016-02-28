@@ -52,7 +52,7 @@ public class TokenJava extends Token {
     public static final TokenJava METHOD_LIMIT = new TokenJava("[METHOD LIMIT]", Type.BREAK);
 
     private TokenJava(String token) {
-        this(token, Type.VALEUR);
+        this(token, Type.KEYWORD);
     }
 
     private TokenJava(String token, Type type) {
