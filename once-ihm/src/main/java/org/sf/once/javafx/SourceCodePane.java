@@ -77,7 +77,6 @@ public class SourceCodePane extends VBox {
 
     private Type lastType = Type.NON_SIGNIFICATIF;
     private Node tokenToText(Token token) {
-        System.out.println(token.getValeurToken() +" => " + token.getType());
         String code = "";
         if (isText(lastType) && isText(token.getType())) {
             code += " ";

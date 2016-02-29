@@ -3,7 +3,9 @@ package fr.sf.once.test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
+import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.core.ManagerToken;
@@ -58,11 +60,7 @@ public final class UtilsToken {
     }    
     
     public static Integer[] createPositionArray(int size) {
-        Integer[] positionArray = new Integer[size];
-        for (int i = 0; i < size; i++) {
-            positionArray[i]=i;
-        }
-        return positionArray;
+        return IntStream.rangeClosed(0, size-1).mapToObj(n -> n).toArray(s -> new Integer[s]);
     }
     
     public static ManagerToken createManagerToken(final List<Token> tokenList) {

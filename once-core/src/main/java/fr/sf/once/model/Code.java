@@ -40,7 +40,7 @@ public class Code {
     }
 
     public MethodLocalisation getMethodAtTokenPosition(int tokenPosition) {
-        return methodList.stream()
+        return methodList.parallelStream()
                 .filter(m -> m.containsPosition(tokenPosition))
                 .findFirst()
                 .orElse(null);
