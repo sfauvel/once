@@ -1,0 +1,21 @@
+language: java
+jdk:
+    - oraclejdk8
+script: mvn install
+
+# deploy:
+#   provider: releases
+#   user: sfauvel
+#   file: target/once-core-0.0.9.2.jar
+#   skip_cleanup: true
+#   on:
+#     tags: true
+#   password:
+#     secure: Aefe5FOwU48z7zS/K4W/zhGRDc480ZacQ3AxS5o7O8k8fGRiYjmpfWscjY6wKKk8X2Zw02TfZ8JPz/iPFsR4VL/EanCTfxXrid4x8RvpSFf+KqsOp5e9LIi0zXCjEvPpSDm0S6fTUA5VXwghpcpYilK4/yi70TuGM3WOxUzFzN27NDr5GEvkhmb8gi3M70i16Zg5MLbzVZhd68en0lJHnzgwff3qtSSOHg8VGTnDQ2tACd1SjZi3ST7zQp87EJt05cHMwUm+nxCtY69w3i58iiUbAlEQh9M7Lgov8oP9OtJHPa8g2Zh0Lj4PotWwuz8GqbWj8xja9fxuZ90e7J4rrntzqUfXmmVPoVtotfDmCNbRcZmLsdLZMxXi7khOyywQMuhHDUZcin8rn5iJsixvxXNTC7MvsdEYP77kiqZkDq2dCejcyS8XNOUlebCKgsuGRtWACVx4LFgdQQa8k2gyb02iZldWtDSJz4XUG20H9LUqasZjvk1w9nAwXcu+vPAlRUW28ezyo7x+6i0dUBD+QD7cLXdgPYwPT0HIXO0SL/lYszQ2LfH32/tjYXN+Vqxf/sQZF8qR+5+KAZPZMh4/HYSl9SeBsXnF8JTeTWPO2veA/6M85Mw9qmiXXdq1+eK9s2dGF/5IuZEeOZUitEOaUMnRU+hA+TNAN3adS4qcGvQ=
+
+notifications:
+  email:
+    recipients:
+      - sfauvel@gmail.com
+    on_success: change
+    on_failure: always
