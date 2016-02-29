@@ -92,7 +92,7 @@ public class SourceCodePane extends VBox {
     }
 
     private boolean isText(Type type) {
-        return type == Type.KEYWORD || type == Type.VALEUR;
+        return type.is(Type.KEYWORD) || type.is(Type.VALEUR);
     }
 
     private String getStye(Token token) {

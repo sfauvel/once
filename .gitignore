@@ -3,10 +3,12 @@
 # Package Files #
 *.war
 *.ear
-/result
-/target
-/.settings
-/.classpath
-/.project
-/.sonar
-/sonar-project.properties
+
+result/
+target/
+.settings/
+
+.classpath
+.project
+.sonar
+sonar-project.properties

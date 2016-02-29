@@ -59,6 +59,7 @@ public class Launcher {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+        long startTime = System.currentTimeMillis();
         Properties applicationProperties = new Properties();
 
         File propertiesFile = new File(ONCE_PROPERTY);
@@ -104,7 +105,8 @@ public class Launcher {
             .withMinimalSize(tailleMin);
         launcher.execute();
 
-        LOG.info("Fin");
+        long endTime = System.currentTimeMillis();
+        LOG.info("Fin (" + (endTime - startTime) + "ms)");
 
     }
 

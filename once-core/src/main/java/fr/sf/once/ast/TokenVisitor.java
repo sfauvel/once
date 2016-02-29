@@ -985,15 +985,15 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
             if (lastToken.getlocalisation().getNomFichier().equals(fileName)) {
                 int tailleToken = lastToken.getType().is(fr.sf.once.model.Type.BREAK) ? 0 : lastToken.getValeurToken().length();
-                if (lastToken.getLigneDebut() > beginLine) {
-                    LOG.error("Nouveau token avant le précédent");
-                    LOG.error("Dernier:" + lastToken.format());
-                    LOG.error("Nouveau:" + tokenToAdd.format());
-                } else if (lastToken.getLigneDebut() == beginLine && lastToken.getColonneDebut() + tailleToken > beginColumn) {
-                    LOG.error("Nouveau token avant le précédent");
-                    LOG.error("Dernier:" + lastToken.format());
-                    LOG.error("Nouveau:" + tokenToAdd.format());
-                }
+//                if (lastToken.getLigneDebut() > beginLine) {
+//                    LOG.error("Nouveau token avant le précédent");
+//                    LOG.error("Dernier:" + lastToken.format());
+//                    LOG.error("Nouveau:" + tokenToAdd.format());
+//                } else if (lastToken.getLigneDebut() == beginLine && lastToken.getColonneDebut() + tailleToken > beginColumn) {
+//                    LOG.error("Nouveau token avant le précédent");
+//                    LOG.error("Dernier:" + lastToken.format());
+//                    LOG.error("Nouveau:" + tokenToAdd.format());
+//                }
             }
         }
         arg.add(tokenToAdd);
