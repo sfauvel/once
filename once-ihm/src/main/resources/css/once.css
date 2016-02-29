@@ -1,0 +1,35 @@
+.code {
+	-fx-font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.keyword {
+    -fx-text-fill: #002366;
+    -fx-font-weight: bold;
+}
+
+.string {	
+    -fx-text-fill: #00B7EB;
+}
+
+.selected {	
+	-fx-text-fill: white;
+	-fx-background-color: #BBBBBB;
+}
+
+.selected0 {	
+	-fx-text-fill: white;
+	-fx-background-color: #999999;
+}
+
+.selected1 {	
+	-fx-text-fill: white;
+	-fx-background-color: #888888;
+}
+
+.selectedHighlight {	
+	-fx-text-fill: white;
+	-fx-background-color: #CCCCCC;
+}
+
+.overDuplication {	
+    -fx-font-weight: bold;
+}

@@ -2,69 +2,99 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.sf.once</groupId>
-	<artifactId>once-core</artifactId>
+	<artifactId>once</artifactId>
 	<version>0.0.9.2</version>
+	<packaging>pom</packaging>
 
+	<modules>
+		<module>once-core</module>
+		<module>once-ihm</module>
+	</modules>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.javaparser</groupId>
-			<artifactId>javaparser</artifactId>
-			<version>1.0.8</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
+	<distributionManagement>
+		<downloadUrl>https://github.com/sfauvel/once</downloadUrl>
+	</distributionManagement>
 
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<version>3.3.0</version>
-			<scope>test</scope>
-		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>pl.pragmatists</groupId> -->
-<!-- 			<artifactId>JUnitParams</artifactId> -->
-<!-- 			<version>1.0.4</version> -->
-<!-- 			<scope>test</scope> -->
-<!-- 		</dependency>		 -->
-	</dependencies>
+	<scm>
+		<url>https://github.com/sfauvel/once</url>
+		<connection>scm:git:ssh://git@github.com/sfauvel/once.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/sfauvel/once.git</developerConnection>
+		<tag>once-core-0.0.9.2</tag>
+	</scm>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<javaparser.version>1.0.8</javaparser.version>
+		<log4j.version>1.2.17</log4j.version>
+		<commonslang.version>2.5</commonslang.version>
+		<!-- Tests -->
+		<junit.version>4.12</junit.version>
+		<junitparams>1.0.4</junitparams>
+		<mockito.version>1.10.19</mockito.version>
+		<assertj.version>3.3.0</assertj.version>
+		<testfx.version>3.1.2</testfx.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.google.code.javaparser</groupId>
+				<artifactId>javaparser</artifactId>
+				<version>${javaparser.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>${commonslang.version}</version>
+			</dependency>
+			<!-- Tests -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>pl.pragmatists</groupId>
+				<artifactId>JUnitParams</artifactId>
+				<version>${junitparams}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>${mockito.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>${assertj.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.loadui</groupId>
+				<artifactId>testFx</artifactId>
+				<version>${testfx.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-webdav</artifactId>
-				<version>1.0-beta-2</version>
-			</extension>
-		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
@@ -136,35 +166,4 @@
 		</plugins>
 	</build>
 
-	<scm>
-		<url>https://github.com/sfauvel/once</url>
-		<connection>scm:git:ssh://git@github.com/sfauvel/once.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/sfauvel/once.git</developerConnection>
-		<tag>once-core-0.0.9.2</tag>
-	</scm>
-	<distributionManagement>
-		<downloadUrl>https://github.com/sfauvel/once</downloadUrl>
-		<repository>
-			<id>once-release</id>
-			<name>once-release</name>
-			<url>dav:https://repository-sfauvel.forge.cloudbees.com/release/</url>
-		</repository>
-		<snapshotRepository>
-			<id>once-snapshot</id>
-			<name>once-snapshot</name>
-			<url>dav:https://repository-sfauvel.forge.cloudbees.com/snapshot/</url>
-		</snapshotRepository>
-	</distributionManagement>
-	<repositories>
-		<repository>
-			<id>sfauvel-cloudbees-snapshot</id>
-			<name>sfauvel-cloudbees-snapshot</name>
-			<url>https://repository-sfauvel.forge.cloudbees.com/snapshot/</url>
-		</repository>
-		<repository>
-			<id>sfauvel-cloudbees-release</id>
-			<name>sfauvel-cloudbees-release</name>
-			<url>https://repository-sfauvel.forge.cloudbees.com/release/</url>
-		</repository>
-	</repositories>
 </project>

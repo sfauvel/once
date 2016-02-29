@@ -43,7 +43,7 @@ public class LauncherITest {
     public void should_detect_separate_duplication() throws Exception {
 
         Launcher launcher = new Launcher()
-                .withSource("src/test/resources/exempleSeparateDuplication", "UTF-8")
+                .withSource("src/test/resources/exemple", "UTF-8")
                 .withComparator(ComparateurAvecSubstitutionEtType.class)
                 .withMinimalSize(10);
         
