@@ -1,47 +1,59 @@
 package fr.sf.once.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Redundancy {
 
+    private class CodeRange {
+        private int start;
+        private int end;
+    }
+
+    private class CodePart {
+        List<CodeRange> codeRangeList = new ArrayList<CodeRange>();
+    }
+
     private int duplicatedTokenNumber;
-	private List<Integer> firstTokenList = new ArrayList<Integer>();
-	
-	public Redundancy(int duplicatedTokenNumber) {
-	    this.duplicatedTokenNumber = duplicatedTokenNumber;
-	}
-	
-	public int getDuplicatedTokenNumber() {
-		return this.duplicatedTokenNumber;
-	}
+    private TreeSet<Integer> firstTokenList = new TreeSet<Integer>();
+
+    public Redundancy(int duplicatedTokenNumber) {
+        this.duplicatedTokenNumber = duplicatedTokenNumber;
+    }
+
+    public int getDuplicatedTokenNumber() {
+        return this.duplicatedTokenNumber;
+    }
 
     public List<Integer> getStartRedundancyList() {
-        return firstTokenList;
+        return Collections.unmodifiableList(new ArrayList<Integer>(firstTokenList));
     }
-    
+
     public boolean contains(Redundancy includedRedundancy) {
-        Collections.sort(firstTokenList);
-        Collections.sort(includedRedundancy.firstTokenList);
-        
         return containsWithSortedRedundancy(includedRedundancy);
     }
-    
+
     public boolean containsWithSortedRedundancy(Redundancy includedRedundancy) {
-        
+
         if (includedRedundancy.duplicatedTokenNumber <= duplicatedTokenNumber) {
             if (firstTokenList.size() < includedRedundancy.firstTokenList.size()) {
                 return false;
             }
-            
+
             Iterator<Integer> iteratorReference = firstTokenList.iterator();
             Iterator<Integer> iteratorIncluded = includedRedundancy.firstTokenList.iterator();
-            
+
             for (; iteratorReference.hasNext() && iteratorIncluded.hasNext();) {
                 int valueReference = iteratorReference.next();
                 int valueIncluded = iteratorIncluded.next();
@@ -53,7 +65,7 @@ public class Redundancy {
         }
         return false;
     }
-    
+
     private static boolean containsInList(List<Redundancy> redundancyList, Redundancy redundancyToCheck) {
         for (Redundancy redundancy : redundancyList) {
             if (redundancy.containsWithSortedRedundancy(redundancyToCheck)) {
@@ -63,7 +75,6 @@ public class Redundancy {
         return false;
     }
 
-
     public static void sort(List<Redundancy> redundancyList) {
         Collections.sort(redundancyList, new Comparator<Redundancy>() {
 
@@ -71,7 +82,7 @@ public class Redundancy {
             public int compare(Redundancy redondance1, Redundancy redondance2) {
                 return redondance2.getDuplicatedTokenNumber() - redondance1.getDuplicatedTokenNumber();
             }
-            
+
         });
     }
 
@@ -79,20 +90,16 @@ public class Redundancy {
      * Supprime les redondances incluses les unes dans les autres.
      * A noter, que cette méthode ne détecte pas si une redondance est identique
      * mais avec moins de occurrence. Ce cas ne doit pas exister fonctionnellement.
+     * 
      * @param redundancyList
      */
     public static void removeDuplicatedList(List<Redundancy> redundancyList) {
         sort(redundancyList);
 
         Map<String, Redundancy> searchRedundancy = new HashMap<String, Redundancy>();
-        for (Iterator<Redundancy> iterator = redundancyList.iterator(); iterator.hasNext();) {
-            Redundancy redondance = iterator.next();
-            Collections.sort(redondance.firstTokenList);
-            String key = getRedundancyKey(redondance);
-            if (!searchRedundancy.containsKey(key)) {
-                searchRedundancy.put(key,  redondance);   
-            }
-            
+
+        for (Redundancy redundancy : redundancyList) {
+            searchRedundancy.putIfAbsent(getRedundancyKey(redundancy), redundancy);
         }
 
         redundancyList.clear();
@@ -115,28 +122,29 @@ public class Redundancy {
      * Remove duplication starting before the end of the last one.
      */
     public void removeOverlapRedundancy() {
-        // TODO The first token list should be always sorted.
-        Collections.sort(firstTokenList, Collections.reverseOrder());
         int lastFirstValue = Integer.MAX_VALUE;
-        for (Iterator<Integer> tokenIterator = firstTokenList.iterator(); tokenIterator.hasNext();) {
-            Integer tokenPosition = tokenIterator.next();            
+        // Travel in reverse order
+        for (Iterator<Integer> tokenIterator = firstTokenList.descendingIterator(); tokenIterator.hasNext();) {
+            Integer tokenPosition = tokenIterator.next();
             if (tokenPosition + duplicatedTokenNumber > lastFirstValue) {
                 tokenIterator.remove();
             } else {
                 lastFirstValue = tokenPosition;
             }
         }
-        Collections.sort(firstTokenList);
     }
 
     public int getRedundancyNumber() {
         return firstTokenList.size();
     }
 
-    public Redundancy between(int... tokenPositionList) {
-        for (int tokenPosition : tokenPositionList) {
-            getStartRedundancyList().add(tokenPosition);
-        }
+    public Redundancy withStartingCodeAt(int... tokenPositionList) {
+        Arrays.stream(tokenPositionList).forEach(t -> firstTokenList.add(t));
+        return this;
+    }
+
+    public Redundancy withStartingCodeAt(List<Integer> tokenPositionList) {
+        tokenPositionList.forEach(t -> firstTokenList.add(t));
         return this;
     }
 

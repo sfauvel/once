@@ -31,7 +31,7 @@ public class ReportingMethodPurcentageTest {
     @Test
     public void with_no_redundancy_between_methods_purcentage_is_0() {
         final int DUPLICATED_TOKEN_NUMBER = 20;
-        Redundancy redundancy = new Redundancy(DUPLICATED_TOKEN_NUMBER).between(5, 1005);
+        Redundancy redundancy = new Redundancy(DUPLICATED_TOKEN_NUMBER).withStartingCodeAt(5, 1005);
         
         ReportingMethodPurcentage report = new ReportingMethodPurcentage(EMPTY_MANAGER, Arrays.<Redundancy>asList(redundancy));
         
@@ -43,7 +43,7 @@ public class ReportingMethodPurcentageTest {
     @Test
     public void with_one_redundancy_purcentage_of_duplication_is_redundancy_size_divided_by_method_size() {
         final int DUPLICATED_TOKEN_NUMBER = 20;
-        Redundancy redundancy = new Redundancy(DUPLICATED_TOKEN_NUMBER).between(5, 105);
+        Redundancy redundancy = new Redundancy(DUPLICATED_TOKEN_NUMBER).withStartingCodeAt(5, 105);
         
         ReportingMethodPurcentage report = new ReportingMethodPurcentage(EMPTY_MANAGER, Arrays.<Redundancy>asList(redundancy));
         
@@ -57,8 +57,8 @@ public class ReportingMethodPurcentageTest {
     public void with_several_duplication_between_method_total_purcentage_is_sum_of_purcentage() {
         final int DUPLICATED_TOKEN_NUMBER = 20;
         List<Redundancy> redundancyList = Arrays.<Redundancy>asList(
-                new Redundancy(DUPLICATED_TOKEN_NUMBER).between(5, 105),
-                new Redundancy(DUPLICATED_TOKEN_NUMBER).between(50, 160));
+                new Redundancy(DUPLICATED_TOKEN_NUMBER).withStartingCodeAt(5, 105),
+                new Redundancy(DUPLICATED_TOKEN_NUMBER).withStartingCodeAt(50, 160));
         
         ReportingMethodPurcentage report = new ReportingMethodPurcentage(EMPTY_MANAGER, redundancyList);
         

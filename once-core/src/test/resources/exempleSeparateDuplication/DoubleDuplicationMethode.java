@@ -30,6 +30,7 @@ public class CopieMethode {
             result.add(split[i].trim());
         }
 
+        // This line split the duplication in two parts.
         Log.info("Get from the database");
         
         Dao dao = new CustomerDao();

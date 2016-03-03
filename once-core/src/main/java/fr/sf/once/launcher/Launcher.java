@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -24,6 +25,7 @@ import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
+import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingImpl;
@@ -168,11 +170,69 @@ public class Launcher {
 
 		ManagerToken manager = new ManagerToken(code);
 		List<Redundancy> listeRedondance = manager.getRedondance(configuration);
-
+        
+       // groupRedundancy(configuration, code, listeRedondance);
+        
 		LOG.info("Affichage des resultats...");
 		Reporting reporting = new ReportingImpl(code.getMethodList());
 		reporting.display(code);
 		reporting.afficherRedondance(code, 20, listeRedondance);
+    }
+
+    private List<Redundancy> groupRedundancy(Configuration configuration, Code code, List<Redundancy> listeRedondance) {
+        System.out.println("Size=" + listeRedondance.size());
+        Redundancy redundancy1 = listeRedondance.get(0);
+        Redundancy redundancy2 = listeRedondance.get(1);
+
+        List<Integer> startRedundancyList1 = redundancy1.getStartRedundancyList();
+        List<Integer> startRedundancyList2 = redundancy2.getStartRedundancyList();
+        
+        {
+        MethodLocalisation method1 = code.getMethodAtTokenPosition(startRedundancyList1.get(0));
+        System.out.println(method1.getMethodName());
+        }
+        {
+            MethodLocalisation method = code.getMethodAtTokenPosition(startRedundancyList1.get(1));
+            System.out.println(method.getMethodName());
+        }
+        {
+            MethodLocalisation method = code.getMethodAtTokenPosition(startRedundancyList2.get(0));
+            System.out.println(method.getMethodName());
+        }
+        {
+            MethodLocalisation method = code.getMethodAtTokenPosition(startRedundancyList2.get(1));
+            System.out.println(method.getMethodName());
+        }
+        
+        int startRed1 = startRedundancyList1.get(1);
+        int endRed1 = startRed1+redundancy1.getDuplicatedTokenNumber();
+        
+        int startRed2 = startRedundancyList2.get(1);
+        int endRed2 = startRed2+redundancy2.getDuplicatedTokenNumber();
+        
+        List<Token> tokenList = code.getTokenList();
+        List<Token> newTokenList = new ArrayList<Token>();
+        newTokenList.addAll(tokenList.subList(0, endRed1-1));
+        newTokenList.addAll(tokenList.subList(startRed2, tokenList.size()-1));
+        
+        System.out.println("Remove from " + endRed1 + " to "+ startRed2);
+        tokenList.subList(endRed1-1, startRed2).forEach(t -> System.out.println(t.getValeurToken() + " "));
+        
+        Code newCode = new Code(newTokenList);
+        ManagerToken manager = new ManagerToken(newCode);
+        List<Redundancy> redondance = manager.getRedondance(configuration);
+        
+        LOG.info("Affichage des resultats...");
+        Reporting reporting = new ReportingImpl(newCode.getMethodList());
+        //reporting.display(newCode);
+        System.out.println("Nombre redondance:" + redondance.size());
+        for (Redundancy redundancy : redondance) {
+            int duplicatedTokenNumber = redundancy.getDuplicatedTokenNumber();
+            System.out.println("Taille redondance:" + duplicatedTokenNumber);
+            List<Integer> startRedundancyList = redundancy.getStartRedundancyList();
+        }
+        
+        return redondance;
 	}
 
 	private static void activeComparateurLog(Level level, String filename) throws IOException {

@@ -3,7 +3,6 @@ package fr.sf.once.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -13,9 +12,11 @@ import java.util.List;
 import org.junit.Test;
 
 public class RedundancyTest {
+    private static final int ANY_VALUE = 4;
+
     @Test
     public void redundancy_between_5_and_20() {
-        Redundancy redundancy = new Redundancy(4).between(5, 20);
+        Redundancy redundancy = new Redundancy(ANY_VALUE).withStartingCodeAt(5, 20);
         
         assertThat(redundancy.getStartRedundancyList()).containsExactly(5, 20);
     }
@@ -29,75 +30,45 @@ public class RedundancyTest {
 
     @Test
     public void testContainsWhenRedundancyIsSmaller() {
-        Redundancy referenceRedundancy = new Redundancy(5) {
-            {
-                getStartRedundancyList().add(4);
-                getStartRedundancyList().add(8);
-            }
-        };
+        Redundancy referenceRedundancy = new Redundancy(5)
+                .withStartingCodeAt(4, 8);
 
-        Redundancy includedRedundancy = new Redundancy(2) {
-            {
-                getStartRedundancyList().add(4 + 5 - 2);
-                getStartRedundancyList().add(8 + 5 - 2);
-            }
-        };
+        Redundancy includedRedundancy = new Redundancy(2)
+            .withStartingCodeAt(4 + 5 - 2, 8 + 5 - 2);
+
         assertTrue(referenceRedundancy.contains(includedRedundancy));
     }
     
     @Test
     public void testContainsWhenRedundancyWithDifferentOrder() {
-        Redundancy referenceRedundancy = new Redundancy(5) {
-            {
-                getStartRedundancyList().add(4);
-                getStartRedundancyList().add(8);
-            }
-        };
+        Redundancy referenceRedundancy = new Redundancy(5)
+            .withStartingCodeAt(4, 8);
 
-        Redundancy includedRedundancy = new Redundancy(2) {
-            {
-                getStartRedundancyList().add(8 + 5 - 2);
-                getStartRedundancyList().add(4 + 5 - 2);
-            }
-        };
+        Redundancy includedRedundancy = new Redundancy(2)
+            .withStartingCodeAt(8 + 5 - 2, 4 + 5 - 2); 
+
         assertTrue(referenceRedundancy.contains(includedRedundancy));
     }
     
     @Test
     public void testContainsWhenMorePosition() {
-        Redundancy referenceRedundancy = new Redundancy(5) {
-            {
-                getStartRedundancyList().add(4);
-                getStartRedundancyList().add(8);
-            }
-        };
+        Redundancy referenceRedundancy = new Redundancy(5)
+            .withStartingCodeAt(4, 8);
 
-        Redundancy includedRedundancy = new Redundancy(2) {
-            {
-                getStartRedundancyList().add(4 + 5 - 2);
-                getStartRedundancyList().add(8 + 5 - 2);
-                getStartRedundancyList().add(23 + 5 - 2);
-            }
-        };
+        Redundancy includedRedundancy = new Redundancy(2)
+            .withStartingCodeAt(4 + 5 - 2, 8 + 5 - 2, 23 + 5 - 2);
+
         assertFalse(referenceRedundancy.contains(includedRedundancy));
     }
     
     @Test
     public void testContainsWhenLessPosition() {
-        Redundancy referenceRedundancy = new Redundancy(5) {
-            {
-                getStartRedundancyList().add(4);
-                getStartRedundancyList().add(8);
-                getStartRedundancyList().add(12);
-            }
-        };
+        Redundancy referenceRedundancy = new Redundancy(5)
+                .withStartingCodeAt(4, 8, 12);
 
-        Redundancy includedRedundancy = new Redundancy(2) {
-            {
-                getStartRedundancyList().add(4 + 5 - 2);
-                getStartRedundancyList().add(8 + 5 - 2);
-            }
-        };
+        Redundancy includedRedundancy = new Redundancy(2)
+            .withStartingCodeAt(4 + 5 - 2, 8 + 5 - 2);
+
         assertTrue(referenceRedundancy.contains(includedRedundancy));
     }
     
@@ -161,9 +132,8 @@ public class RedundancyTest {
      */
     @Test
     public void testGetRedundancyKey() {
-        Redundancy redondance = new Redundancy(4);
-        redondance.getStartRedundancyList().add(3);
-        redondance.getStartRedundancyList().add(10);
+        Redundancy redondance = new Redundancy(4)
+                .withStartingCodeAt(3, 10);
         assertEquals("7,14,", Redundancy.getRedundancyKey(redondance));
         
     }
@@ -217,9 +187,10 @@ public class RedundancyTest {
         };
     }
     
-    private Redundancy createRedundancy(final int redundancySize, final Integer... firstTokenList) {
+    private Redundancy createRedundancy(final int redundancySize, final int... firstTokenList) {
          Redundancy redondance = new Redundancy(redundancySize);
-         redondance.getStartRedundancyList().addAll(Arrays.asList(firstTokenList));
+         redondance.withStartingCodeAt(firstTokenList);
          return redondance;
     }
+
 }

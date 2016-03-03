@@ -9,6 +9,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.WriterAppender;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
@@ -25,6 +26,7 @@ public class EndToEndTest {
     }
     
     @Test
+    @Ignore
     public void should_detect_separate_duplication() throws Exception {
 
         Launcher launcher = new Launcher()

@@ -203,9 +203,8 @@ public class ManagerToken {
     }
 
     Redundancy createRedundancy(int redondanceSize, List<Integer> subList) {
-        Redundancy redondance = new Redundancy(redondanceSize);
-        redondance.getStartRedundancyList().addAll(subList);
-        return redondance;
+        return new Redundancy(redondanceSize)
+                .withStartingCodeAt(subList);
     }
 
     public int min(int[] tableauValeur, int debut, int fin) {

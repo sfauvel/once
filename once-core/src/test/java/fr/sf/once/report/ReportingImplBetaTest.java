@@ -82,8 +82,8 @@ public class ReportingImplBetaTest {
         methodList.add(methodB);
         ReportingImplBeta report = new ReportingImplBeta(methodList);
         
-        Redundancy redondance = new Redundancy(2);
-        redondance.getStartRedundancyList().addAll(Arrays.asList(2, 10));
+        Redundancy redondance = new Redundancy(2)
+                .withStartingCodeAt(2, 10);
         
         methodA.getRedondanceList().add(redondance);
         methodB.getRedondanceList().add(redondance);
@@ -103,11 +103,11 @@ public class ReportingImplBetaTest {
         methodList.add(methodB);
         ReportingImplBeta report = new ReportingImplBeta(methodList);
         
-        Redundancy redondance1 = new Redundancy(3);
-        redondance1.getStartRedundancyList().addAll(Arrays.asList(2, 35));
+        Redundancy redondance1 = new Redundancy(3)
+                .withStartingCodeAt(2, 35);
         
-        Redundancy redondance2 = new Redundancy(5);
-        redondance2.getStartRedundancyList().addAll(Arrays.asList(12, 40));
+        Redundancy redondance2 = new Redundancy(5)
+                .withStartingCodeAt(12, 40);
         
         methodA.getRedondanceList().add(redondance1);
         methodA.getRedondanceList().add(redondance2);
@@ -133,8 +133,8 @@ public class ReportingImplBetaTest {
         methodList.add(methodC);
         ReportingImplBeta report = new ReportingImplBeta(methodList);
                 
-        Redundancy redondance = new Redundancy(2);
-        redondance.getStartRedundancyList().addAll(Arrays.asList(2, 10, 45));
+        Redundancy redondance = new Redundancy(2)
+                .withStartingCodeAt(2, 10, 45);
         
         methodA.getRedondanceList().add(redondance);
         methodB.getRedondanceList().add(redondance);
@@ -152,8 +152,8 @@ public class ReportingImplBetaTest {
     public void testFindDuplicatedRange() {
 
         ArrayList<Redundancy> redundancyList = new ArrayList<Redundancy>();
-        Redundancy redondance = new Redundancy(2);
-        redondance.getStartRedundancyList().addAll(Arrays.asList(5, 15));
+        Redundancy redondance = new Redundancy(2)
+                .withStartingCodeAt(5, 15);
         redundancyList.add(redondance);
         
         MethodLocalisation methodA = new MethodLocalisation("A", new IntRange(3, 7));
