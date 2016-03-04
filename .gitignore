@@ -12,3 +12,5 @@ target/
 .project
 .sonar
 sonar-project.properties
+
+tmp/

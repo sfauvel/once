@@ -150,7 +150,7 @@ public class Launcher {
 
     private static void activeLog(Logger log, Level level, String filename) throws IOException {
         if (filename == null) {
-            log.addAppender(new ConsoleAppender(new SimpleLayout()));
+            log.addAppender(new ConsoleAppender(new PatternLayout("%d{HH:mm:ss,SSS} - %-5p %c{1} - %m%n")));
         } else {
             log.addAppender(new FileAppender(new PatternLayout(), filename, false));
         }
