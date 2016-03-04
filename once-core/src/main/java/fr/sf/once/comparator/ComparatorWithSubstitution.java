@@ -5,7 +5,6 @@ package fr.sf.once.comparator;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.core.ListeSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 
@@ -18,8 +17,8 @@ public class ComparatorWithSubstitution extends CodeComparator {
 
     public static final Logger LOG = Logger.getLogger(ComparatorWithSubstitution.class);
 
-    private ListeSubstitution listeSubstitution1 = new ListeSubstitution();
-    private ListeSubstitution listeSubstitution2 = new ListeSubstitution();
+    private SubstitutionStringList listeSubstitution1 = new SubstitutionStringList();
+    private SubstitutionStringList listeSubstitution2 = new SubstitutionStringList();
    
     public ComparatorWithSubstitution(Code code) {
         super(code);
@@ -28,8 +27,8 @@ public class ComparatorWithSubstitution extends CodeComparator {
     @Override
     protected void reinit() {
         super.reinit();
-        listeSubstitution1 = new ListeSubstitution();
-        listeSubstitution2 = new ListeSubstitution();
+        listeSubstitution1 = new SubstitutionStringList();
+        listeSubstitution2 = new SubstitutionStringList();
         ajouterCaractereNonSubstituable(":", "(", ")", "{", "}", "[", "]", ";", "new", ".");
    
     }

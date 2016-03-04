@@ -4,12 +4,12 @@
 package fr.sf.once.comparator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import fr.sf.once.ast.TokenJava;
-import fr.sf.once.core.ListeSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 
@@ -17,8 +17,8 @@ public class ComparateurAvecSubstitutionEtType extends CodeComparator {
 
     public static final Logger LOG = Logger.getLogger(ComparateurAvecSubstitutionEtType.class);
 
-    private ListeSubstitution listeSubstitution1 = new ListeSubstitution();
-    private ListeSubstitution listeSubstitution2 = new ListeSubstitution();
+    private SubstitutionTokenList listeSubstitution1 = new SubstitutionTokenList();
+    private SubstitutionTokenList listeSubstitution2 = new SubstitutionTokenList();
    
     public ComparateurAvecSubstitutionEtType(Code code) {
         super(code);
@@ -27,31 +27,25 @@ public class ComparateurAvecSubstitutionEtType extends CodeComparator {
     @Override
     protected void reinit() {
         super.reinit();
-        listeSubstitution1 = new ListeSubstitution();
-        listeSubstitution2 = new ListeSubstitution();
+        listeSubstitution1 = new SubstitutionTokenList();
+        listeSubstitution2 = new SubstitutionTokenList();
         ajouterCaractereNonSubstituable(":", "(", ")", "{", "}", "[", "]", ";", "new", ".");
    
     }
 
-    static final List<Token> listeTokenNonSubstituable = new ArrayList<Token>() {{
-        add(TokenJava.PARCOURS_LISTE);
-        add(TokenJava.PARENTHESE_OUVRANTE);
-        add(TokenJava.PARENTHESE_FERMANTE);
-        add(TokenJava.ACCOLADE_OUVRANTE);
-        add(TokenJava.ACCOLADE_FERMANTE);
-        add(TokenJava.TABLEAU_OUVRANT);
-        add(TokenJava.TABLEAU_FERMANT);
-        add(TokenJava.FIN_INSTRUCTION);
-        add(TokenJava.SEPARATEUR_PARAMETRE);
-        add(TokenJava.NEW);
-    }};
+    static final List<Token> listeTokenNonSubstituable = Arrays.asList(
+        TokenJava.PARCOURS_LISTE,
+        TokenJava.PARENTHESE_OUVRANTE,
+        TokenJava.PARENTHESE_FERMANTE,
+        TokenJava.ACCOLADE_OUVRANTE,
+        TokenJava.ACCOLADE_FERMANTE,
+        TokenJava.TABLEAU_OUVRANT,
+        TokenJava.TABLEAU_FERMANT,
+        TokenJava.FIN_INSTRUCTION,
+        TokenJava.SEPARATEUR_PARAMETRE,
+        TokenJava.NEW);
     
     private void ajouterCaractereNonSubstituable(String... listeToken) {
-        for (String token : listeToken) {
-            listeSubstitution1.getPosition(token);
-            listeSubstitution2.getPosition(token);
-        }
-        
         for (Token token : listeTokenNonSubstituable) {
             listeSubstitution1.getPosition(token);
             listeSubstitution2.getPosition(token);
