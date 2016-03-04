@@ -29,7 +29,7 @@ public class ComparateurAvecSubstitutionEtType extends CodeComparator {
             TokenJava.SEPARATEUR_PARAMETRE,
             TokenJava.NEW);
 
-    private static SubstitutionTokenList substitutionListRef = new SubstitutionTokenList();
+    private static SubstitutionTokenListWithBasicArray substitutionListRef = new SubstitutionTokenListWithBasicArray();
 
     static {
         for (Token token : listeTokenNonSubstituable) {
@@ -37,8 +37,8 @@ public class ComparateurAvecSubstitutionEtType extends CodeComparator {
         }
     }
 
-    private SubstitutionTokenList listeSubstitution1 = new SubstitutionTokenList();
-    private SubstitutionTokenList listeSubstitution2 = new SubstitutionTokenList();
+    private SubstitutionTokenListWithBasicArray listeSubstitution1 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
+    private SubstitutionTokenListWithBasicArray listeSubstitution2 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
 
     public ComparateurAvecSubstitutionEtType(Code code) {
         super(code);
@@ -47,8 +47,8 @@ public class ComparateurAvecSubstitutionEtType extends CodeComparator {
     @Override
     protected void reinit() {
         super.reinit();
-        listeSubstitution1 = new SubstitutionTokenList(substitutionListRef);
-        listeSubstitution2 = new SubstitutionTokenList(substitutionListRef);
+        listeSubstitution1.reinit();
+        listeSubstitution2.reinit();
     }
 
     @Override
