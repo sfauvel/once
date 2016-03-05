@@ -174,7 +174,8 @@ public class Launcher {
        // groupRedundancy(configuration, code, listeRedondance);
         
 		LOG.info("Affichage des resultats...");
-		Reporting reporting = new ReportingImpl(code.getMethodList());
+        Reporting reporting = new ReportingImpl();
+        reporting.displayMethod(code);
 		reporting.display(code);
 		reporting.afficherRedondance(code, 20, listeRedondance);
     }
@@ -223,7 +224,7 @@ public class Launcher {
         List<Redundancy> redondance = manager.getRedondance(configuration);
         
         LOG.info("Affichage des resultats...");
-        Reporting reporting = new ReportingImpl(newCode.getMethodList());
+        Reporting reporting = new ReportingImpl();
         //reporting.display(newCode);
         System.out.println("Nombre redondance:" + redondance.size());
         for (Redundancy redundancy : redondance) {

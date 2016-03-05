@@ -36,7 +36,11 @@ public class ManagerTokenTest {
 
     @Before
     public void initManager() {
-        emptyManager = new ManagerToken(Collections.<Token> emptyList());
+        emptyManager = new ManagerToken(Collections.<Token> emptyList()) {
+            @Override
+            protected void registerRedundancyToMethod(List<Integer> subList, Redundancy redundancy) {
+            }
+        };
     }
 
     @Test
@@ -173,7 +177,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testAjouterRedondanceToujoursPlusGrand() throws Exception {
-        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M");
         List<Integer> positionList = UtilsToken.createPositionList(6);
         List<Redundancy> listeRedondance = managerToken.calculerRedondance(
                 positionList,
@@ -190,7 +194,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testAjouterRedondanceToujoursEgal() throws Exception {
-        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
         List<Integer> positionList = UtilsToken.createPositionList(6);
         List<Redundancy> listeRedondance = managerToken.calculerRedondance(
                 positionList,
@@ -203,7 +207,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testAjouterRedondanceToujoursPlusPetit() throws Exception {
-        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
         List<Integer> positionList = UtilsToken.createPositionList(3);
         List<Redundancy> listeRedondance = managerToken.calculerRedondance(
                 positionList,

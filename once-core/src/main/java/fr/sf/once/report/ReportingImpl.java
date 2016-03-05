@@ -20,7 +20,7 @@ public class ReportingImpl implements Reporting {
 
     private Logger tokenLogger;
 
-    public ReportingImpl(List<MethodLocalisation> methodList) {
+    public ReportingImpl() {
         this.tokenLogger = TRACE_TOKEN;
     }
 
@@ -126,7 +126,8 @@ public class ReportingImpl implements Reporting {
             List<String> substitutionList = getSubstitution(tokenList, redondance);
             List<Integer> firstTokenList = redondance.getStartRedundancyList();
             int redundancyNumber = firstTokenList.size();
-            LOG_RESULTAT.info("Tokens number:" + redondance.getDuplicatedTokenNumber() + " Duplications number:" + redundancyNumber + " Substitutions number:" + substitutionList.size());
+            LOG_RESULTAT.info("Tokens number:" + redondance.getDuplicatedTokenNumber() + " Duplications number:" + redundancyNumber + " Substitutions number:"
+                    + substitutionList.size());
 
             for (Integer firstTokenPosition : firstTokenList) {
                 final int NB_MAX_DISPLAY = 200;
@@ -143,34 +144,8 @@ public class ReportingImpl implements Reporting {
                 }
                 MethodLocalisation method = MethodLocalisation.findMethod(code.getMethodList(), lastToken);
                 if (method != null) {
-                    int methodLineNumber = method.getLineNumber();
-                    int redundancyLineNumber = ligneFin - ligneDebut;
-                    int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
+                    displayOneRedundancy(buffer, redondance, code, firstTokenPosition, ligneDebut, ligneFin, method);
 
-                    buffer.append(pourcentage)
-                            .append("% (")
-                            .append(redundancyLineNumber)
-                            .append(" of ")
-                            .append(methodLineNumber)
-                            .append(" lines)")
-                            .append(method.getMethodName())
-                            .append(" from line ")
-                            .append(tokenList.get(firstTokenPosition).getlocalisation().getLigne())
-                            .append(" to ")
-                            .append(tokenList.get(firstTokenPosition+redondance.getDuplicatedTokenNumber()).getlocalisation().getLigne())
-                            .append(" ")
-                            
-                            .append("(method from line ")
-                            .append(method.getLocalisationDebut().getLigne())
-                            .append(" to ")
-                            .append(method.getLocalisationFin().getLigne())
-                            .append(")");
-                    
-//                    appendString(buffer, method.getLocalisationDebut());
-//                    buffer.append(" <-> ");
-//                    appendString(buffer, method.getLocalisationFin());
-                    
-                    
                     displayVisualRedondance(method, ligneDebut, ligneFin);
                 } else {
                     buffer.append(" No method ");
@@ -196,12 +171,42 @@ public class ReportingImpl implements Reporting {
         }
     }
 
+    private void displayOneRedundancy(StringBuffer buffer, Redundancy redundancy, Code code, Integer firstTokenPosition, Integer ligneDebut,
+            Integer ligneFin, MethodLocalisation method) {
+        
+        int methodLineNumber = method.getLineNumber();
+        int redundancyLineNumber = ligneFin - ligneDebut;
+        int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
+
+        buffer.append(pourcentage)
+                .append("% (")
+                .append(redundancyLineNumber)
+                .append(" of ")
+                .append(methodLineNumber)
+                .append(" lines)")
+                .append(method.getMethodName())
+                .append(" from line ")
+                .append(code.getToken(firstTokenPosition).getlocalisation().getLigne())
+                .append(" to ")
+                .append(code.getToken(firstTokenPosition + redundancy.getDuplicatedTokenNumber()).getlocalisation().getLigne())
+                .append(" ")
+
+                .append("(method from line ")
+                .append(method.getLocalisationDebut().getLigne())
+                .append(" to ")
+                .append(method.getLocalisationFin().getLigne())
+                .append(")");
+
+        // appendString(buffer, method.getLocalisationDebut());
+        // buffer.append(" <-> ");
+        // appendString(buffer, method.getLocalisationFin());
+    }
+
     private void appendString(StringBuffer buffer, Localisation localisation) {
         buffer.append(localisation.getLigne())
                 .append(":")
                 .append(localisation.getColonne());
     }
-
 
     private int computePourcentage(int value, int total) {
         if (total == 0) {
@@ -264,6 +269,34 @@ public class ReportingImpl implements Reporting {
         for (Token token : tokenList) {
             display(token);
         }
+    }
+
+    @Override
+    public void displayMethod(Code code) {
+        for (MethodLocalisation method : code.getMethodList()) {
+            int firstLine = method.getLocalisationDebut().getLigne();
+            int lastLine = method.getLocalisationFin().getLigne();
+            if (!method.getRedondanceList().isEmpty()) {
+                LOG_RESULTAT.info(method.getMethodName());
+                for (Redundancy redundancy : method.getRedondanceList()) {
+                    for (Integer firstRedundancyToken : redundancy.getStartRedundancyList()) {
+                        Token firstToken = code.getToken(firstRedundancyToken);
+                        if (firstToken.getlocalisation().getLigne() >= firstLine) {
+                            Token lastToken = code.getToken(firstRedundancyToken + redundancy.getDuplicatedTokenNumber());
+                            if (lastToken.getlocalisation().getLigne() <= lastLine) {
+                                StringBuffer buffer = new StringBuffer();
+                                displayOneRedundancy(buffer, redundancy, code, firstRedundancyToken, 
+                                        firstToken.getlocalisation().getLigne(), 
+                                        lastToken.getlocalisation().getLigne(), method);
+                                LOG_RESULTAT.info("\t" + redundancy.getDuplicatedTokenNumber() + ":" + buffer.toString());
+                            }                            
+                        }
+                            
+                    }
+                }
+            }
+        }
+
     }
 
     public void checkLocalisation(final Code code) {

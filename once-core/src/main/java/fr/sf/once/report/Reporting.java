@@ -18,4 +18,5 @@ public interface Reporting {
     void afficherCodeRedondant(Code code, Redundancy redondance);
     void afficheListeToken(List<Token> listeToken);
     void display(final Code code);
+    void displayMethod(Code code);
 }

@@ -586,4 +586,10 @@ public class ReportingImplBeta implements Reporting {
         }
     }
 
+    @Override
+    public void displayMethod(Code code) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

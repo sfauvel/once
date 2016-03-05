@@ -121,7 +121,7 @@ public class ManagerToken {
     public void sortPositionList(List<Integer> positionList, CodeComparator comparator) {
         ReportingImpl report = null;
         if (ReportingImpl.TRACE_TOKEN.isDebugEnabled()) {
-            report = new ReportingImpl(null);
+            report = new ReportingImpl();
             ReportingImpl.TRACE_TOKEN.debug("\nXXXX\n  getListeTokenTrier non trié");
             for (Token token : getTokenList()) {
                 report.display(token);
@@ -207,16 +207,20 @@ public class ManagerToken {
         Redundancy redundancy = new Redundancy(redondanceSize)
                 .withStartingCodeAt(subList);
 
-//        for (Integer firstTokenPosition : subList) {
-//
-//            Token lastToken = code.getToken(firstTokenPosition + redundancy.getDuplicatedTokenNumber() - 1);
-//
-//            MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
-//            if (method != null) {
-//                method.getRedondanceList().add(redundancy);
-//            }
-//        }
+        registerRedundancyToMethod(subList, redundancy);
         return redundancy;
+    }
+
+    protected void registerRedundancyToMethod(List<Integer> subList, Redundancy redundancy) {
+        for (Integer firstTokenPosition : subList) {
+
+            Token lastToken = code.getToken(firstTokenPosition + redundancy.getDuplicatedTokenNumber() - 1);
+
+            MethodLocalisation method = MethodLocalisation.findMethod(code.getMethodList(), lastToken);
+            if (method != null) {
+                method.getRedondanceList().add(redundancy);
+            }
+        }
     }
 
     public int min(int[] tableauValeur, int debut, int fin) {
