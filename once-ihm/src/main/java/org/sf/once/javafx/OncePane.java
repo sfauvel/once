@@ -68,12 +68,12 @@ public class OncePane extends StackPane {
             grid.setVgap(10);
             grid.setPadding(new Insets(10));
 
-            runButton = createButton(primaryStage, "DÃ©marrer");
+            runButton = createButton(primaryStage, "Démarrer");
             int currentLine = 0;
             {
                 {
                     boxFileResultChoice = new BoxFileChoice(primaryStage, "Modifier", DirectoryChoice.FileChooserType.OPEN, new File("D:/Projets/Spike/GildedRose/src/main/java"));
-                    addFileChoiceOnLine("RÃ©pertoire source", grid, currentLine++, boxFileResultChoice/*, runButton*/);
+                    addFileChoiceOnLine("Répertoire source", grid, currentLine++, boxFileResultChoice/*, runButton*/);
                 }
             }
 
