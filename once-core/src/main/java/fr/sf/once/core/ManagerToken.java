@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
+import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
@@ -202,9 +203,20 @@ public class ManagerToken {
         ajouterRedondanceInterne(positionList, listeRedondance, listeTailleRedondance, indexDepart, indexCourant, tailleMin);
     }
 
-    Redundancy createRedundancy(int redondanceSize, List<Integer> subList) {
-        return new Redundancy(redondanceSize)
+    public Redundancy createRedundancy(int redondanceSize, List<Integer> subList) {
+        Redundancy redundancy = new Redundancy(redondanceSize)
                 .withStartingCodeAt(subList);
+
+//        for (Integer firstTokenPosition : subList) {
+//
+//            Token lastToken = code.getToken(firstTokenPosition + redundancy.getDuplicatedTokenNumber() - 1);
+//
+//            MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
+//            if (method != null) {
+//                method.getRedondanceList().add(redundancy);
+//            }
+//        }
+        return redundancy;
     }
 
     public int min(int[] tableauValeur, int debut, int fin) {

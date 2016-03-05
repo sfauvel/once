@@ -72,8 +72,13 @@ public class MethodLocalisation {
     public boolean containsPosition(int tokenPosition) {
         return tokenRange.containsInteger(tokenPosition);
     }
+    
     public IntRange getTokenRange() {
         return tokenRange;
+    }
+    
+    public int getLineNumber() {
+        return end.getLigne() - start.getLigne();
     }
     
 }

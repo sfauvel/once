@@ -58,7 +58,7 @@ public class ReportingImplBeta implements Reporting {
                 long duplicationScore = computeScore(redondance);
                 if (redondance.getDuplicatedTokenNumber() > 5 && duplicationScore > tailleMin) {
                     displayCsvRedundancy(tokenList, redondance, duplicationScore);
-                    afficherCodeRedondant(tokenList, redondance);
+                    afficherCodeRedondant(null, redondance);
                 }
             }
         }
@@ -138,7 +138,8 @@ public class ReportingImplBeta implements Reporting {
         return nombreLigne > nombreLigneMin;
     }
 
-    public void afficherCodeRedondant(final List<Token> tokenList, Redundancy redondance) {
+    public void afficherCodeRedondant(Code code, Redundancy redondance) {
+        List<Token> tokenList = code.getTokenList();
         if (LOG_RESULTAT.isInfoEnabled()) {
 
             List<String> substitutionList = getSubstitution(tokenList, redondance);
@@ -210,7 +211,7 @@ public class ReportingImplBeta implements Reporting {
 
     public void afficherMethodeDupliqueAvecSubtitution(final List<Token> tokenList, Redundancy redondance) {
         if (redondance.getStartRedundancyList().size() > 0 && isFullMethodDuplicated(tokenList, redondance)) {
-            afficherCodeRedondant(tokenList, redondance);
+            afficherCodeRedondant(null, redondance);
         }
     }
 

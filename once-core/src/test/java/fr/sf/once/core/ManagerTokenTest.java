@@ -3,8 +3,7 @@ package fr.sf.once.core;
 import static fr.sf.once.test.OnceAssertions.assertThat;
 import static fr.sf.once.test.UtilsToken.createUnmodifiableTokenList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +38,7 @@ public class ManagerTokenTest {
     public void initManager() {
         emptyManager = new ManagerToken(Collections.<Token> emptyList());
     }
-    
+
     @Test
     public void creating_a_redundancy_between_2_block_i_retrieve_start_position_of_each_block() {
         final int FIRST_POSITION = 34;
@@ -91,40 +90,40 @@ public class ManagerTokenTest {
 
     /**
      * 0 1 2
-     * A A B 
+     * A A B
      * 0: 1 1 2 -> 1
-     * 1: 1 2   -> 2
-     * 2: 1     -> 0
+     * 1: 1 2 -> 2
+     * 2: 1 -> 0
      */
     @Test
     public void testTrierListeTokenSansModifierListeOrigine() {
         Code code = createCodeWith("A", "A", "B");
         List<Integer> positionList = range(code.getSize());
-        
+
         Collections.sort(positionList, new ComparatorWithSubstitution(code));
-        
-        assertThat(positionList).containsExactly(2, 0, 1);  
-        assertThat(tokensMapToPosition(code, positionList)).containsExactly("B", "A", "A");      
+
+        assertThat(positionList).containsExactly(2, 0, 1);
+        assertThat(tokensMapToPosition(code, positionList)).containsExactly("B", "A", "A");
     }
 
     /**
      * 0 1 2 3 4 5
-     * A E A B A C 
+     * A E A B A C
      * 0: 1 2 1 3 1 4 -> 3
-     * 1: 1 2 3 2 4   -> 5
-     * 2: 1 2 1 3     -> 2 
-     * 3: 1 2 3       -> 4 
-     * 4: 1 2         -> 1 
-     * 5: 1           -> 0
+     * 1: 1 2 3 2 4 -> 5
+     * 2: 1 2 1 3 -> 2
+     * 3: 1 2 3 -> 4
+     * 4: 1 2 -> 1
+     * 5: 1 -> 0
      */
     @Test
     public void testTrierSurPlusieursTokens() {
         Code code = createCodeWith("A", "E", "A", "B", "A", "C");
         List<Integer> positionList = range(code.getSize());
-        
+
         Collections.sort(positionList, new ComparatorWithSubstitution(code));
 
-        assertThat(positionList).containsExactly(5, 4, 2, 0, 3, 1);        
+        assertThat(positionList).containsExactly(5, 4, 2, 0, 3, 1);
         assertThat(tokensMapToPosition(code, positionList)).containsExactly("C", "A", "A", "A", "B", "E");
     }
 
@@ -140,8 +139,8 @@ public class ManagerTokenTest {
 
         Redundancy red = listeRedondance.get(0);
 
-        assertRedondance(2, listeRedondance.get(0));
-        assertRedondance(1, listeRedondance.get(1));
+        assertRedundancySize(2, listeRedondance.get(0));
+        assertRedundancySize(1, listeRedondance.get(1));
         assertEquals(2, listeRedondance.size());
     }
 
@@ -154,7 +153,7 @@ public class ManagerTokenTest {
                 new int[] { 3 },
                 0);
 
-        assertRedondance(3, listeRedondance.get(0));
+        assertRedundancySize(3, listeRedondance.get(0));
         assertEquals(1, listeRedondance.size());
     }
 
@@ -167,8 +166,8 @@ public class ManagerTokenTest {
                 new int[] { 3, 5 },
                 0);
 
-        assertRedondance(3, listeRedondance.get(0));
-        assertRedondance(5, listeRedondance.get(1));
+        assertRedundancySize(3, listeRedondance.get(0));
+        assertRedundancySize(5, listeRedondance.get(1));
         assertEquals(2, listeRedondance.size());
     }
 
@@ -181,11 +180,11 @@ public class ManagerTokenTest {
                 new int[] { 2, 4, 6, 7, 8 },
                 0);
 
-        assertRedondance(2, listeRedondance.get(0));
-        assertRedondance(4, listeRedondance.get(1));
-        assertRedondance(6, listeRedondance.get(2));
-        assertRedondance(7, listeRedondance.get(3));
-        assertRedondance(8, listeRedondance.get(4));
+        assertRedundancySize(2, listeRedondance.get(0));
+        assertRedundancySize(4, listeRedondance.get(1));
+        assertRedundancySize(6, listeRedondance.get(2));
+        assertRedundancySize(7, listeRedondance.get(3));
+        assertRedundancySize(8, listeRedondance.get(4));
         assertEquals(5, listeRedondance.size());
     }
 
@@ -198,7 +197,7 @@ public class ManagerTokenTest {
                 new int[] { 5, 5, 5, 5 },
                 0);
 
-        assertRedondance(5, listeRedondance.get(0));
+        assertRedundancySize(5, listeRedondance.get(0));
         assertEquals(1, listeRedondance.size());
     }
 
@@ -211,8 +210,8 @@ public class ManagerTokenTest {
                 new int[] { 8, 5 },
                 0);
 
-        assertRedondance(8, listeRedondance.get(0));
-        assertRedondance(5, listeRedondance.get(1));
+        assertRedundancySize(8, listeRedondance.get(0));
+        assertRedundancySize(5, listeRedondance.get(1));
         assertEquals(2, listeRedondance.size());
     }
 
@@ -226,13 +225,13 @@ public class ManagerTokenTest {
                 new int[] { 2, 5, 3 },
                 0);
 
-        assertRedondance(2, listeRedondance.get(0));
-        assertRedondance(5, listeRedondance.get(1));
-        assertRedondance(3, listeRedondance.get(2));
+        assertRedundancySize(2, listeRedondance.get(0));
+        assertRedundancySize(5, listeRedondance.get(1));
+        assertRedundancySize(3, listeRedondance.get(2));
         assertEquals(3, listeRedondance.size());
     }
 
-    private void assertRedondance(int tailleAttendu, Redundancy redondance) {
+    private void assertRedundancySize(int tailleAttendu, Redundancy redondance) {
         assertEquals(tailleAttendu, redondance.getDuplicatedTokenNumber());
     }
 
@@ -254,7 +253,6 @@ public class ManagerTokenTest {
         List<Redundancy> listeObtenue = managerToken.supprimerDoublon(listeRedondance);
         assertEquals(true, listeObtenue.isEmpty());
     }
-    
 
     private Stream<String> tokensMapToPosition(Code code, List<Integer> positionList) {
         return positionList.stream().map(p -> code.getToken(p).getValeurToken());

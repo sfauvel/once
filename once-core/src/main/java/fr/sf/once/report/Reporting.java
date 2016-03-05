@@ -15,7 +15,7 @@ public interface Reporting {
     Logger LOG_RESULTAT = Logger.getLogger("RESULTAT");
     Logger LOG_CSV = Logger.getLogger("CSV");
     void afficherRedondance(final Code code, int tailleMin, List<Redundancy> listeRedondance);
-    void afficherCodeRedondant(final List<Token> tokenList, Redundancy redondance);
+    void afficherCodeRedondant(Code code, Redundancy redondance);
     void afficheListeToken(List<Token> listeToken);
     void display(final Code code);
 }
