@@ -1,12 +1,16 @@
 package fr.sf.once.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.IntRange;
 import org.junit.Test;
@@ -117,5 +121,60 @@ public class CodeTest {
 
     }
 
+    @Test
+    public void should_create_a_new_code_without_token_indicated_when_remove_between_2_position() {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G"));
+        
+        Code newCode = code.removeFromTo(3,5);
+        List<String> values = newCode.getTokenList().stream().map(t -> t.getValeurToken()).collect(Collectors.toList());
+        assertThat(values).containsExactly("A", "B", "C", "G");
+    }
     
+    @Test
+    public void should_create_a_new_code_without_token_indicated_when_remove_between_until_the_end() {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G"));
+        
+        Code newCode = code.removeFromTo(3,6);
+        List<String> values = newCode.getTokenList().stream().map(t -> t.getValeurToken()).collect(Collectors.toList());
+        assertThat(values).containsExactly("A", "B", "C");
+    }
+    
+    @Test
+    public void should_create_a_new_code_without_token_indicated_when_remove_from_the_beginning() {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G"));
+        
+        Code newCode = code.removeFromTo(0,1);
+        List<String> values = newCode.getTokenList().stream().map(t -> t.getValeurToken()).collect(Collectors.toList());
+        assertThat(values).containsExactly("C", "D", "E", "F", "G");
+    }
+
+    @Test
+    public void should_return_method_code_when_ask_one_method() {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G"),
+                Arrays.asList(new MethodLocalisation("org.myMethod", new IntRange(2, 4))));
+        
+        Code newCode = code.getMethodCode("org.myMethod");
+        List<String> values = newCode.getTokenList().stream().map(t -> t.getValeurToken()).collect(Collectors.toList());
+        assertThat(values).containsExactly("C", "D");
+    }
+    
+    @Test
+    public void should_return_code_of_the_2_methods_when_ask_two_methods() {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G", "H"),
+                Arrays.asList(new MethodLocalisation("org.myFirstMethod", new IntRange(1, 3)),
+                        new MethodLocalisation("org.mySecondMethod", new IntRange(5, 7))));
+        
+        Code newCode = code.getMethodCode("org.myFirstMethod", "org.mySecondMethod");
+        List<String> values = newCode.getTokenList().stream().map(t -> t.getValeurToken()).collect(Collectors.toList());
+        assertThat(values).containsExactly("B", "C", "F", "G");
+    }
+    
+    @Test
+    public void should_create_a_new_code_without_token_indicated_when_remove_several_int_range() {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G"));
+        
+        Code newCode = code.removeCode(new IntRange(1,2), new IntRange(4,5));
+        List<String> values = newCode.getTokenList().stream().map(t -> t.getValeurToken()).collect(Collectors.toList());
+        assertThat(values).containsExactly("A", "D", "G");
+    }
 }

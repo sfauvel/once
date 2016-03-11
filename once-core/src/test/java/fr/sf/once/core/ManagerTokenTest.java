@@ -18,6 +18,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.mockito.internal.util.RemoveFirstLine;
 import org.w3c.dom.ranges.RangeException;
 
 import fr.sf.once.comparator.CodeComparator;
@@ -235,10 +236,6 @@ public class ManagerTokenTest {
         assertEquals(3, listeRedondance.size());
     }
 
-    private void assertRedundancySize(int tailleAttendu, Redundancy redondance) {
-        assertEquals(tailleAttendu, redondance.getDuplicatedTokenNumber());
-    }
-
     @Test
     public void testMin() throws Exception {
         ManagerToken managerToken = new ManagerToken(Collections.<Token> emptyList());
@@ -256,6 +253,48 @@ public class ManagerTokenTest {
         List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
         List<Redundancy> listeObtenue = managerToken.supprimerDoublon(listeRedondance);
         assertEquals(true, listeObtenue.isEmpty());
+    }
+    
+
+    @Test
+    public void should_delete_code_between_redundancies_when_2_redundancies() throws Exception {
+        
+        Code code = new Code(createUnmodifiableTokenList(
+                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", 
+                "A", "B", "C", "D", "X", "Y", "F", "G", "H", "I", "Z"));
+        ManagerToken managerToken = new ManagerToken(code);
+        Configuration configuration = new Configuration()
+                .withTailleMin(3);
+        List<Redundancy> redundancy = managerToken.getRedondance(configuration);
+        
+        assertThat(redundancy).hasSize(2);
+        Redundancy red1 = redundancy.get(0);
+        Redundancy red2 = redundancy.get(1);
+        red1.getStartRedundancyList().forEach(c -> System.out.print(c.intValue() + " "));
+        red2.getStartRedundancyList().forEach(c -> System.out.print(c.intValue() + " "));
+        System.out.println();
+        // Remove in reverse order to keep same values of token index.
+        Code removeFromTo = removeFromCode(code, red1, red2, 1);
+        removeFromTo = removeFromCode(removeFromTo, red1, red2, 0);
+        removeFromTo.getTokenList().forEach(c -> System.out.print(c.getValeurToken()));
+        
+        ManagerToken managerToken2 = new ManagerToken(removeFromTo);
+        List<Redundancy> redundancyList = managerToken2.getRedondance(configuration);
+        assertThat(redundancyList).hasSize(1);
+        assertThat(redundancyList.get(0).getDuplicatedTokenNumber()).isEqualTo(8);
+        assertThat(redundancyList.get(0).getStartRedundancyList()).containsExactly(0, 10);
+        
+        // We have to reconsitute the orginal code
+        fail("to finish");
+        
+    }
+
+    private Code removeFromCode(Code code, Redundancy red1, Redundancy red2, int indexRedundancy) {
+        return code.removeFromTo(red1.getStartRedundancyList().get(indexRedundancy)+red1.getDuplicatedTokenNumber(), red2.getStartRedundancyList().get(indexRedundancy)-1);
+    }
+    
+    private void assertRedundancySize(int tailleAttendu, Redundancy redondance) {
+        assertEquals(tailleAttendu, redondance.getDuplicatedTokenNumber());
     }
 
     private Stream<String> tokensMapToPosition(Code code, List<Integer> positionList) {

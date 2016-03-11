@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang.math.IntRange;
+
 
 /**
  * Structure to handle source tokens.
@@ -44,6 +46,34 @@ public class Code {
                 .filter(m -> m.containsPosition(tokenPosition))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Code removeFromTo(int first, int last) {
+        return removeCode(new IntRange(first, last));
+    }
+
+    public Code removeCode(IntRange... intRangeList) {
+        List<Token> newTokenList = tokenList;
+        for (int i = intRangeList.length-1; i >= 0; i--) {
+            newTokenList = removeOneRangeFromCode(newTokenList, intRangeList[i]);
+        }
+        return new Code(newTokenList);
+    }
+
+    private List<Token> removeOneRangeFromCode(List<Token> tokenList, IntRange intRange) {
+        List<Token> newTokenList = new ArrayList<Token>();
+        newTokenList.addAll(tokenList.subList(0,  intRange.getMinimumInteger()));
+        newTokenList.addAll(tokenList.subList(intRange.getMaximumInteger()+1, tokenList.size()));
+        return newTokenList;
+    }
+
+    public Code getMethodCode(String... methodNameList) {
+        ArrayList<Token> methodTokens = new ArrayList<Token>();
+        for (String methodName : methodNameList) {
+            MethodLocalisation method = methodList.stream().filter(m -> m.getMethodName().equals(methodName)).findFirst().get();
+            methodTokens.addAll(tokenList.subList(method.getTokenRange().getMinimumInteger(), method.getTokenRange().getMaximumInteger()));
+        }
+        return new Code(methodTokens);
     }
 
 

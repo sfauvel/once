@@ -222,9 +222,16 @@ public class ManagerToken {
             }
         }
     }
+    
+    
 
     public int min(int[] tableauValeur, int debut, int fin) {
         return Arrays.stream(tableauValeur, debut, fin+1).min().orElse(0);
+    }
+
+    public void removeCodeBetween(int i, int j) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
