@@ -6,7 +6,7 @@ script: mvn install
 deploy:
    provider: releases
    user: sfauvel
-   api_key:f2177e7370473ecf9d7037864ce35bd694ac1e77
+   api_key: f2177e7370473ecf9d7037864ce35bd694ac1e77
    file: target/once-core-0.0.9.2.jar
    skip_cleanup: true
    on:
