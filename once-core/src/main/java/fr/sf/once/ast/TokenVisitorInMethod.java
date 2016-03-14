@@ -1,8 +1,8 @@
 package fr.sf.once.ast;
 
-import japa.parser.ast.body.MethodDeclaration;
-
 import java.util.List;
+
+import com.github.javaparser.ast.body.MethodDeclaration;
 
 import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Token;

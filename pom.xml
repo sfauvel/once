@@ -24,7 +24,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<javaparser.version>1.0.8</javaparser.version>
+		<javaparser.version>2.3.0</javaparser.version>
 		<log4j.version>1.2.17</log4j.version>
 		<commonslang.version>2.5</commonslang.version>
 		<!-- Tests -->
@@ -38,8 +38,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.google.code.javaparser</groupId>
-				<artifactId>javaparser</artifactId>
+				<groupId>com.github.javaparser</groupId>
+				<artifactId>javaparser-core</artifactId>
 				<version>${javaparser.version}</version>
 			</dependency>
 			<dependency>

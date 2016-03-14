@@ -1,20 +1,14 @@
 package fr.sf.once.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -376,6 +370,23 @@ public class ParcoursAstTest {
     }
 
     @Test
+    public void testTrySeveralExceptionOnSameCatch() throws Exception {
+        assertCode(
+                "class MaClasse {",
+                "  public void maMethode() {",
+                "    try {",
+                "    } catch (Exception | TechnicalException e) {",
+                "    }",
+                "  }",
+                "}")
+                        .fromLine(3).indent().indent()
+                        .hasTokens("try", __, "{")
+                        .hasTokens("}", __, "catch", "(", __, "Exception", "|", __, __, "TechnicalException", __, "e", ")", __, "{")
+                        .hasTokens("}");
+    }
+
+    
+    @Test
     public void testIncrement() throws Exception {
         assertCode(
                 "class MaClasse {",
@@ -634,6 +645,7 @@ public class ParcoursAstTest {
     }
 
     private AssertToken assertListToken(List<? extends Token> tokenList) {
+        afficherListToken(tokenList);
         return new AssertToken(tokenList);
     }
 

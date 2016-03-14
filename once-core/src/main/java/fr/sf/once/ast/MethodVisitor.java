@@ -1,9 +1,11 @@
 package fr.sf.once.ast;
 
-import japa.parser.ast.body.MethodDeclaration;
-import japa.parser.ast.visitor.VoidVisitorAdapter;
+
 
 import java.util.List;
+
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.MethodLocalisation;

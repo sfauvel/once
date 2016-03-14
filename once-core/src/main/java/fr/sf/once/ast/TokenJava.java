@@ -16,6 +16,7 @@ public class TokenJava extends Token {
     public static final TokenJava TABLEAU_OUVRANT = new TokenJava("[", Type.NON_SIGNIFICATIF);
     public static final TokenJava TABLEAU_FERMANT = new TokenJava("]", Type.NON_SIGNIFICATIF);
     public static final TokenJava SEPARATEUR_PARAMETRE = new TokenJava(",", Type.NON_SIGNIFICATIF);
+    public static final TokenJava SEPARATEUR_EXCEPTION = new TokenJava("|", Type.NON_SIGNIFICATIF);
 
     public static final TokenJava POINT = new TokenJava(".", Type.NON_SIGNIFICATIF);
     public static final TokenJava FIN_INSTRUCTION = new TokenJava(";", Type.NON_SIGNIFICATIF);
