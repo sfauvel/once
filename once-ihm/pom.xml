@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>fr.sf.once</groupId>
 			<artifactId>once-core</artifactId>
-			<version>0.0.9.2</version>
+			<version>0.0.9.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
