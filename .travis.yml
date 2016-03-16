@@ -8,8 +8,8 @@ deploy:
   api_key:
     secure: n75AwL3Pt5EpGrLdicb2m4YSL1NgBLRjMIc4QzLaV5xzajOOl6EblRyD1U/kCqzJQYArifxNbdS0yLJjeezCmG3BrgHc2/127iR0RExwOINh3EIQtUHerXcLVyoyDh3Xp5PJDOU/y6hGIbHzZxRiFQEz0fym9xpEXmxbHtazS5sKUqCniCGbTlvuLYn3qk7cL9m1scQkWcoCbTKpdhF6wxM3gXH9daw57gSCbH+7e6VKFJrGc0TSB/HiToFbLRII0zXsVwwQjDHtXGbti6Ms517k75YWaHqrt4pZ7TjfX4fDJyMiFhxs/L8fOdssT0mxGpSsPjExW2rWK+Dbst+U8kb/ttaks5KfUs7w4AidRUIKyI6pagt4pa/lUlFM2C6CXPRLDuuloT93zdpQyx0rJOHuoUm/eFy1OJ7susIltcxHhE5iuFg0GIozk6e3hQxJMCmno8ChiFKu/+siwAeqeOopBKevYcbuL+Nlb5AxLNXwM6rhLJzD/14d+hasmxlehVySq0wFqBJTloUWJuiC/enpvFhK+dR4QUzU6BMFGrZhgUpDHrEzR/KYGKpiM0btP2uQ/7Dfi2iHGWSfbMPz/4dqnj9cGcg33qJhVGojL894VkTVeRMMXIC6crGPdtCg0/JOeRxDd00b5j/gLOmShX8CflIfInqhZWZ1Pq2MBS0=
   file: 
-    once-core/target/once-$TRAVIS_TAG.jar
-    once-ihm/target/once-ihm-$TRAVIS_TAG.jar
+    "once-core/target/once-$TRAVIS_TAG.jar"
+    "once-ihm/target/once-ihm-$TRAVIS_TAG.jar"
   skip_cleanup: true
   on:
     tags: true
