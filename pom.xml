@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.sf.once</groupId>
 	<artifactId>once</artifactId>
-	<version>0.0.9.6</version>
+	<version>0.0.9.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -18,7 +18,7 @@
 		<url>https://github.com/sfauvel/once</url>
 		<connection>scm:git:ssh://git@github.com/sfauvel/once.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/sfauvel/once.git</developerConnection>
-		<tag>v0.0.9.6</tag>
+		<tag>v{project.version}</tag>
 	</scm>
 
 	<properties>
