@@ -8,14 +8,12 @@
 		<version>0.0.9.3-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>once-ihm</artifactId>
+	<artifactId>once-core</artifactId>
 
 	<dependencies>
-
 		<dependency>
-			<groupId>fr.sf.once</groupId>
-			<artifactId>once-core</artifactId>
-			<version>${version}</version>
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -25,17 +23,11 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
-		
 		<!-- Tests -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.loadui</groupId>
-			<artifactId>testFx</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -45,7 +37,6 @@
 			<artifactId>assertj-core</artifactId>
 		</dependency>
 	</dependencies>
-
 
 	<build>
 		<plugins>
@@ -63,18 +54,19 @@
 					</execution>
 				</executions>
 				<configuration>
-					<finalName>once-ihm-v${version}</finalName>
+					<finalName>once-v${version}</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>fr.sf.once.javafx.Launcher</mainClass>
+							<mainClass>fr.sf.once.launcher.Launcher</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
