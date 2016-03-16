@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>fr.sf.once</groupId>
 			<artifactId>once-core</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -63,7 +63,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<finalName>once-ihm-v${version}</finalName>
+					<finalName>once-ihm-v${project..version}</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
