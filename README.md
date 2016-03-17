@@ -1,8 +1,11 @@
 ﻿once
 ====
-Version gérer via GitHub/Travis.
 
-Ce programme permet de chercher les redondances dans un programme.
+Vous chercher des duplications dans votre code ? Ce projet est pour vous.
+
+Télécharger le fichier once-ihm-v[VERSION].jar de puis https://github.com/sfauvel/once/releases/latest/
+Exécuter le programme avec la commande: java -jar once-ihm-v[VERSION].jar
+
 Il ne cherche pas les copier/coller mais les structures de programme identique. 
 Des codes seront considérés identiques même si les nom de variables, méthodes ou classes sont différents. 
 
