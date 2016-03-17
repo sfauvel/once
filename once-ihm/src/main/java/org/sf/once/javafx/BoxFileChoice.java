@@ -17,14 +17,12 @@ class BoxFileChoice extends HBox {
 
     private File selectedFile;
 
-    private int BUTTON_MIN_WIDTH = 75;
-
     private TextField textField = new TextField();
     private DirectoryChoice directoryChoice;
 
     public BoxFileChoice(final Stage primaryStage, final String title, final DirectoryChoice.FileChooserType dialogType, File defaultValue) {
         textField.setEditable(false);
-        textField.setMinWidth(300);
+        textField.setMinWidth(ConfStyle.FILECHOICE_MIN_WIDTH);
         
         directoryChoice = new DirectoryChoice(primaryStage, title, dialogType, new EventHandler<ActionEvent>() {
             @Override
@@ -35,7 +33,7 @@ class BoxFileChoice extends HBox {
                 }
             }
         }, defaultValue);
-        directoryChoice.setMinWidth(BUTTON_MIN_WIDTH);
+        directoryChoice.setMinWidth(ConfStyle.BUTTON_MIN_WIDTH);
         
         setMargin(textField, new Insets(0, 0, 0, 10));
     }

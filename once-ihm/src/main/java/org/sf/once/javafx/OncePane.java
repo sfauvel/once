@@ -51,7 +51,7 @@ public class OncePane extends StackPane {
 
         getStylesheets().add(CSS_STYLESHEET);
 
-        boxFileResultChoice.setFile(new File("D:/Projets/Spike/GildedRose/src/main/java"));
+        boxFileResultChoice.setFile(new File(""));
     }
 
     private void initPane(final Stage primaryStage) {
@@ -68,12 +68,12 @@ public class OncePane extends StackPane {
             grid.setVgap(10);
             grid.setPadding(new Insets(10));
 
-            runButton = createButton(primaryStage, "Démarrer");
+            runButton = createButton(primaryStage, "Start");
             int currentLine = 0;
             {
                 {
-                    boxFileResultChoice = new BoxFileChoice(primaryStage, "Modifier", DirectoryChoice.FileChooserType.OPEN, new File("D:/Projets/Spike/GildedRose/src/main/java"));
-                    addFileChoiceOnLine("Répertoire source", grid, currentLine++, boxFileResultChoice/*, runButton*/);
+                    boxFileResultChoice = new BoxFileChoice(primaryStage, "Select", DirectoryChoice.FileChooserType.OPEN, new File(""));
+                    addFileChoiceOnLine("Source dir", grid, currentLine++, boxFileResultChoice/*, runButton*/);
                 }
             }
 
@@ -104,6 +104,7 @@ public class OncePane extends StackPane {
 
         Button btn = new Button();
         btn.setText(buttonLabel);
+        btn.setMinWidth(100);
         btn.setOnAction(new EventHandler<ActionEvent>() {
             private List<MethodLocalisation> methodList;
 
@@ -131,7 +132,7 @@ public class OncePane extends StackPane {
 
             private void showDuplication(ManagerToken manager) {
                 Class<ComparateurAvecSubstitutionEtType> comparator = ComparateurAvecSubstitutionEtType.class;
-                int minimalSize = 20;
+                int minimalSize = ConfStyle.BUTTON_MIN_WIDTH;
                 Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);
                 List<Redundancy> redundancies = manager.getRedondance(configuration);
 
