@@ -46,15 +46,15 @@ public class OncePane extends StackPane {
     }
 
     public OncePane(Stage primaryStage) {
-
-        initPane(primaryStage);
+        String defaultPath = new File("").getAbsolutePath();
+        initPane(primaryStage, defaultPath);
 
         getStylesheets().add(CSS_STYLESHEET);
 
         boxFileResultChoice.setFile(new File(""));
     }
 
-    private void initPane(final Stage primaryStage) {
+    private void initPane(final Stage primaryStage, String defaultPath) {
 
         VBox box = new VBox(); 
         box.setSpacing(0);
@@ -72,7 +72,7 @@ public class OncePane extends StackPane {
             int currentLine = 0;
             {
                 {
-                    boxFileResultChoice = new BoxFileChoice(primaryStage, "Select", DirectoryChoice.FileChooserType.OPEN, new File(""));
+                    boxFileResultChoice = new BoxFileChoice(primaryStage, "Select", DirectoryChoice.FileChooserType.OPEN, new File(defaultPath));
                     addFileChoiceOnLine("Source dir", grid, currentLine++, boxFileResultChoice/*, runButton*/);
                 }
             }
