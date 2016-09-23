@@ -260,8 +260,8 @@ public class ManagerTokenTest {
     public void should_delete_code_between_redundancies_when_2_redundancies() throws Exception {
         
         Code code = new Code(createUnmodifiableTokenList(
-                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", 
-                "A", "B", "C", "D", "X", "Y", "F", "G", "H", "I", "Z"));
+                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
+                "A", "B", "C", "D", "E", "X", "Y", "F", "G", "H", "I", "Z"));
         ManagerToken managerToken = new ManagerToken(code);
         Configuration configuration = new Configuration()
                 .withTailleMin(3);
@@ -270,13 +270,14 @@ public class ManagerTokenTest {
         assertThat(redundancy).hasSize(2);
         Redundancy red1 = redundancy.get(0);
         Redundancy red2 = redundancy.get(1);
-        red1.getStartRedundancyList().forEach(c -> System.out.print(c.intValue() + " "));
-        red2.getStartRedundancyList().forEach(c -> System.out.print(c.intValue() + " "));
-        System.out.println();
+        display(red1);
+        display(red2);
         // Remove in reverse order to keep same values of token index.
+        display(code);
         Code removeFromTo = removeFromCode(code, red1, red2, 1);
+        display(removeFromTo);
         removeFromTo = removeFromCode(removeFromTo, red1, red2, 0);
-        removeFromTo.getTokenList().forEach(c -> System.out.print(c.getValeurToken()));
+        display(removeFromTo);
         
         ManagerToken managerToken2 = new ManagerToken(removeFromTo);
         List<Redundancy> redundancyList = managerToken2.getRedondance(configuration);
@@ -288,6 +289,19 @@ public class ManagerTokenTest {
         fail("to finish");
         
     }
+
+	private void display(Code removeFromTo) {
+		System.out.print("Code:");
+		removeFromTo.getTokenList().forEach(c -> System.out.print(c.getValeurToken()));
+		System.out.println();
+	}
+
+	private void display(Redundancy redundancy) {
+		System.out.print("Size:" + redundancy.getDuplicatedTokenNumber());
+		System.out.print("  Start at:");
+		redundancy.getStartRedundancyList().forEach(c -> System.out.print(c.intValue() + " "));
+        System.out.println();
+	}
 
     private Code removeFromCode(Code code, Redundancy red1, Redundancy red2, int indexRedundancy) {
         return code.removeFromTo(red1.getStartRedundancyList().get(indexRedundancy)+red1.getDuplicatedTokenNumber(), red2.getStartRedundancyList().get(indexRedundancy)-1);
