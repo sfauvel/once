@@ -9,7 +9,9 @@ import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.core.ManagerToken;
+import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
+import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
@@ -19,6 +21,19 @@ public final class UtilsToken {
     
     private UtilsToken() {
         
+    }
+    
+    public static void display(Code code) {
+        System.out.print("Code:");
+        code.getTokenList().forEach(c -> System.out.print(c.getValeurToken()));
+        System.out.println();
+    }
+
+    public static void display(Redundancy redundancy) {
+        System.out.print("Size:" + redundancy.getDuplicatedTokenNumber());
+        System.out.print("  Start at:");
+        redundancy.getStartRedundancyList().forEach(c -> System.out.print(c.intValue() + " "));
+        System.out.println();
     }
     
     /**
