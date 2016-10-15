@@ -167,7 +167,7 @@ public class Launcher {
 		Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);
 
 		ManagerToken manager = new ManagerToken(code);
-		List<Redundancy> listeRedondance = manager.getRedondance(configuration);
+		List<Redundancy> listeRedondance = manager.getRedundancies(configuration);
 
 		LOG.info("Affichage des resultats...");
 		Reporting reporting = new ReportingImpl(code.getMethodList());

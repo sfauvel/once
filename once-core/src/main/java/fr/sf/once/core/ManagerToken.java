@@ -25,12 +25,12 @@ public class ManagerToken {
         this.code = code;
     }
 
-    public List<Redundancy> getRedondance(int tailleMin) {
-        return getRedondance(new Configuration(ComparatorWithSubstitution.class)
+    public List<Redundancy> getRedundancies(int tailleMin) {
+        return getRedundancies(new Configuration(ComparatorWithSubstitution.class)
                 .withTailleMin(tailleMin));
     }
 
-    public List<Redundancy> getRedondance(Configuration configuration) {
+    public List<Redundancy> getRedundancies(Configuration configuration) {
         List<Integer> positionList = getPositionToManage();
         CodeComparator comparator = configuration.getComparateur(code);
         LOG.info("Tri des " + positionList.size() + " tokens...");
@@ -38,14 +38,14 @@ public class ManagerToken {
         traceSortedToken(positionList);
         LOG.info("Calcul des tailles de redondance...");
         int[] redundancySize = comparator.getRedundancySize(positionList);
-        traceTailleRedondance(positionList, redundancySize);
+        traceRedundancySize(positionList, redundancySize);
 
         LOG.info("Calcul des redondances...");
-        List<Redundancy> listeRedondance = calculerRedondance(positionList, redundancySize, configuration.getTailleMin());
+        List<Redundancy> listeRedondance = computeRedundancy(positionList, redundancySize, configuration.getTailleMin());
         LOG.info("Suppression des chevauchements...");
         listeRedondance = removeOverlap(listeRedondance);
         LOG.info("Suppression des doublons...");
-        listeRedondance = supprimerDoublon(listeRedondance);
+        listeRedondance = removeRedundancyIncludedInAnotherOne(listeRedondance);
         LOG.info("Fin du traitement");
         return listeRedondance;
 
@@ -92,21 +92,21 @@ public class ManagerToken {
         return code.getToken(position);
     }
 
-    private void traceTailleRedondance(List<Integer> positionList, int[] tailleRedondance) {
+    private void traceRedundancySize(List<Integer> positionList, int[] redundanciesSize) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("\nXXXX\n  traceTailleRedondance");
             int position = 0;
             for (Integer tokenPosition : positionList) {
                 traceToken(tokenPosition);
-                if (position < tailleRedondance.length) {
-                    LOG.debug("Taille redondance:" + tailleRedondance[position]);
+                if (position < redundanciesSize.length) {
+                    LOG.debug("Taille redondance:" + redundanciesSize[position]);
                 }
                 position++;
             }
         }
     }
 
-    public List<Redundancy> supprimerDoublon(List<Redundancy> redundancyList) {
+    public List<Redundancy> removeRedundancyIncludedInAnotherOne(List<Redundancy> redundancyList) {
         LOG.info("Nombre de redondance avant suppression des doublons: " + redundancyList.size());
         Redundancy.removeDuplicatedList(redundancyList);
         LOG.info("Nombre de redondance après suppression des doublons: " + redundancyList.size());
@@ -153,21 +153,21 @@ public class ManagerToken {
         }
     }
 
-    public List<Redundancy> calculerRedondance(List<Integer> positionList, int[] tailleRedondance, int tailleMin) {
+    public List<Redundancy> computeRedundancy(List<Integer> positionList, int[] tailleRedondance, int tailleMin) {
         List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
-        ajouterRedondanceInterne(positionList, listeRedondance, tailleRedondance, 0, 0, 0);
+        addRedundancyInternal(positionList, listeRedondance, tailleRedondance, 0, 0, 0);
         for (int i = 1; i < tailleRedondance.length; i++) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("index : " + i);
             }
             if (tailleRedondance[i] > tailleRedondance[i - 1]) {
-                ajouterRedondanceInterne(positionList, listeRedondance, tailleRedondance, i, i, Math.max(tailleMin, tailleRedondance[i - 1]));
+                addRedundancyInternal(positionList, listeRedondance, tailleRedondance, i, i, Math.max(tailleMin, tailleRedondance[i - 1]));
             }
         }
         return listeRedondance;
     }
 
-    public void ajouterRedondanceInterne(List<Integer> positionList, List<Redundancy> listeRedondance, int[] listeTailleRedondance, int indexDepart,
+    public void addRedundancyInternal(List<Integer> positionList, List<Redundancy> listeRedondance, int[] listeTailleRedondance, int indexDepart,
             int indexCourant, int tailleMin) {
         if (indexCourant >= listeTailleRedondance.length) {
             return;
@@ -192,7 +192,7 @@ public class ManagerToken {
             }
         }
 
-        ajouterRedondanceInterne(positionList, listeRedondance, listeTailleRedondance, indexDepart, indexCourant, tailleMin);
+        addRedundancyInternal(positionList, listeRedondance, listeTailleRedondance, indexDepart, indexCourant, tailleMin);
     }
 
     Redundancy createRedundancy(int redondanceSize, List<Integer> subList) {

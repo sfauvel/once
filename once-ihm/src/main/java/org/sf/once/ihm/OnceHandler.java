@@ -159,7 +159,7 @@ public class OnceHandler implements HttpHandler {
         Configuration configuration = new Configuration(comparator).withTailleMin(tailleMin);
 
         ManagerToken manager = new ManagerToken(code);
-        List<Redundancy> listeRedondance = manager.getRedondance(configuration);
+        List<Redundancy> listeRedondance = manager.getRedundancies(configuration);
 
         LOG.info("Affichage des resultats...");
 

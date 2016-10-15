@@ -131,7 +131,7 @@ public class ManagerTokenTest {
     public void testAfficherRedondance() {
         ManagerToken manager = new ManagerToken(createCodeWith("A", "A", "B", "B"));
 
-        List<Redundancy> listeRedondance = manager.getRedondance(0);
+        List<Redundancy> listeRedondance = manager.getRedundancies(0);
 
         Redundancy red = listeRedondance.get(0);
 
@@ -144,7 +144,7 @@ public class ManagerTokenTest {
     public void testAjouterRedondanceUneSeuleValeur() throws Exception {
         ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F");
         List<Integer> positionList = UtilsToken.createPositionList(2);
-        List<Redundancy> listeRedondance = managerToken.calculerRedondance(
+        List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
                 new int[] { 3 },
                 0);
@@ -157,7 +157,7 @@ public class ManagerTokenTest {
     public void testAjouterRedondance() throws Exception {
         ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(3);
-        List<Redundancy> listeRedondance = managerToken.calculerRedondance(
+        List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
                 new int[] { 3, 5 },
                 0);
@@ -171,7 +171,7 @@ public class ManagerTokenTest {
     public void testAjouterRedondanceToujoursPlusGrand() throws Exception {
         ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(6);
-        List<Redundancy> listeRedondance = managerToken.calculerRedondance(
+        List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
                 new int[] { 2, 4, 6, 7, 8 },
                 0);
@@ -188,7 +188,7 @@ public class ManagerTokenTest {
     public void testAjouterRedondanceToujoursEgal() throws Exception {
         ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(6);
-        List<Redundancy> listeRedondance = managerToken.calculerRedondance(
+        List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
                 new int[] { 5, 5, 5, 5 },
                 0);
@@ -201,7 +201,7 @@ public class ManagerTokenTest {
     public void testAjouterRedondanceToujoursPlusPetit() throws Exception {
         ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(3);
-        List<Redundancy> listeRedondance = managerToken.calculerRedondance(
+        List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
                 new int[] { 8, 5 },
                 0);
@@ -216,7 +216,7 @@ public class ManagerTokenTest {
 
         ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(4);
-        List<Redundancy> listeRedondance = managerToken.calculerRedondance(
+        List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
                 new int[] { 2, 5, 3 },
                 0);
@@ -245,12 +245,12 @@ public class ManagerTokenTest {
     }
 
     @Test
-    public void testSupprimerDoublonListeVide() {
-        ManagerToken managerToken = new ManagerToken(new Code());
-        List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
-        List<Redundancy> listeObtenue = managerToken.supprimerDoublon(listeRedondance);
-        assertEquals(true, listeObtenue.isEmpty());
-    }
+        public void testRemoveRedundancyIncludedInAnotherOneListeVide() {
+            ManagerToken managerToken = new ManagerToken(new Code());
+            List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
+            List<Redundancy> listeObtenue = managerToken.removeRedundancyIncludedInAnotherOne(listeRedondance);
+            assertEquals(true, listeObtenue.isEmpty());
+        }
     
 
     private Stream<String> tokensMapToPosition(Code code, List<Integer> positionList) {

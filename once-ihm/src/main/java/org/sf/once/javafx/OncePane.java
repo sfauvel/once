@@ -134,7 +134,7 @@ public class OncePane extends StackPane {
                 Class<ComparateurAvecSubstitutionEtType> comparator = ComparateurAvecSubstitutionEtType.class;
                 int minimalSize = ConfStyle.BUTTON_MIN_WIDTH;
                 Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);
-                List<Redundancy> redundancies = manager.getRedondance(configuration);
+                List<Redundancy> redundancies = manager.getRedundancies(configuration);
 
                 duplicationPane.display(tokenList, methodList, redundancies);
             }
