@@ -34,34 +34,6 @@ public class ManagerTokenTest {
     public void initManager() {
         emptyManager = new ManagerToken(new Code());
     }
-    
-    @Test
-    public void creating_a_redundancy_between_2_block_i_retrieve_start_position_of_each_block() {
-        final int FIRST_POSITION = 34;
-        final int SECOND_POSITION = 65;
-
-        Redundancy redundancy = emptyManager.createRedundancy(1, Arrays.asList(FIRST_POSITION, SECOND_POSITION));
-
-        assertThat(redundancy.getStartRedundancyList()).containsOnly(FIRST_POSITION, SECOND_POSITION);
-    }
-
-    @Test
-    public void creating_a_redundancy_between_3_block_the_redundancy_number_is_3_and_it_s_equal_to_redundancy_size() {
-        Redundancy redundancy = emptyManager.createRedundancy(1, Arrays.asList(11, 22, 33));
-
-        assertThat(redundancy.getRedundancyNumber())
-                .isEqualTo(3)
-                .isEqualTo(redundancy.getStartRedundancyList().size());
-    }
-
-    @Test
-    public void creating_a_redundancy_on_7_tokens_the_duplicate_token_number_is_7() {
-        final int REDUNDANCY_TOKEN_NUMBER = 3;
-
-        Redundancy redundancy = emptyManager.createRedundancy(REDUNDANCY_TOKEN_NUMBER, Arrays.asList(11, 22, 33));
-
-        assertThat(redundancy.getDuplicatedTokenNumber()).isEqualTo(REDUNDANCY_TOKEN_NUMBER);
-    }
 
     @Test
     public void when_i_get_a_token_from_a_position_i_have_the_corresponding_token() {

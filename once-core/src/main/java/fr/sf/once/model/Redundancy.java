@@ -17,7 +17,12 @@ public class Redundancy {
 	    this.duplicatedTokenNumber = duplicatedTokenNumber;
 	}
 	
-	public int getDuplicatedTokenNumber() {
+	public Redundancy(int duplicatedTokenNumber, List<Integer> firstTokenList) {
+	    this(duplicatedTokenNumber);
+	    this.firstTokenList.addAll(firstTokenList);
+    }
+
+    public int getDuplicatedTokenNumber() {
 		return this.duplicatedTokenNumber;
 	}
 
