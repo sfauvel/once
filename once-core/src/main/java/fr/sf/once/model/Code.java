@@ -14,6 +14,10 @@ public class Code {
     private final List<Token> tokenList;
     private final List<MethodLocalisation> methodList;
     
+    public Code() {
+        this(Collections.<Token> emptyList());
+    }
+
     public Code(final List<Token> tokenList) {
         this(tokenList, Collections.<MethodLocalisation>emptyList());
     }
@@ -22,6 +26,7 @@ public class Code {
         this.tokenList = Collections.unmodifiableList(new ArrayList<Token>(tokenList));
         this.methodList = Collections.unmodifiableList(new ArrayList<MethodLocalisation>(methodList));
     }
+
 
     public List<Token> getTokenList() {
         return tokenList;

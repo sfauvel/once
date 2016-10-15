@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.core.ManagerToken;
+import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
@@ -64,7 +64,7 @@ public final class UtilsToken {
     }
     
     public static ManagerToken createManagerToken(final List<Token> tokenList) {
-        return new ManagerToken(tokenList);
+        return new ManagerToken(new Code(tokenList));
     }
     
     public static ManagerToken createManagerToken(String... tokenValueList) {

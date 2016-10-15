@@ -118,9 +118,8 @@ public class ManagerToken {
     }
 
     public void sortPositionList(List<Integer> positionList, CodeComparator comparator) {
-        ReportingImpl report = null;
         if (ReportingImpl.TRACE_TOKEN.isDebugEnabled()) {
-            report = new ReportingImpl(null);
+            ReportingImpl report = new ReportingImpl(null);
             ReportingImpl.TRACE_TOKEN.debug("\nXXXX\n  getListeTokenTrier non trié");
             for (Token token : getTokenList()) {
                 report.display(token);
@@ -129,6 +128,7 @@ public class ManagerToken {
         Collections.sort(positionList, comparator);
 
         if (ReportingImpl.TRACE_TOKEN.isDebugEnabled()) {
+            ReportingImpl report = new ReportingImpl(null);
             ReportingImpl.TRACE_TOKEN.debug("\nXXXX\n  getListeTokenTrier trié");
             for (Integer position : positionList) {
                 report.display(getToken(position));

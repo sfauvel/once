@@ -14,14 +14,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang.math.IntRange;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.w3c.dom.ranges.RangeException;
 
-import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
@@ -37,7 +33,7 @@ public class ManagerTokenTest {
 
     @Before
     public void initManager() {
-        emptyManager = new ManagerToken(Collections.<Token> emptyList());
+        emptyManager = new ManagerToken(new Code());
     }
     
     @Test

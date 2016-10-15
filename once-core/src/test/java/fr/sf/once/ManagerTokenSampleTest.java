@@ -3,6 +3,7 @@ package fr.sf.once;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.ConsoleAppender;
@@ -51,12 +52,13 @@ public class ManagerTokenSampleTest {
 //        LOG.setLevel(Level.DEBUG);
 //        LOG.setAdditivity(false);
 
-        List<Token> listeTokenOrigine = createTokenList();
-        ManagerToken manager = new ManagerToken(listeTokenOrigine);
+//        List<Token> listeTokenOrigine = createTokenList();
+        Code code = createCode();
+        ManagerToken manager = new ManagerToken(code);
 
-        CodeComparator comparator = new ComparatorWithSubstitution(new Code(listeTokenOrigine));
+        CodeComparator comparator = new ComparatorWithSubstitution(code);
 
-        List<Integer> positionList = UtilsToken.createPositionList(listeTokenOrigine.size());
+        List<Integer> positionList = UtilsToken.createPositionList(code.getSize());
 
         manager.sortPositionList(positionList, comparator);
 
@@ -65,7 +67,7 @@ public class ManagerTokenSampleTest {
 
         int index = 0;
         for (Integer tokenPosition : positionList) {
-            Token token = listeTokenOrigine.get(tokenPosition);
+            Token token = code.getToken(tokenPosition);
 //            LOG.debug(tokenPosition + ":\t" + token.getValeurToken());
 
             if ("(".equals(token.getValeurToken())) {
@@ -85,45 +87,45 @@ public class ManagerTokenSampleTest {
 
     }
 
-    public List<Token> createTokenList() {
-        ArrayList<Token> tokenList = new ArrayList<Token>();
-        tokenList.add(createToken(27, 1, "class", Type.VALEUR));
-        tokenList.add(createToken(27, 6, "GestionGroupe", Type.VALEUR));
-        tokenList.add(createToken(29, 8, "{", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(29, 23, "Vector", Type.VALEUR));
-        tokenList.add(createToken(29, 29, "lireListeGroupeOrderByCode", Type.VALEUR));
-        tokenList.add(createToken(29, 56, "(", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(29, 57, ")", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(30, 48, "[METHOD LIMIT]", Type.BREAK));
-        tokenList.add(createToken(30, 48, "{", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(31, 17, "Vector", Type.VALEUR));
-        tokenList.add(createToken(31, 24, "listeGroupe", Type.VALEUR));
-        tokenList.add(createToken(31, 35, "=", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(31, 38, "new", Type.VALEUR));
-        tokenList.add(createToken(31, 42, "Vector", Type.VALEUR));
-        tokenList.add(createToken(31, 48, "(", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(31, 49, ")", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(31, 50, ";", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(41, 9, "}", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(41, 10, "[METHOD LIMIT]", Type.BREAK));
-        tokenList.add(createToken(43, 23, "Vector", Type.VALEUR));
-        tokenList.add(createToken(43, 29, "lireListeGroupeActiveOrderByCode", Type.VALEUR));
-        tokenList.add(createToken(43, 62, "(", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(43, 63, ")", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(44, 48, "[METHOD LIMIT]", Type.BREAK));
-        tokenList.add(createToken(44, 48, "{", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(45, 17, "Vector", Type.VALEUR));
-        tokenList.add(createToken(45, 24, "listeGroupe", Type.VALEUR));
-        tokenList.add(createToken(45, 35, "=", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(45, 38, "new", Type.VALEUR));
-        tokenList.add(createToken(45, 42, "Vector", Type.VALEUR));
-        tokenList.add(createToken(45, 48, "(", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(45, 49, ")", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(45, 50, ";", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(55, 9, "}", Type.NON_SIGNIFICATIF));
-        tokenList.add(createToken(55, 10, "[METHOD LIMIT]", Type.BREAK));
-        tokenList.add(createToken(57, 1, "}", Type.NON_SIGNIFICATIF));
-        return tokenList;
+    private Code createCode() {
+        return new Code(Arrays.asList(
+                createToken(27, 1, "class", Type.VALEUR),
+                createToken(27, 6, "GestionGroupe", Type.VALEUR),
+                createToken(29, 8, "{", Type.NON_SIGNIFICATIF),
+                createToken(29, 23, "Vector", Type.VALEUR),
+                createToken(29, 29, "lireListeGroupeOrderByCode", Type.VALEUR),
+                createToken(29, 56, "(", Type.NON_SIGNIFICATIF),
+                createToken(29, 57, ")", Type.NON_SIGNIFICATIF),
+                createToken(30, 48, "[METHOD LIMIT]", Type.BREAK),
+                createToken(30, 48, "{", Type.NON_SIGNIFICATIF),
+                createToken(31, 17, "Vector", Type.VALEUR),
+                createToken(31, 24, "listeGroupe", Type.VALEUR),
+                createToken(31, 35, "=", Type.NON_SIGNIFICATIF),
+                createToken(31, 38, "new", Type.VALEUR),
+                createToken(31, 42, "Vector", Type.VALEUR),
+                createToken(31, 48, "(", Type.NON_SIGNIFICATIF),
+                createToken(31, 49, ")", Type.NON_SIGNIFICATIF),
+                createToken(31, 50, ";", Type.NON_SIGNIFICATIF),
+                createToken(41, 9, "}", Type.NON_SIGNIFICATIF),
+                createToken(41, 10, "[METHOD LIMIT]", Type.BREAK),
+                createToken(43, 23, "Vector", Type.VALEUR),
+                createToken(43, 29, "lireListeGroupeActiveOrderByCode", Type.VALEUR),
+                createToken(43, 62, "(", Type.NON_SIGNIFICATIF),
+                createToken(43, 63, ")", Type.NON_SIGNIFICATIF),
+                createToken(44, 48, "[METHOD LIMIT]", Type.BREAK),
+                createToken(44, 48, "{", Type.NON_SIGNIFICATIF),
+                createToken(45, 17, "Vector", Type.VALEUR),
+                createToken(45, 24, "listeGroupe", Type.VALEUR),
+                createToken(45, 35, "=", Type.NON_SIGNIFICATIF),
+                createToken(45, 38, "new", Type.VALEUR),
+                createToken(45, 42, "Vector", Type.VALEUR),
+                createToken(45, 48, "(", Type.NON_SIGNIFICATIF),
+                createToken(45, 49, ")", Type.NON_SIGNIFICATIF),
+                createToken(45, 50, ";", Type.NON_SIGNIFICATIF),
+                createToken(55, 9, "}", Type.NON_SIGNIFICATIF),
+                createToken(55, 10, "[METHOD LIMIT]", Type.BREAK),
+                createToken(57, 1, "}", Type.NON_SIGNIFICATIF))
+                );
     }
 
     private Token createToken(int line, int column, String tokenValue, Type type) {

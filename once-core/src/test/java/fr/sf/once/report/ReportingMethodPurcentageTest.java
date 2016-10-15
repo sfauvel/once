@@ -6,17 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import fr.sf.once.core.ManagerToken;
+import fr.sf.once.model.Code;
 import fr.sf.once.model.MethodDefinition;
 import fr.sf.once.model.Redundancy;
-import fr.sf.once.model.Token;
 
 public class ReportingMethodPurcentageTest {
 
-    private final ManagerToken EMPTY_MANAGER = new ManagerToken(new ArrayList<Token>());
+    private final ManagerToken EMPTY_MANAGER = new ManagerToken(new Code());
 
     @Test
     public void purcentage_redundancy_is_0_when_there_is_no_redundency() {
