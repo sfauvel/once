@@ -240,6 +240,8 @@ public class ManagerTokenTest {
 
         assertEquals(5, managerToken.min(new int[] { 8, 7, 6, 5 }, 0, 3));
         assertEquals(4, managerToken.min(new int[] { 5, 8, 4, 7 }, 0, 3));
+
+        assertEquals(5, managerToken.min(new int[] { 5, 8, 4, 7 }, 0, 1));
     }
 
     @Test

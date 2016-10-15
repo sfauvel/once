@@ -87,7 +87,7 @@ public class ManagerToken {
     private List<Token> getTokenList() {
         return code.getTokenList();
     }
-    
+
     public Token getToken(Integer position) {
         return code.getToken(position);
     }
@@ -114,23 +114,19 @@ public class ManagerToken {
     }
 
     public void sortPositionList(List<Integer> positionList, CodeComparator comparator) {
-        if (ReportingImpl.TRACE_TOKEN.isDebugEnabled()) {
-            ReportingImpl report = new ReportingImpl(null);
-            ReportingImpl.TRACE_TOKEN.debug("\nXXXX\n  getListeTokenTrier non trié");
-            for (Token token : getTokenList()) {
-                report.display(token);
-            }
-        }
+        traceTokens(positionList, "\nXXXX\n  getListeTokenTrier non trié");
         Collections.sort(positionList, comparator);
+        traceTokens(positionList, "\nXXXX\n  getListeTokenTrier trié");
+    }
 
+    private void traceTokens(List<Integer> positionList, String message) {
         if (ReportingImpl.TRACE_TOKEN.isDebugEnabled()) {
             ReportingImpl report = new ReportingImpl(null);
-            ReportingImpl.TRACE_TOKEN.debug("\nXXXX\n  getListeTokenTrier trié");
+            ReportingImpl.TRACE_TOKEN.debug(message);
             for (Integer position : positionList) {
                 report.display(getToken(position));
             }
         }
-
     }
 
     private void traceSortedToken(List<Integer> listePosition) {
@@ -171,7 +167,8 @@ public class ManagerToken {
         return listeRedondance;
     }
 
-    public void ajouterRedondanceInterne(List<Integer> positionList, List<Redundancy> listeRedondance, int[] listeTailleRedondance, int indexDepart, int indexCourant, int tailleMin) {
+    public void ajouterRedondanceInterne(List<Integer> positionList, List<Redundancy> listeRedondance, int[] listeTailleRedondance, int indexDepart,
+            int indexCourant, int tailleMin) {
         if (indexCourant >= listeTailleRedondance.length) {
             return;
         }
@@ -205,7 +202,7 @@ public class ManagerToken {
     }
 
     public int min(int[] tableauValeur, int debut, int fin) {
-        return Arrays.stream(tableauValeur, debut, fin+1).min().orElse(0);
+        return Arrays.stream(tableauValeur, debut, fin + 1).min().orElse(0);
     }
 
 }
