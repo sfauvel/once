@@ -77,7 +77,7 @@ public class RedundancyAggregatorTest {
     }
     
     @Test
-    public void should_notfind_a_unique_duplication() throws Exception {
+    public void should_not_find_a_unique_duplication() throws Exception {
 
         Configuration configuration = new Configuration(ComparatorWithSubstitution.class)
                 .withTailleMin(3);
