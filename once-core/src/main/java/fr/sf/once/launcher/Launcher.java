@@ -27,6 +27,7 @@ import fr.sf.once.core.ManagerToken;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Redundancy;
+import fr.sf.once.model.Token;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingImpl;
 
