@@ -21,7 +21,6 @@ import org.junit.Test;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
-import fr.sf.once.model.Token;
 import fr.sf.once.test.LogRule;
 import fr.sf.once.test.UtilsToken;
 
@@ -66,7 +65,7 @@ public class ManagerTokenTest {
 
     @Test
     public void when_i_get_a_token_from_a_position_i_have_the_corresponding_token() {
-        ManagerToken manager = new ManagerToken(createUnmodifiableTokenList("A", "B", "C", "D", "E"));
+        ManagerToken manager = new ManagerToken(createCodeWith("A", "B", "C", "D", "E"));
         assertThat(manager.getToken(0)).hasValue("A");
         assertThat(manager.getToken(1)).hasValue("B");
         assertThat(manager.getToken(2)).hasValue("C");
@@ -76,7 +75,7 @@ public class ManagerTokenTest {
 
     @Test
     public void when_i_get_a_token_from_a_position_out_of_the_bound_i_have_an_exception() {
-        ManagerToken manager = new ManagerToken(createUnmodifiableTokenList("A", "B"));
+        ManagerToken manager = new ManagerToken(createCodeWith("A", "B"));
         try {
             manager.getToken(2);
             fail("IndexOutOfBoundsException expected because manager has only 2 tokens");
@@ -130,7 +129,7 @@ public class ManagerTokenTest {
      */
     @Test
     public void testAfficherRedondance() {
-        ManagerToken manager = new ManagerToken(createUnmodifiableTokenList("A", "A", "B", "B"));
+        ManagerToken manager = new ManagerToken(createCodeWith("A", "A", "B", "B"));
 
         List<Redundancy> listeRedondance = manager.getRedondance(0);
 
@@ -234,7 +233,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testMin() throws Exception {
-        ManagerToken managerToken = new ManagerToken(Collections.<Token> emptyList());
+        ManagerToken managerToken = new ManagerToken(new Code());
         assertEquals(5, managerToken.min(new int[] { 5 }, 0, 0));
         assertEquals(5, managerToken.min(new int[] { 5, 6, 7, 8 }, 0, 3));
         assertEquals(5, managerToken.min(new int[] { 5, 6, 7, 8 }, 0, 1));
@@ -245,7 +244,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testSupprimerDoublonListeVide() {
-        ManagerToken managerToken = new ManagerToken(Collections.<Token> emptyList());
+        ManagerToken managerToken = new ManagerToken(new Code());
         List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
         List<Redundancy> listeObtenue = managerToken.supprimerDoublon(listeRedondance);
         assertEquals(true, listeObtenue.isEmpty());

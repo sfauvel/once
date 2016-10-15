@@ -20,10 +20,6 @@ public class ManagerToken {
 
     public static final Logger LOG = Logger.getLogger(ManagerToken.class);
     private final Code code;
-    
-    public ManagerToken(final List<Token> tokenList) {
-        this(new Code(tokenList));
-    }
 
     public ManagerToken(Code code) {
         this.code = code;
