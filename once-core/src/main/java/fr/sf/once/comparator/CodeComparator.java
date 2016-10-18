@@ -139,22 +139,5 @@ public abstract class CodeComparator implements Comparator<Integer> {
         }
         return depth;
     }
-    /**
-     * Get redundancy size continuing with substitution already done.
-     * @param position1
-     * @param position2
-     * @return
-     */
-    public int getRedundancySizeWithPreviousSubstitution(int position1, int position2) {
-        traceDebug = new StringBuffer();
-        depth = 0;
-        deepCompare(position1, position2);
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Nombre de redondance = " + depth + " entre les positions " + position1 + " et " + position2);
-            LOG.debug(traceDebug.toString());
-        }
-        return depth;
-    }
 
 }

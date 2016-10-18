@@ -115,6 +115,23 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
     }
 
     @Test
+    public void should_return_size_of_1_when_only_one_token_for_one_position() throws Exception {
+        assertThat(new ComparatorWithSubstitution(createCode("a b c")).getRedundancySize(0, 2)).isEqualTo(1);
+    }
+    
+    @Test
+    public void should_return_size_of_0_when_no_duplication_because_of_a_non_substituable_token() throws Exception {
+        assertThat(new ComparatorWithSubstitution(createCode("a b ; c d")).getRedundancySize(0, 2)).isEqualTo(0);
+    }
+   
+    @Test
+    public void should_return_size_of_3_when_the_first_token_not_matching_is_on_the_4th_position() throws Exception {
+        // The second A not matching with d because is map with a.
+        assertThat(new ComparatorWithSubstitution(createCode("a b c d e A B C A D")).getRedundancySize(0, 5)).isEqualTo(3);
+    }
+   
+    
+    @Test
     public void testGetRedundancySizeWithSpace() throws Exception {
         final Code CODE = createCode(
                 "a b c d c b b a ;",
@@ -122,11 +139,6 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
 
         assertEquals(3, new ComparatorWithSubstitution(CODE).getRedundancySize(0, 9));
         assertEquals(5, new ComparatorWithSubstitution(CODE).getRedundancySize(4, 13));
-
-        CodeComparator comparateur = new ComparatorWithSubstitution(CODE);
-        assertEquals(3, comparateur.getRedundancySizeWithPreviousSubstitution(0, 9));
-        // Only 'c' with 'C'. 'b' doesn't match with 'A'.
-        assertEquals(1, comparateur.getRedundancySizeWithPreviousSubstitution(4, 13));
     }
 
     @Test
