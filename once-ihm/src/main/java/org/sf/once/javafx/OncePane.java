@@ -10,7 +10,7 @@ import org.sf.once.ihm.OnceHandler;
 
 import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
 import fr.sf.once.core.Configuration;
-import fr.sf.once.core.ManagerToken;
+import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Redundancy;
@@ -120,7 +120,7 @@ public class OncePane extends StackPane {
                     Code code = handler.getCode();
                     tokenList = code.getTokenList();
                     methodList = code.getMethodList();
-                    ManagerToken manager = new ManagerToken(code);
+                    RedundancyFinder manager = new RedundancyFinder(code);
                     showDuplication(manager);
                     
 
@@ -130,7 +130,7 @@ public class OncePane extends StackPane {
 
             }
 
-            private void showDuplication(ManagerToken manager) {
+            private void showDuplication(RedundancyFinder manager) {
                 Class<ComparateurAvecSubstitutionEtType> comparator = ComparateurAvecSubstitutionEtType.class;
                 int minimalSize = ConfStyle.BUTTON_MIN_WIDTH;
                 Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);

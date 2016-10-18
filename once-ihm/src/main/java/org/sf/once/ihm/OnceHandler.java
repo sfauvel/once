@@ -34,7 +34,7 @@ import com.sun.net.httpserver.HttpHandler;
 import fr.sf.once.ast.ExtractCode;
 import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
 import fr.sf.once.core.Configuration;
-import fr.sf.once.core.ManagerToken;
+import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.launcher.Launcher.OnceProperties;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
@@ -158,7 +158,7 @@ public class OnceHandler implements HttpHandler {
 
         Configuration configuration = new Configuration(comparator).withTailleMin(tailleMin);
 
-        ManagerToken manager = new ManagerToken(code);
+        RedundancyFinder manager = new RedundancyFinder(code);
         List<Redundancy> listeRedondance = manager.getRedundancies(configuration);
 
         LOG.info("Affichage des resultats...");

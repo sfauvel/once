@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
-import fr.sf.once.core.ManagerToken;
+import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.Token;
@@ -54,7 +54,7 @@ public class ManagerTokenSampleTest {
 
 //        List<Token> listeTokenOrigine = createTokenList();
         Code code = createCode();
-        ManagerToken manager = new ManagerToken(code);
+        RedundancyFinder manager = new RedundancyFinder(code);
 
         CodeComparator comparator = new ComparatorWithSubstitution(code);
 

@@ -7,7 +7,7 @@ import java.util.stream.IntStream;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.core.ManagerToken;
+import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.Token;
@@ -48,12 +48,12 @@ public final class UtilsToken {
     /**
      * Création d'une liste de positions.
      * Il s'agit d'un tableau contenant les valeurs 0, 1, 2, ....
-     * @param positionListSize
+     * @param size
      * @return
      */
-    public static List<Integer> createPositionList(int positionListSize) {
+    public static List<Integer> createPositionList(int size) {
         List<Integer> positionList = new ArrayList<Integer>();
-        for (int i = 0; i < positionListSize; i++) {
+        for (int i = 0; i < size; i++) {
             positionList.add(i);
         }
         return positionList;
@@ -63,11 +63,11 @@ public final class UtilsToken {
         return IntStream.rangeClosed(0, size-1).mapToObj(n -> n).toArray(s -> new Integer[s]);
     }
     
-    public static ManagerToken createManagerToken(final List<Token> tokenList) {
-        return new ManagerToken(new Code(tokenList));
+    public static RedundancyFinder createManagerToken(final List<Token> tokenList) {
+        return new RedundancyFinder(new Code(tokenList));
     }
     
-    public static ManagerToken createManagerToken(String... tokenValueList) {
+    public static RedundancyFinder createManagerToken(String... tokenValueList) {
         return createManagerToken(createUnmodifiableTokenList(tokenValueList));
     }
     

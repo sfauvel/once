@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.core.ManagerToken;
+import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;

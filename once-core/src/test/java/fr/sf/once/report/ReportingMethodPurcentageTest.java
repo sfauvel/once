@@ -8,14 +8,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import fr.sf.once.core.ManagerToken;
+import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.MethodDefinition;
 import fr.sf.once.model.Redundancy;
 
 public class ReportingMethodPurcentageTest {
 
-    private final ManagerToken EMPTY_MANAGER = new ManagerToken(new Code());
+    private final RedundancyFinder EMPTY_MANAGER = new RedundancyFinder(new Code());
 
     @Test
     public void purcentage_redundancy_is_0_when_there_is_no_redundency() {

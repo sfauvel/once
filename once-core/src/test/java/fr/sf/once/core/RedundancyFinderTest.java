@@ -7,14 +7,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -24,20 +22,15 @@ import fr.sf.once.model.Redundancy;
 import fr.sf.once.test.LogRule;
 import fr.sf.once.test.UtilsToken;
 
-public class ManagerTokenTest {
+public class RedundancyFinderTest {
 
     @ClassRule
     public static final LogRule LOG_RULE = new LogRule();
-    private ManagerToken emptyManager;
-
-    @Before
-    public void initManager() {
-        emptyManager = new ManagerToken(new Code());
-    }
-
+    
     @Test
+    @Deprecated // This message not have to be here. Manager should nor have getToken
     public void when_i_get_a_token_from_a_position_i_have_the_corresponding_token() {
-        ManagerToken manager = new ManagerToken(createCodeWith("A", "B", "C", "D", "E"));
+        RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "B", "C", "D", "E"));
         assertThat(manager.getToken(0)).hasValue("A");
         assertThat(manager.getToken(1)).hasValue("B");
         assertThat(manager.getToken(2)).hasValue("C");
@@ -46,53 +39,15 @@ public class ManagerTokenTest {
     }
 
     @Test
+    @Deprecated // This message not have to be here
     public void when_i_get_a_token_from_a_position_out_of_the_bound_i_have_an_exception() {
-        ManagerToken manager = new ManagerToken(createCodeWith("A", "B"));
+        RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "B"));
         try {
-            manager.getToken(2);
+            manager.getToken(3);
             fail("IndexOutOfBoundsException expected because manager has only 2 tokens");
         } catch (IndexOutOfBoundsException e) {
-            assertThat(e).hasMessage("Index: 2, Size: 2");
+            assertThat(e).hasMessage("Index: 3, Size: 2");
         }
-    }
-
-    /**
-     * 0 1 2
-     * A A B 
-     * 0: 1 1 2 -> 1
-     * 1: 1 2   -> 2
-     * 2: 1     -> 0
-     */
-    @Test
-    public void testTrierListeTokenSansModifierListeOrigine() {
-        Code code = createCodeWith("A", "A", "B");
-        List<Integer> positionList = range(code.getSize());
-        
-        Collections.sort(positionList, new ComparatorWithSubstitution(code));
-        
-        assertThat(positionList).containsExactly(2, 0, 1);  
-        assertThat(tokensMapToPosition(code, positionList)).containsExactly("B", "A", "A");      
-    }
-
-    /**
-     * 0 1 2 3 4 5
-     * A E A B A C 
-     * 0: 1 2 1 3 1 4 -> 3
-     * 1: 1 2 3 2 4   -> 5
-     * 2: 1 2 1 3     -> 2 
-     * 3: 1 2 3       -> 4 
-     * 4: 1 2         -> 1 
-     * 5: 1           -> 0
-     */
-    @Test
-    public void testTrierSurPlusieursTokens() {
-        Code code = createCodeWith("A", "E", "A", "B", "A", "C");
-        List<Integer> positionList = range(code.getSize());
-        
-        Collections.sort(positionList, new ComparatorWithSubstitution(code));
-
-        assertThat(positionList).containsExactly(5, 4, 2, 0, 3, 1);        
-        assertThat(tokensMapToPosition(code, positionList)).containsExactly("C", "A", "A", "A", "B", "E");
     }
 
     /**
@@ -101,7 +56,7 @@ public class ManagerTokenTest {
      */
     @Test
     public void testAfficherRedondance() {
-        ManagerToken manager = new ManagerToken(createCodeWith("A", "A", "B", "B"));
+        RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "A", "B", "B"));
 
         List<Redundancy> listeRedondance = manager.getRedundancies(0);
 
@@ -114,7 +69,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testAjouterRedondanceUneSeuleValeur() throws Exception {
-        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F");
+        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F");
         List<Integer> positionList = UtilsToken.createPositionList(2);
         List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
@@ -127,7 +82,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testAjouterRedondance() throws Exception {
-        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(3);
         List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
@@ -141,7 +96,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testAjouterRedondanceToujoursPlusGrand() throws Exception {
-        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(6);
         List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
@@ -158,7 +113,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testAjouterRedondanceToujoursEgal() throws Exception {
-        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(6);
         List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
@@ -171,7 +126,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testAjouterRedondanceToujoursPlusPetit() throws Exception {
-        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(3);
         List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
@@ -186,7 +141,7 @@ public class ManagerTokenTest {
     @Test
     public void testAjouterRedondancePlusGrandPuisPlusPetit() throws Exception {
 
-        ManagerToken managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(4);
         List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
@@ -205,7 +160,7 @@ public class ManagerTokenTest {
 
     @Test
     public void testMin() throws Exception {
-        ManagerToken managerToken = new ManagerToken(new Code());
+        RedundancyFinder managerToken = new RedundancyFinder(new Code());
         assertEquals(5, managerToken.min(new int[] { 5 }, 0, 0));
         assertEquals(5, managerToken.min(new int[] { 5, 6, 7, 8 }, 0, 3));
         assertEquals(5, managerToken.min(new int[] { 5, 6, 7, 8 }, 0, 1));
@@ -218,23 +173,16 @@ public class ManagerTokenTest {
 
     @Test
         public void testRemoveRedundancyIncludedInAnotherOneListeVide() {
-            ManagerToken managerToken = new ManagerToken(new Code());
+            RedundancyFinder managerToken = new RedundancyFinder(new Code());
             List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
             List<Redundancy> listeObtenue = managerToken.removeRedundancyIncludedInAnotherOne(listeRedondance);
             assertEquals(true, listeObtenue.isEmpty());
         }
     
 
-    private Stream<String> tokensMapToPosition(Code code, List<Integer> positionList) {
-        return positionList.stream().map(p -> code.getToken(p).getValeurToken());
-    }
 
     private Code createCodeWith(String... tokenValues) {
         return new Code(createUnmodifiableTokenList(tokenValues));
-    }
-
-    private List<Integer> range(int endExclusive) {
-        return IntStream.range(0, endExclusive).boxed().collect(Collectors.toList());
     }
 
 }

@@ -22,7 +22,7 @@ import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
 import fr.sf.once.comparator.ComparateurSimpleSansString;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.core.Configuration;
-import fr.sf.once.core.ManagerToken;
+import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.report.Reporting;
@@ -114,12 +114,12 @@ public class Launcher {
 			activeComparateurLog(Level.INFO, "result/comparator.txt");
 			activeLog(ComparatorWithSubstitution.LOG, Level.DEBUG, null);
 
-			ManagerToken.LOG.addAppender(
+			RedundancyFinder.LOG.addAppender(
 					new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
-			ManagerToken.LOG.setLevel(Level.INFO);
+			RedundancyFinder.LOG.setLevel(Level.INFO);
 		}
 		activeLog(Reporting.LOG_RESULTAT, Level.INFO, "result/once.txt");
-		activeLog(ManagerToken.LOG, Level.INFO, null);
+		activeLog(RedundancyFinder.LOG, Level.INFO, null);
 		activeLog(LOG, Level.INFO, null);
 	}
 
@@ -166,7 +166,7 @@ public class Launcher {
 
 		Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);
 
-		ManagerToken manager = new ManagerToken(code);
+		RedundancyFinder manager = new RedundancyFinder(code);
 		List<Redundancy> listeRedondance = manager.getRedundancies(configuration);
 
 		LOG.info("Affichage des resultats...");

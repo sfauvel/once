@@ -16,12 +16,16 @@ import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 import fr.sf.once.report.ReportingImpl;
 
-public class ManagerToken {
 
-    public static final Logger LOG = Logger.getLogger(ManagerToken.class);
+/**
+ * Find redundancy from the code. 
+ */
+public class RedundancyFinder {
+
+    public static final Logger LOG = Logger.getLogger(RedundancyFinder.class);
     private final Code code;
 
-    public ManagerToken(Code code) {
+    public RedundancyFinder(Code code) {
         this.code = code;
     }
 

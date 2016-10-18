@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import fr.sf.once.ast.ExtractTokenFileVisitor;
 import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
-import fr.sf.once.core.ManagerToken;
+import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.MethodLocalisation;
