@@ -80,10 +80,14 @@ public final class UtilsToken {
         ArrayList<Token> resultatList = new ArrayList<Token>();
         for (String oneStringToken : stringTokenList) {
             for (String tokenValue : oneStringToken.split(" ")) {
-                int index = resultatList.size();
-                resultatList.add(new Token(new Localisation("", index, 0), String.valueOf(tokenValue), Type.VALEUR));
+                resultatList.add(createToken(tokenValue, resultatList.size()));
             }
         }
         return resultatList;
+    }
+
+    private static Token createToken(String tokenValue, int index) {
+        Type type = "BREAK".equalsIgnoreCase(tokenValue) ? Type.BREAK : Type.VALEUR;
+        return new Token(new Localisation("", index, 0), String.valueOf(tokenValue), type);
     }
 }

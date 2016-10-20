@@ -1,9 +1,6 @@
 package fr.sf.once.comparator;
 
-import static fr.sf.once.test.UtilsToken.createPositionArray;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,8 +12,6 @@ import org.junit.Test;
 
 import fr.sf.once.AbstractComparatorTest;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.Token;
-import fr.sf.once.model.Type;
 import fr.sf.once.test.UtilsToken;
 
 public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
@@ -26,12 +21,12 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
         // 0: abc, 1:bc, 2:c => 0:123, 1:12, 2:1
         assertThat(createComparator("a b c").compare(1, 2)).isGreaterThan(0);
         assertThat(createComparator("a b c").compare(2, 1)).isLessThan(0);
-        
-        // 0: bac, 1:ac, 2:c => 0:123, 1:12, 2:1 
+
+        // 0: bac, 1:ac, 2:c => 0:123, 1:12, 2:1
         assertThat(createComparator("b a c").compare(1, 2)).isGreaterThan(0);
         assertThat(createComparator("b a c").compare(2, 1)).isLessThan(0);
     }
-   
+
     @Test
     public void should_find_positions_are_equals_when_its_the_same_postion() {
         assertThat(createComparator("a b c").compare(1, 1)).isEqualTo(0);
@@ -39,7 +34,7 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
 
     @Test
     public void should_find_the_position_0_is_greater_than_position_5_when_code_are_exactly_the_same_from_those_positions() {
-        // 0:abc__abc__, 5:abc__ => 0:1234412344, 5:12344 
+        // 0:abc__abc__, 5:abc__ => 0:1234412344, 5:12344
         assertThat(createComparator("a b c _ _ a b c _ _").compare(0, 5)).isGreaterThan(0);
         assertThat(createComparator("a b c _ _ a b c _ _").compare(5, 0)).isLessThan(0);
     }
@@ -59,11 +54,92 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
     }
 
     @Test
-    public void testGetRedundancySizeParPosition() throws Exception {
-        CodeComparator comparateur = new ComparatorWithSubstitution(createCode("a a b b c c d e"));
-        assertEquals(8, comparateur.getRedundancySize(0, 0));
-        assertEquals(3, comparateur.getRedundancySize(0, 4));
-        assertEquals(1, comparateur.getRedundancySize(0, 3));
+    public void should_find_the_lower_replacing_all_token_by_a_number() {
+        // 0: a b a = 1 2 1, 4: c d d = 1 2 2
+        assertThat(createComparator("a b a _ c d d").compare(0, 4)).isLessThan(0);
+        assertThat(createComparator("a b a _ c d d").compare(4, 0)).isGreaterThan(0);
+        // 0: a b c d = 1 2 3 4, 4: e f g e = 1 2 3 2
+        assertThat(createComparator("a b c d _ e f g e").compare(0, 5)).isGreaterThan(0);
+        assertThat(createComparator("a b c d _ e f g e").compare(5, 0)).isLessThan(0);
+    }
+    
+    @Test
+    public void should_two_positions_are_equal_when_code_is_the_same_until_a_break() throws Exception {
+        CodeComparator comparateur = createComparator("a a BREAK c c c BREAK z");
+        // 0: a a BREAK, 4: c c BREAK
+        assertThat(comparateur.compare(0, 4)).isEqualTo(0);
+    }
+
+    @Test
+    public void should_find_the_code_with_less_token_before_the_break_lower_than_other() throws Exception {
+        CodeComparator comparateur = createComparator("a a BREAK c c c BREAK z");
+        // Only 2 tokens before the BREAK on position 0 against 3 tokens on position 3. 
+        // The code on 0 is lower than the one on 3.
+        // 0: a a BREAK, 3: c c c BREAK
+        assertThat(comparateur.compare(0, 3)).isLessThan(0);
+        assertThat(comparateur.compare(3, 0)).isGreaterThan(0);
+    }
+
+    @Test
+    public void should_return_size_of_1_when_only_one_token_for_one_position() {
+        assertThat(new ComparatorWithSubstitution(createCode("a b c")).getRedundancySize(0, 2)).isEqualTo(1);
+    }
+
+    @Test
+    public void should_return_size_of_the_shortest_token_list_when_they_are_duplicated() {
+        // 0:aabb, 2:bb
+        assertThat(createComparator("a a b b").getRedundancySize(0, 0)).isEqualTo(4);
+        assertThat(createComparator("a a b b").getRedundancySize(2, 2)).isEqualTo(2);
+
+        assertThat(createComparator("a a b b").getRedundancySize(0, 2)).isEqualTo(2);
+    }
+
+    @Test
+    public void should_find_the_longest_token_list_that_could_be_substituable() {
+        assertThat(createComparator("a a b b c c d e").getRedundancySize(0, 0)).isEqualTo(8);
+        assertThat(createComparator("a a b b c c d e").getRedundancySize(0, 4)).isEqualTo(3);
+        assertThat(createComparator("a a b b c c d e").getRedundancySize(0, 3)).isEqualTo(1);
+    }
+
+    @Test
+    public void should_return_size_of_3_when_the_first_token_not_matching_is_on_the_4th_position() {
+        // The second A not matching with d because is map with a.
+        assertThat(createComparator("a b c d e A B C A D").getRedundancySize(0, 5)).isEqualTo(3);
+    }
+
+    @Test
+    public void should_return_size_of_0_when_no_duplication_because_of_a_non_substituable_token() {
+        assertThat(createComparator("a b").getRedundancySize(0, 1)).isEqualTo(1);
+        assertThat(createComparator("a :").getRedundancySize(0, 1)).isEqualTo(0);
+        assertThat(createComparator("a (").getRedundancySize(0, 1)).isEqualTo(0);
+        assertThat(createComparator("a )").getRedundancySize(0, 1)).isEqualTo(0);
+        assertThat(createComparator("a {").getRedundancySize(0, 1)).isEqualTo(0);
+        assertThat(createComparator("a }").getRedundancySize(0, 1)).isEqualTo(0);
+        assertThat(createComparator("a [").getRedundancySize(0, 1)).isEqualTo(0);
+        assertThat(createComparator("a ]").getRedundancySize(0, 1)).isEqualTo(0);
+        assertThat(createComparator("a ;").getRedundancySize(0, 1)).isEqualTo(0);
+    }
+
+    @Test
+    public void should_return_size_until_different_non_substituable_token_is_found() {
+        assertThat(createComparator("a b c d A B C D").getRedundancySize(0, 4)).isEqualTo(4);
+        assertThat(createComparator("a b ; d A B , D").getRedundancySize(0, 4)).isEqualTo(2);
+    }
+
+    @Test
+    public void should_pass_non_substituable_token_when_it_is_the_same() throws Exception {
+        assertThat(createComparator("; ;").getRedundancySize(0, 1)).isEqualTo(1);
+        assertThat(createComparator("a b ; d A B ; D").getRedundancySize(0, 4)).isEqualTo(4);
+    }
+
+    /**
+     * When a BREAK is found, the duplication is stop even there is the same BREAK instruction between
+     * the two portions of code.
+     */
+    @Test
+    public void should_return_size_until_a_break_token_is_found() {
+        assertThat(createComparator("a b c d A B C D").getRedundancySize(0, 4)).isEqualTo(4);
+        assertThat(createComparator("a b BREAK d A B BREAK D").getRedundancySize(0, 4)).isEqualTo(2);
     }
 
     @Test
@@ -112,121 +188,6 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
         comparator.sortList(positionList);
 
         assertThat(positionList).containsExactly(3, 2, 0, 1);
-    }
-
-    @Test
-    public void should_return_size_of_1_when_only_one_token_for_one_position() throws Exception {
-        assertThat(new ComparatorWithSubstitution(createCode("a b c")).getRedundancySize(0, 2)).isEqualTo(1);
-    }
-    
-    @Test
-    public void should_return_size_of_0_when_no_duplication_because_of_a_non_substituable_token() throws Exception {
-        assertThat(new ComparatorWithSubstitution(createCode("a b ; c d")).getRedundancySize(0, 2)).isEqualTo(0);
-    }
-   
-    @Test
-    public void should_return_size_of_3_when_the_first_token_not_matching_is_on_the_4th_position() throws Exception {
-        // The second A not matching with d because is map with a.
-        assertThat(new ComparatorWithSubstitution(createCode("a b c d e A B C A D")).getRedundancySize(0, 5)).isEqualTo(3);
-    }
-   
-    
-    @Test
-    public void testGetRedundancySizeWithSpace() throws Exception {
-        final Code CODE = createCode(
-                "a b c d c b b a ;",
-                "A B C A C A A B ;");
-
-        assertEquals(3, new ComparatorWithSubstitution(CODE).getRedundancySize(0, 9));
-        assertEquals(5, new ComparatorWithSubstitution(CODE).getRedundancySize(4, 13));
-    }
-
-    @Test
-    public void testGetRedundancySizeCaractereNonInterchangeable() throws Exception {
-
-        String[] tokenList = { "a a b x c c d z" };
-        assertEquals(4, new ComparatorWithSubstitution(createCode(tokenList)).getRedundancySize(0, 4));
-        String[] tokenList1 = { "a a : x c c d z" };
-        assertEquals(2, new ComparatorWithSubstitution(createCode(tokenList1)).getRedundancySize(0, 4));
-        String[] tokenList2 = { "a a b x c c : z" };
-        assertEquals(2, new ComparatorWithSubstitution(createCode(tokenList2)).getRedundancySize(0, 4));
-        String[] tokenList3 = { "a a ( x c c d z" };
-
-        assertEquals(2, new ComparatorWithSubstitution(createCode(tokenList3)).getRedundancySize(0, 4));
-        String[] tokenList4 = { "a a { x c c d z" };
-        assertEquals(2, new ComparatorWithSubstitution(createCode(tokenList4)).getRedundancySize(0, 4));
-        String[] tokenList5 = { "a a } x c c d z" };
-        assertEquals(2, new ComparatorWithSubstitution(createCode(tokenList5)).getRedundancySize(0, 4));
-        String[] tokenList6 = { "a a [ x c c d z" };
-        assertEquals(2, new ComparatorWithSubstitution(createCode(tokenList6)).getRedundancySize(0, 4));
-        String[] tokenList7 = { "a a ] x c c d z" };
-        assertEquals(2, new ComparatorWithSubstitution(createCode(tokenList7)).getRedundancySize(0, 4));
-        String[] tokenList8 = { "a a ; x c c d z" };
-        assertEquals(2, new ComparatorWithSubstitution(createCode(tokenList8)).getRedundancySize(0, 4));
-        String[] tokenList9 = { "a a : x c c : z" };
-
-        assertEquals(4, new ComparatorWithSubstitution(createCode(tokenList9)).getRedundancySize(0, 4));
-
-    }
-
-    @Test
-    public void testGetRedundancySize() throws Exception {
-
-        CodeComparator comparator = new ComparatorWithSubstitution(createCode("a a b x c c d z"));
-        assertEquals(4, comparator.getRedundancySize(0, 4));
-    }
-
-    @Test
-    public void testGetRedundancySizeWithDifference() throws Exception {
-
-        CodeComparator comparator = new ComparatorWithSubstitution(createCode("a b a x c d e z"));
-        assertEquals(2, comparator.getRedundancySize(0, 4));
-    }
-
-    /**
-     * Test que les token de type BREAK stop la redondance.
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testGetRedundancySizeWithBreak() throws Exception {
-
-        List<Token> tokenList = UtilsToken.createTokenList("a a X c c c X z");
-        changeTokenType(tokenList, 2, Type.BREAK);
-        changeTokenType(tokenList, 6, Type.BREAK);
-        CodeComparator comparateur = new ComparatorWithSubstitution(new Code(tokenList));
-
-        // On bloque au niveau de caracactère spécifique de fin.
-        assertEquals(2, comparateur.getRedundancySize(0, 4));
-    }
-
-    @Test
-    public void testCompareWithBreak() throws Exception {
-        List<Token> tokenList = UtilsToken.createTokenList("a a X c c c X z");
-        changeTokenType(tokenList, 2, Type.BREAK);
-        changeTokenType(tokenList, 6, Type.BREAK);
-        CodeComparator comparateur = new ComparatorWithSubstitution(new Code(tokenList));
-
-        // Le break est au même niveau.
-        assertEquals(0, comparateur.compare(0, 4));
-        // La position 0 voit le Break en premier. Il est donc inférieur.
-        assertEquals(-1, comparateur.compare(0, 3));
-        assertEquals(1, comparateur.compare(3, 0));
-    }
-
-    /**
-     * A B A C E G E F 0:1 2 1 3 4 5 4 6 1: 1 2 3 4 5 4 6 2: 1 2 3 4 3 5 3: 1 2
-     * 3 2 4 4: 1 2 1 3 5: 1 2 3 6: 1 2 7: 1
-     */
-    @Test
-    public void testComparateurAvecSubstitution() {
-
-        CodeComparator comparator = new ComparatorWithSubstitution(createCode("A B A C E G E F"));
-        assertTrue(comparator.compare(0, 1) < 0); // A B A - B A C | 1 2 1 - 1
-                                                  // 2 3
-        assertTrue(comparator.compare(2, 3) > 0); // A C E G - C E G E | 1 2 3
-                                                  // 4 - 1 2 3 2
-
     }
 
     /**

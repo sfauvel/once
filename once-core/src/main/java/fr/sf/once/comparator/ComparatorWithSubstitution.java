@@ -3,13 +3,7 @@
  */
 package fr.sf.once.comparator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.log4j.Logger;
-import org.junit.Test;
 
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
