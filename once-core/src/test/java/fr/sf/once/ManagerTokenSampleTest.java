@@ -81,7 +81,7 @@ public class ManagerTokenSampleTest {
 
         assertEquals(4, nombreParentheseOuvrante);
         for (int i = premiereParenthese; i < premiereParenthese + nombreParentheseOuvrante; i++) {
-            assertEquals("Le token n°" + i + " n'est pas '(':", "(", manager.getToken(positionList.get(i)).getValeurToken());
+            assertEquals("Le token n°" + i + " n'est pas '(':", "(", code.getToken(positionList.get(i)).getValeurToken());
 
         }
 

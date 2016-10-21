@@ -13,6 +13,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.AbstractComparableAssert;
+import org.assertj.core.api.AbstractIntegerAssert;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.assertj.core.api.NumberAssert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -26,29 +31,6 @@ public class RedundancyFinderTest {
 
     @ClassRule
     public static final LogRule LOG_RULE = new LogRule();
-    
-    @Test
-    @Deprecated // This message not have to be here. Manager should nor have getToken
-    public void when_i_get_a_token_from_a_position_i_have_the_corresponding_token() {
-        RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "B", "C", "D", "E"));
-        assertThat(manager.getToken(0)).hasValue("A");
-        assertThat(manager.getToken(1)).hasValue("B");
-        assertThat(manager.getToken(2)).hasValue("C");
-        assertThat(manager.getToken(3)).hasValue("D");
-        assertThat(manager.getToken(4)).hasValue("E");
-    }
-
-    @Test
-    @Deprecated // This message not have to be here
-    public void when_i_get_a_token_from_a_position_out_of_the_bound_i_have_an_exception() {
-        RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "B"));
-        try {
-            manager.getToken(3);
-            fail("IndexOutOfBoundsException expected because manager has only 2 tokens");
-        } catch (IndexOutOfBoundsException e) {
-            assertThat(e).hasMessage("Index: 3, Size: 2");
-        }
-    }
 
     /**
      * A A B B 0:1 1 2 2-> 2 1: 1 2 2-> 3 2: 1 1-> 1 3: 1-> 0 B : 1 B B : 1 1 A
@@ -59,12 +41,17 @@ public class RedundancyFinderTest {
         RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "A", "B", "B"));
 
         List<Redundancy> listeRedondance = manager.getRedundancies(0);
-
-        Redundancy red = listeRedondance.get(0);
-
-        assertRedondance(2, listeRedondance.get(0));
-        assertRedondance(1, listeRedondance.get(1));
         assertEquals(2, listeRedondance.size());
+
+        // A A = B B
+        assertThatRedundancy(listeRedondance.get(0))
+                .hasTokenNumber(2)
+                .containsOnly(0, 2);
+
+        // A = B = C = D
+        assertThatRedundancy(listeRedondance.get(1))
+                .hasTokenNumber(1)
+                .containsOnly(0, 1, 2, 3);
     }
 
     @Test
@@ -172,17 +159,37 @@ public class RedundancyFinderTest {
     }
 
     @Test
-        public void testRemoveRedundancyIncludedInAnotherOneListeVide() {
-            RedundancyFinder managerToken = new RedundancyFinder(new Code());
-            List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
-            List<Redundancy> listeObtenue = managerToken.removeRedundancyIncludedInAnotherOne(listeRedondance);
-            assertEquals(true, listeObtenue.isEmpty());
-        }
-    
-
+    public void testRemoveRedundancyIncludedInAnotherOneListeVide() {
+        RedundancyFinder managerToken = new RedundancyFinder(new Code());
+        List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
+        List<Redundancy> listeObtenue = managerToken.removeRedundancyIncludedInAnotherOne(listeRedondance);
+        assertEquals(true, listeObtenue.isEmpty());
+    }
 
     private Code createCodeWith(String... tokenValues) {
         return new Code(createUnmodifiableTokenList(tokenValues));
+    }
+
+    public static class AbstractRedundancyAssert<S extends AbstractRedundancyAssert<S>> extends AbstractAssert<S, Redundancy> {
+
+        protected AbstractRedundancyAssert(Redundancy actual) {
+            super(actual, AbstractRedundancyAssert.class);
+        }
+
+        public AbstractRedundancyAssert<S> hasTokenNumber(int number) {
+            assertThat(actual.getDuplicatedTokenNumber()).isEqualTo(number);
+            return this;
+        }
+
+        public AbstractRedundancyAssert<S> containsOnly(Integer... values) {
+            assertThat(actual.getStartRedundancyList()).contains(values);
+            assertThat(actual.getRedundancyNumber()).isEqualTo(values.length);
+            return this;
+        }
+    }
+
+    public static AbstractRedundancyAssert<?> assertThatRedundancy(Redundancy actual) {
+        return new AbstractRedundancyAssert<>(actual);
     }
 
 }

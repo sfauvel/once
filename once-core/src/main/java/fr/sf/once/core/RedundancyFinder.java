@@ -92,7 +92,7 @@ public class RedundancyFinder {
         return code.getTokenList();
     }
 
-    public Token getToken(Integer position) {
+    private Token getToken(Integer position) {
         return code.getToken(position);
     }
 
@@ -171,7 +171,7 @@ public class RedundancyFinder {
         return listeRedondance;
     }
 
-    public void addRedundancyInternal(List<Integer> positionList, List<Redundancy> listeRedondance, int[] listeTailleRedondance, int indexDepart,
+    private void addRedundancyInternal(List<Integer> positionList, List<Redundancy> listeRedondance, int[] listeTailleRedondance, int indexDepart,
             int indexCourant, int tailleMin) {
         if (indexCourant >= listeTailleRedondance.length) {
             return;
