@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
@@ -15,7 +14,7 @@ public interface Reporting {
     Logger LOG_RESULTAT = Logger.getLogger("RESULTAT");
     Logger LOG_CSV = Logger.getLogger("CSV");
     void afficherRedondance(final Code code, int tailleMin, List<Redundancy> listeRedondance);
-    void afficherCodeRedondant(final List<Token> tokenList, Redundancy redondance);
+    void afficherCodeRedondant(final Code code, Redundancy redondance);
     void afficheListeToken(List<Token> listeToken);
     void display(final Code code);
 }
