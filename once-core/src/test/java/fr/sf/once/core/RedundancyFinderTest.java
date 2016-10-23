@@ -1,28 +1,18 @@
 package fr.sf.once.core;
 
-import static fr.sf.once.test.OnceAssertions.assertThat;
 import static fr.sf.once.test.UtilsToken.createUnmodifiableTokenList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.AbstractComparableAssert;
-import org.assertj.core.api.AbstractIntegerAssert;
-import org.assertj.core.api.AssertionsForClassTypes;
-import org.assertj.core.api.NumberAssert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
+import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.test.LogRule;
 import fr.sf.once.test.UtilsToken;
@@ -40,7 +30,7 @@ public class RedundancyFinderTest {
     public void testAfficherRedondance() {
         RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "A", "B", "B"));
 
-        List<Redundancy> listeRedondance = manager.getRedundancies(0);
+        List<FunctionalRedundancy> listeRedondance = manager.getRedundancies(0);
         assertEquals(2, listeRedondance.size());
 
         // A A = B B

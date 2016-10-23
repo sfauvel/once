@@ -24,7 +24,7 @@ import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.Redundancy;
+import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingImpl;
 
@@ -167,7 +167,7 @@ public class Launcher {
 		Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);
 
 		RedundancyFinder manager = new RedundancyFinder(code);
-		List<Redundancy> listeRedondance = manager.getRedundancies(configuration);
+		List<FunctionalRedundancy> listeRedondance = manager.getRedundancies(configuration);
 
 		LOG.info("Affichage des resultats...");
 		Reporting reporting = new ReportingImpl(code.getMethodList());

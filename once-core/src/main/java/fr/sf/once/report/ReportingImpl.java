@@ -2,7 +2,6 @@ package fr.sf.once.report;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.model.Code;
+import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Redundancy;
@@ -27,34 +27,13 @@ public class ReportingImpl implements Reporting {
         this.tokenLogger = TRACE_TOKEN;
     }
 
-    private class ComparatorRedundancySubstitution implements Comparator<Redundancy> {
-        final Code code;
-        public ComparatorRedundancySubstitution(final Code code) {
-            this.code = code;
-        }
-        
-        @Override
-        public int compare(Redundancy redondance1, Redundancy redondance2) {
-            int size1 = getSubstitutionList(code, redondance1).size();
-            int size2 = getSubstitutionList(code, redondance2).size();
-            return (redondance2.getDuplicatedTokenNumber() / (size2 + 1)) - (redondance1.getDuplicatedTokenNumber() / (size1 + 1));
-        }
-    };
-
-    private class ComparatorRedundancyByTokenNumber implements Comparator<Redundancy> {
-        @Override
-        public int compare(Redundancy redondance1, Redundancy redondance2) {
-            return redondance2.getDuplicatedTokenNumber() - redondance1.getDuplicatedTokenNumber();
-        }
-    };
-    
-    public void afficherRedondance(final Code code, final int tailleMin, List<Redundancy> listeRedondance) {
+    public void afficherRedondance(final Code code, final int tailleMin, List<FunctionalRedundancy> listeRedondance) {
          LOG_CSV.info("Taille Redondance;Nombre redondance;Note");
 
-        //Collections.sort(listeRedondance, new ComparatorRedundancyByTokenNumber());
+//        Collections.sort(listeRedondance, new ComparatorRedundancyByTokenNumber());
         Collections.sort(listeRedondance, new ComparatorRedundancySubstitution(code));
 
-        for (Redundancy redondance : listeRedondance) {
+        for (FunctionalRedundancy redondance : listeRedondance) {
             List<Integer> firstTokenList = redondance.getStartRedundancyList();
             Integer positionPremierToken = firstTokenList.get(0);
             if (isNombreLigneSuperieurA(code, positionPremierToken, redondance.getDuplicatedTokenNumber(), 0)) {
@@ -104,8 +83,8 @@ public class ReportingImpl implements Reporting {
         return redundancyNumber * redondance.getDuplicatedTokenNumber();
     }
 
-    private List<String> getSubstitution(final Code code, Redundancy redondance) {
-        List<Set<String>> substitutionListOfSubstitution = getSubstitutionList(code, redondance);
+    private List<String> getSubstitution(final Code code, FunctionalRedundancy redondance) {
+        List<Set<String>> substitutionListOfSubstitution = redondance.getSubstitutionList();
         List<String> substitutionList = new ArrayList<String>();
         Set<String> substitution = new HashSet<String>();
         for (Set<String> listeValeur : substitutionListOfSubstitution) {
@@ -149,7 +128,7 @@ public class ReportingImpl implements Reporting {
         return substitutionListOfSubstitution;
     }
     
-    private List<Set<String>> getSubstitutionList(final Code code, Redundancy redondance) {
+    List<Set<String>> getSubstitutionList(final Code code, Redundancy redondance) {
         List<Set<String>> substitutionListOfSubstitution = new ArrayList<Set<String>>();
         int duplicatedTokenNumber = redondance.getDuplicatedTokenNumber();
         List<Integer> firstTokenList = redondance.getStartRedundancyList();
@@ -180,7 +159,7 @@ public class ReportingImpl implements Reporting {
         return nombreLigne > nombreLigneMin;
     }
 
-    public void afficherCodeRedondant(final Code code, Redundancy redondance) {
+    public void afficherCodeRedondant(final Code code, FunctionalRedundancy redondance) {
         if (LOG_RESULTAT.isInfoEnabled()) {
 
             List<String> substitutionList = getSubstitution(code, redondance);
@@ -263,7 +242,7 @@ public class ReportingImpl implements Reporting {
                 .append(localisation.getColonne());
     }
 
-    public void afficherMethodeDupliqueAvecSubtitution(final Code code, Redundancy redondance) {
+    public void afficherMethodeDupliqueAvecSubtitution(final Code code, FunctionalRedundancy redondance) {
         if (redondance.getStartRedundancyList().size() > 0 && isFullMethodDuplicated(code, redondance)) {
             afficherCodeRedondant(code, redondance);
         }

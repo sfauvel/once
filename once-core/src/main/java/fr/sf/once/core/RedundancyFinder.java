@@ -5,12 +5,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
+import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
@@ -29,12 +31,12 @@ public class RedundancyFinder {
         this.code = code;
     }
 
-    public List<Redundancy> getRedundancies(int tailleMin) {
+    public List<FunctionalRedundancy> getRedundancies(int tailleMin) {
         return getRedundancies(new Configuration(ComparatorWithSubstitution.class)
                 .withTailleMin(tailleMin));
     }
 
-    public List<Redundancy> getRedundancies(Configuration configuration) {
+    public List<FunctionalRedundancy> getRedundancies(Configuration configuration) {
         List<Integer> positionList = getPositionToManage();
         CodeComparator comparator = configuration.getComparateur(code);
         LOG.info("Tri des " + positionList.size() + " tokens...");
@@ -51,7 +53,8 @@ public class RedundancyFinder {
         LOG.info("Suppression des doublons...");
         listeRedondance = removeRedundancyIncludedInAnotherOne(listeRedondance);
         LOG.info("Fin du traitement");
-        return listeRedondance;
+        
+        return listeRedondance.stream().map(r -> new FunctionalRedundancy(code,  r)).collect(Collectors.toList());
 
     }
 
