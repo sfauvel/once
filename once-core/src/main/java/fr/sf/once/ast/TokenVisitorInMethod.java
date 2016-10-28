@@ -8,7 +8,7 @@ import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Token;
 
 /**
- * Visiteur ne retenant que les token à l'intérieur d'une méthode.
+ * Visitor that keep only tokens within a method.
  */
 public class TokenVisitorInMethod extends TokenVisitor {
 

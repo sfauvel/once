@@ -89,36 +89,36 @@ public class ManagerTokenSampleTest {
 
     private Code createCode() {
         return new Code(Arrays.asList(
-                createToken(27, 1, "class", Type.VALEUR),
-                createToken(27, 6, "GestionGroupe", Type.VALEUR),
+                createToken(27, 1, "class", Type.VALUE),
+                createToken(27, 6, "GestionGroupe", Type.VALUE),
                 createToken(29, 8, "{", Type.NON_SIGNIFICATIF),
-                createToken(29, 23, "Vector", Type.VALEUR),
-                createToken(29, 29, "lireListeGroupeOrderByCode", Type.VALEUR),
+                createToken(29, 23, "Vector", Type.VALUE),
+                createToken(29, 29, "lireListeGroupeOrderByCode", Type.VALUE),
                 createToken(29, 56, "(", Type.NON_SIGNIFICATIF),
                 createToken(29, 57, ")", Type.NON_SIGNIFICATIF),
                 createToken(30, 48, "[METHOD LIMIT]", Type.BREAK),
                 createToken(30, 48, "{", Type.NON_SIGNIFICATIF),
-                createToken(31, 17, "Vector", Type.VALEUR),
-                createToken(31, 24, "listeGroupe", Type.VALEUR),
+                createToken(31, 17, "Vector", Type.VALUE),
+                createToken(31, 24, "listeGroupe", Type.VALUE),
                 createToken(31, 35, "=", Type.NON_SIGNIFICATIF),
-                createToken(31, 38, "new", Type.VALEUR),
-                createToken(31, 42, "Vector", Type.VALEUR),
+                createToken(31, 38, "new", Type.VALUE),
+                createToken(31, 42, "Vector", Type.VALUE),
                 createToken(31, 48, "(", Type.NON_SIGNIFICATIF),
                 createToken(31, 49, ")", Type.NON_SIGNIFICATIF),
                 createToken(31, 50, ";", Type.NON_SIGNIFICATIF),
                 createToken(41, 9, "}", Type.NON_SIGNIFICATIF),
                 createToken(41, 10, "[METHOD LIMIT]", Type.BREAK),
-                createToken(43, 23, "Vector", Type.VALEUR),
-                createToken(43, 29, "lireListeGroupeActiveOrderByCode", Type.VALEUR),
+                createToken(43, 23, "Vector", Type.VALUE),
+                createToken(43, 29, "lireListeGroupeActiveOrderByCode", Type.VALUE),
                 createToken(43, 62, "(", Type.NON_SIGNIFICATIF),
                 createToken(43, 63, ")", Type.NON_SIGNIFICATIF),
                 createToken(44, 48, "[METHOD LIMIT]", Type.BREAK),
                 createToken(44, 48, "{", Type.NON_SIGNIFICATIF),
-                createToken(45, 17, "Vector", Type.VALEUR),
-                createToken(45, 24, "listeGroupe", Type.VALEUR),
+                createToken(45, 17, "Vector", Type.VALUE),
+                createToken(45, 24, "listeGroupe", Type.VALUE),
                 createToken(45, 35, "=", Type.NON_SIGNIFICATIF),
-                createToken(45, 38, "new", Type.VALEUR),
-                createToken(45, 42, "Vector", Type.VALEUR),
+                createToken(45, 38, "new", Type.VALUE),
+                createToken(45, 42, "Vector", Type.VALUE),
                 createToken(45, 48, "(", Type.NON_SIGNIFICATIF),
                 createToken(45, 49, ")", Type.NON_SIGNIFICATIF),
                 createToken(45, 50, ";", Type.NON_SIGNIFICATIF),
@@ -608,8 +608,8 @@ public class ManagerTokenSampleTest {
         // tokenList.add(new Token(new
         // Localisation("GestionGroupeUltraLight.java", 27, 1), "public",
         // Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 27, 1), "class", Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 27, 6), "GestionGroupe", Type.VALEUR));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 27, 1), "class", Type.VALUE));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 27, 6), "GestionGroupe", Type.VALUE));
         // tokenList.add(new Token(new
         // Localisation("GestionGroupeUltraLight.java", 27, 28), "extends",
         // Type.VALEUR));
@@ -620,8 +620,8 @@ public class ManagerTokenSampleTest {
         // tokenList.add(new Token(new
         // Localisation("GestionGroupeUltraLight.java", 29, 9), "public static",
         // Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 29, 23), "Vector", Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 29, 29), "lireListeGroupeOrderByCode", Type.VALEUR));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 29, 23), "Vector", Type.VALUE));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 29, 29), "lireListeGroupeOrderByCode", Type.VALUE));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 29, 56), "(", Type.NON_SIGNIFICATIF));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 29, 57), ")", Type.NON_SIGNIFICATIF));
         // tokenList.add(new Token(new
@@ -632,11 +632,11 @@ public class ManagerTokenSampleTest {
         // "RegardException", Type.VALEUR));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 30, 48), "[METHOD LIMIT]", Type.BREAK));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 30, 48), "{", Type.NON_SIGNIFICATIF));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 17), "Vector", Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 24), "listeGroupe", Type.VALEUR));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 17), "Vector", Type.VALUE));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 24), "listeGroupe", Type.VALUE));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 35), "=", Type.NON_SIGNIFICATIF));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 38), "new", Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 42), "Vector", Type.VALEUR));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 38), "new", Type.VALUE));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 42), "Vector", Type.VALUE));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 48), "(", Type.NON_SIGNIFICATIF));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 49), ")", Type.NON_SIGNIFICATIF));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 31, 50), ";", Type.NON_SIGNIFICATIF));
@@ -722,8 +722,8 @@ public class ManagerTokenSampleTest {
         // tokenList.add(new Token(new
         // Localisation("GestionGroupeUltraLight.java", 43, 9), "public static",
         // Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 43, 23), "Vector", Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 43, 29), "lireListeGroupeActiveOrderByCode", Type.VALEUR));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 43, 23), "Vector", Type.VALUE));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 43, 29), "lireListeGroupeActiveOrderByCode", Type.VALUE));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 43, 62), "(", Type.NON_SIGNIFICATIF));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 43, 63), ")", Type.NON_SIGNIFICATIF));
         // tokenList.add(new Token(new
@@ -734,11 +734,11 @@ public class ManagerTokenSampleTest {
         // "RegardException", Type.VALEUR));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 44, 48), "[METHOD LIMIT]", Type.BREAK));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 44, 48), "{", Type.NON_SIGNIFICATIF));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 17), "Vector", Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 24), "listeGroupe", Type.VALEUR));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 17), "Vector", Type.VALUE));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 24), "listeGroupe", Type.VALUE));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 35), "=", Type.NON_SIGNIFICATIF));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 38), "new", Type.VALEUR));
-        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 42), "Vector", Type.VALEUR));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 38), "new", Type.VALUE));
+        tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 42), "Vector", Type.VALUE));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 48), "(", Type.NON_SIGNIFICATIF));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 49), ")", Type.NON_SIGNIFICATIF));
         tokenList.add(new Token(new Localisation("GestionGroupeUltraLight.java", 45, 50), ";", Type.NON_SIGNIFICATIF));

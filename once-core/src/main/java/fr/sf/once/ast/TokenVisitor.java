@@ -108,7 +108,7 @@ import fr.sf.once.model.Token;
 
 public class TokenVisitor implements VoidVisitor<List<Token>> {
 
-    static final Logger logSortie = Logger.getLogger("SORTIE");
+    static final Logger logOutput = Logger.getLogger("OUTPUT");
     static final Logger LOG = Logger.getLogger(TokenVisitor.class);
     private final String fileName;
     private final List<MethodLocalisation> methodList;
@@ -1012,7 +1012,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     }
 
     private void addToken(int beginLine, int beginColumn, String token, List<Token> arg) {
-        addToken(beginLine, beginColumn, token, fr.sf.once.model.Type.VALEUR, arg);
+        addToken(beginLine, beginColumn, token, fr.sf.once.model.Type.VALUE, arg);
     }
 
     protected void addToken(int beginLine, int beginColumn, String token, fr.sf.once.model.Type type, List<Token> arg) {

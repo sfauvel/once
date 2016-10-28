@@ -20,8 +20,8 @@ public class ComparateurSimpleSansStringTest {
     @Test
     public void testCompareWithString() {
         ArrayList<Token> tokenList = new ArrayList<Token>();
-        tokenList.add(new Token(null, "A", Type.VALEUR));
-        tokenList.add(new Token(null, "B", Type.VALEUR));
+        tokenList.add(new Token(null, "A", Type.VALUE));
+        tokenList.add(new Token(null, "B", Type.VALUE));
         tokenList.add(new Token(null, "A", TypeJava.STRING));
         tokenList.add(new Token(null, ";", Type.BREAK));
         tokenList.add(new Token(null, "B", TypeJava.STRING));

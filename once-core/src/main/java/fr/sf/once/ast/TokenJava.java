@@ -7,8 +7,8 @@ import fr.sf.once.model.Type;
 
 public class TokenJava extends Token {
     
-    public static final TokenJava OPENING_BRACE = new TokenJava("{", Type.VALEUR);
-    public static final TokenJava CLOSING_BRACE = new TokenJava("}", Type.VALEUR);
+    public static final TokenJava OPENING_BRACE = new TokenJava("{", Type.VALUE);
+    public static final TokenJava CLOSING_BRACE = new TokenJava("}", Type.VALUE);
     public static final TokenJava OPENING_PARENTHESIS = new TokenJava("(", Type.NON_SIGNIFICATIF);
     public static final TokenJava CLOSING_PARENTHESIS = new TokenJava(")", Type.NON_SIGNIFICATIF);
     public static final TokenJava OPENING_GENERIC = new TokenJava("<", Type.NON_SIGNIFICATIF);

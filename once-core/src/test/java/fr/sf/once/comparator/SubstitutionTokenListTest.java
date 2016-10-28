@@ -15,9 +15,9 @@ import fr.sf.once.model.Type;
  */
 public class SubstitutionTokenListTest  {
 
-        private final Token tokenA = new Token(null, "A", Type.VALEUR);
-        private final Token tokenB = new Token(null, "B", Type.VALEUR);
-        private final Token tokenC = new Token(null, "C", Type.VALEUR);
+        private final Token tokenA = new Token(null, "A", Type.VALUE);
+        private final Token tokenB = new Token(null, "B", Type.VALUE);
+        private final Token tokenC = new Token(null, "C", Type.VALUE);
         private SubstitutionTokenList substitutionList;
 
         @Before
@@ -27,7 +27,7 @@ public class SubstitutionTokenListTest  {
         
         @Test
         public void should_return_the_same_position_when_search_another_instance_of_the_same_token() {
-            assertThat(substitutionList.getPosition(new Token(null, tokenA.getValeurToken(), Type.VALEUR))).isEqualTo(0);
+            assertThat(substitutionList.getPosition(new Token(null, tokenA.getValeurToken(), Type.VALUE))).isEqualTo(0);
             Token otherTokenReferenceWithSameValue = new Token(null, tokenA.getValeurToken(), tokenA.getType());
             assertThat(substitutionList.getPosition(otherTokenReferenceWithSameValue)).isEqualTo(0);
         }

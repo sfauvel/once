@@ -1,7 +1,7 @@
 package fr.sf.once.model;
 
 public class Type {
-    public static final Type VALEUR = new Type("Value");
+    public static final Type VALUE = new Type("Value");
     public static final Type BREAK = new Type("Break"); // Valeur coupant la redonance
                                                  // même si le caractère est
                                                  // identique..
