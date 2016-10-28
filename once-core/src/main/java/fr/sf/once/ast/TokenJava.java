@@ -7,20 +7,20 @@ import fr.sf.once.model.Type;
 
 public class TokenJava extends Token {
     
-    public static final TokenJava ACCOLADE_OUVRANTE = new TokenJava("{", Type.VALEUR);
-    public static final TokenJava ACCOLADE_FERMANTE = new TokenJava("}", Type.VALEUR);
-    public static final TokenJava PARENTHESE_OUVRANTE = new TokenJava("(", Type.NON_SIGNIFICATIF);
-    public static final TokenJava PARENTHESE_FERMANTE = new TokenJava(")", Type.NON_SIGNIFICATIF);
-    public static final TokenJava GENERIQUE_OUVRANTE = new TokenJava("<", Type.NON_SIGNIFICATIF);
-    public static final TokenJava GENERIQUE_FERMANTE = new TokenJava(">", Type.NON_SIGNIFICATIF);
-    public static final TokenJava TABLEAU_OUVRANT = new TokenJava("[", Type.NON_SIGNIFICATIF);
-    public static final TokenJava TABLEAU_FERMANT = new TokenJava("]", Type.NON_SIGNIFICATIF);
-    public static final TokenJava SEPARATEUR_PARAMETRE = new TokenJava(",", Type.NON_SIGNIFICATIF);
-    public static final TokenJava SEPARATEUR_EXCEPTION = new TokenJava("|", Type.NON_SIGNIFICATIF);
+    public static final TokenJava OPENING_BRACE = new TokenJava("{", Type.VALEUR);
+    public static final TokenJava CLOSING_BRACE = new TokenJava("}", Type.VALEUR);
+    public static final TokenJava OPENING_PARENTHESIS = new TokenJava("(", Type.NON_SIGNIFICATIF);
+    public static final TokenJava CLOSING_PARENTHESIS = new TokenJava(")", Type.NON_SIGNIFICATIF);
+    public static final TokenJava OPENING_GENERIC = new TokenJava("<", Type.NON_SIGNIFICATIF);
+    public static final TokenJava CLOSING_GENERIC = new TokenJava(">", Type.NON_SIGNIFICATIF);
+    public static final TokenJava OPENING_ARRAY = new TokenJava("[", Type.NON_SIGNIFICATIF);
+    public static final TokenJava CLOSING_ARRAY = new TokenJava("]", Type.NON_SIGNIFICATIF);
+    public static final TokenJava PARAMETER_SEPARATOR = new TokenJava(",", Type.NON_SIGNIFICATIF);
+    public static final TokenJava EXCPTION_SEPARATOR = new TokenJava("|", Type.NON_SIGNIFICATIF);
 
-    public static final TokenJava POINT = new TokenJava(".", Type.NON_SIGNIFICATIF);
-    public static final TokenJava FIN_INSTRUCTION = new TokenJava(";", Type.NON_SIGNIFICATIF);
-    public static final TokenJava PARCOURS_LISTE = new TokenJava(":", Type.NON_SIGNIFICATIF);
+    public static final TokenJava DOT = new TokenJava(".", Type.NON_SIGNIFICATIF);
+    public static final TokenJava ENDING_STATEMENT = new TokenJava(";", Type.NON_SIGNIFICATIF);
+    public static final TokenJava TRAVEL_LIST = new TokenJava(":", Type.NON_SIGNIFICATIF);
 
     public static final TokenJava BREAK = new TokenJava("break", Type.NON_SIGNIFICATIF);
     public static final TokenJava CASE = new TokenJava("case");
@@ -36,7 +36,7 @@ public class TokenJava extends Token {
     public static final TokenJava CLASS = new TokenJava("class");
     public static final TokenJava RETURN = new TokenJava("return");
 
-    public static final TokenJava AFFECTATION = new TokenJava("=", Type.NON_SIGNIFICATIF);
+    public static final TokenJava ASSIGNEMENT = new TokenJava("=", Type.NON_SIGNIFICATIF);
     public static final TokenJava STATIC = new TokenJava("static");
     public static final TokenJava NULL = new TokenJava("null");
     public static final TokenJava THIS = new TokenJava("this");

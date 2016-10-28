@@ -16,12 +16,12 @@ import fr.sf.once.model.Localisation;
 import fr.sf.once.model.Token;
 import fr.sf.once.test.LogRule;
 
-public class ParcoursAstTest {
+public class TravelAstTest {
 
     @ClassRule
     public static final LogRule LOG_RULE = new LogRule();
 
-    public static final Logger LOG = Logger.getLogger(ParcoursAstTest.class);
+    public static final Logger LOG = Logger.getLogger(TravelAstTest.class);
 
     public static final String $METHOD_LIMIT = "METHOD BREAK";
     public static final String __ = " ";
@@ -635,8 +635,8 @@ public class ParcoursAstTest {
         List<? extends Token> listToken = null;
 
         try {
-            ParcoursAst parcoursAst = new ParcoursAst();
-            listToken = parcoursAst.extraireToken(input, new TokenVisitor());
+            TravelAst parcoursAst = new TravelAst();
+            listToken = parcoursAst.extractToken(input, new TokenVisitor());
         } catch (Error t) {
             t.printStackTrace();
             fail(t.getMessage());

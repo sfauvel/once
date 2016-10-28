@@ -13,23 +13,23 @@ import com.github.javaparser.ast.CompilationUnit;
 
 import fr.sf.once.model.Token;
 
-public class ParcoursAst {
+public class TravelAst {
     
-    public static final Logger LOG = Logger.getLogger(ParcoursAst.class);
+    public static final Logger LOG = Logger.getLogger(TravelAst.class);
     private final String sourceEncoding;
     
-    public ParcoursAst() {
+    public TravelAst() {
         this(null);
     }
     
-    public ParcoursAst(String sourceEncoding) {
+    public TravelAst(String sourceEncoding) {
         this.sourceEncoding = sourceEncoding;
     }
     
-    public List<Token> extraireToken(InputStream input, TokenVisitor tokenVisitor) {
-        List<Token> listeToken = new ArrayList<Token>();
-        tokenVisitor.visit(getParser(input), listeToken);
-        return listeToken;
+    public List<Token> extractToken(InputStream input, TokenVisitor tokenVisitor) {
+        List<Token> tokenList = new ArrayList<Token>();
+        tokenVisitor.visit(getParser(input), tokenList);
+        return tokenList;
     }
 
     private CompilationUnit getParser(InputStream input) throws Error {

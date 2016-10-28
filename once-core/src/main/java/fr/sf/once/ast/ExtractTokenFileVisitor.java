@@ -11,7 +11,7 @@ import fr.sf.commons.Files;
 import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Token;
 
-public class ExtractTokenFileVisitor extends ParcoursAst implements Files.FileVisitor {
+public class ExtractTokenFileVisitor extends TravelAst implements Files.FileVisitor {
     private final List<Token> tokenList = new ArrayList<Token>();
     private List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
     private TokenVisitorBuilder tokenVisitorBuilder;
@@ -35,15 +35,15 @@ public class ExtractTokenFileVisitor extends ParcoursAst implements Files.FileVi
         if (isJavaFile(file)) {
             try (FileInputStream in = new FileInputStream(file)) {
                 TokenVisitor tokenVisitor = tokenVisitorBuilder.build(file, file.getPath().replace(rootPath, ""), methodList, tokenList.size());
-                tokenList.addAll(extraireToken(in, tokenVisitor));
+                tokenList.addAll(extractToken(in, tokenVisitor));
                 LOG.info(file.getName() + ": " + tokenList.size());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                LOG.error("Erreur de lecture du fichier " + file.getName(), e);
+                LOG.error("Error reading file " + file.getName(), e);
             } catch (Error e) {
-                LOG.error("Erreur de parsing du fichier " + file.getName(), e);
+                LOG.error("Error parsing file " + file.getName(), e);
             } catch (IOException e) {
-                LOG.error("Erreur de fermeture du fichier " + file.getName(), e);
+                LOG.error("Error closing file " + file.getName(), e);
             }
         }
     }

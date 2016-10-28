@@ -28,7 +28,7 @@ public class ExtractTokenFileVisitorTest {
     private ExtractTokenFileVisitor createVisitor() {
         return new ExtractTokenFileVisitor(tmp.getRoot().getAbsolutePath(), "UTF-8", tokenVisitorBuidler) {
             @Override
-            public List<Token> extraireToken(InputStream input, TokenVisitor tokenVisitor) {
+            public List<Token> extractToken(InputStream input, TokenVisitor tokenVisitor) {
                 return Collections.emptyList();
             }
         };
