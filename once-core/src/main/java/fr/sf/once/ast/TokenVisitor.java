@@ -1030,7 +1030,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         if (!arg.isEmpty()) {
             Token lastToken = getLastToken(arg);
 
-            if (lastToken.getlocalisation().getNomFichier().equals(fileName)) {
+            if (lastToken.getlocalisation().getFileName().equals(fileName)) {
                 int tailleToken = lastToken.getType().is(fr.sf.once.model.Type.BREAK) ? 0 : lastToken.getTokenValue().length();
 //                if (lastToken.getLigneDebut() > beginLine) {
 //                    LOG.error("Nouveau token avant le précédent");

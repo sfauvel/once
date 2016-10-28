@@ -109,7 +109,7 @@ public class AssertToken {
             assertEquals(type, tokenJava.getType());
         }
         Localisation localisation = tokenJava.getlocalisation();
-        assertThat(localisation.getLigne()).as("Error on line with token '" + token + "'").isEqualTo(line);
+        assertThat(localisation.getLine()).as("Error on line with token '" + token + "'").isEqualTo(line);
         assertThat(localisation.getColonne()).as("Error on column with token '" + token + "'").isEqualTo(column);
         currentPosition = position + 1;
         return this;

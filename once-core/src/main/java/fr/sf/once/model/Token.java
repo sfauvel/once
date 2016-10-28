@@ -32,7 +32,7 @@ public class Token {
     }
     
     public Integer getLigneDebut() {
-        return localisation.getLigne();
+        return localisation.getLine();
     }
     public Integer getColonneDebut() {
         return localisation.getColonne();

@@ -252,8 +252,8 @@ public class OnceHandler implements HttpHandler {
 
         int i = 0;
         for (Token token : tokenList) {
-            if (token.getLigneDebut() >= method.getLocalisationDebut().getLigne()-1
-                    && token.getLigneDebut() <= method.getLocalisationFin().getLigne()) {
+            if (token.getLigneDebut() >= method.getLocalisationDebut().getLine()-1
+                    && token.getLigneDebut() <= method.getLocalisationFin().getLine()) {
                 if (line < token.getLigneDebut()) {
                     buffer.append("\n");
                     for (int j = 0; j < token.getColonneDebut(); j++) {
@@ -305,7 +305,7 @@ public class OnceHandler implements HttpHandler {
             MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
             if (method != null) {
                 method.getRedondanceList().add(redondance);
-                int methodLineNumber = method.getLocalisationFin().getLigne() - method.getLocalisationDebut().getLigne();
+                int methodLineNumber = method.getLocalisationFin().getLine() - method.getLocalisationDebut().getLine();
                 int redundancyLineNumber = ligneFin - ligneDebut;
                 int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
                 buffer.append("<div style=\"padding-left:3em;\">");
@@ -317,15 +317,15 @@ public class OnceHandler implements HttpHandler {
                         .append(" lines)")
                         .append(method.getMethodName())
                         .append(" from line ")
-                        .append(tokenList.get(firstTokenPosition).getlocalisation().getLigne())
+                        .append(tokenList.get(firstTokenPosition).getlocalisation().getLine())
                         .append(" to ")
-                        .append(tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation().getLigne())
+                        .append(tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation().getLine())
                         .append(" ")
 
                 .append("(method from line ")
-                        .append(method.getLocalisationDebut().getLigne())
+                        .append(method.getLocalisationDebut().getLine())
                         .append(" to ")
-                        .append(method.getLocalisationFin().getLigne())
+                        .append(method.getLocalisationFin().getLine())
                         .append(")");
 
                 // appendString(buffer, method.getLocalisationDebut());
@@ -398,7 +398,7 @@ public class OnceHandler implements HttpHandler {
         Localisation localisationDebut = tokenList.get(positionPremierToken).getlocalisation();
         Localisation localisationFin = tokenList.get(positionPremierToken + nombreTokenRedondant - 1).getlocalisation();
 
-        int nombreLigne = localisationFin.getLigne() - localisationDebut.getLigne();
+        int nombreLigne = localisationFin.getLine() - localisationDebut.getLine();
 
         return nombreLigne > nombreLigneMin;
     }

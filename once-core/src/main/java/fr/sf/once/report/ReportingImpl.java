@@ -69,11 +69,11 @@ public class ReportingImpl implements Reporting {
             Localisation localisationDebut = code.getToken(firstTokenPosition).getlocalisation();
             Localisation localisationFin = code.getToken(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation();
 
-            bufferCsv.append(localisationDebut.getNomFichier())
+            bufferCsv.append(localisationDebut.getFileName())
                     .append("(")
-                    .append(localisationDebut.getLigne())
+                    .append(localisationDebut.getLine())
                     .append("/")
-                    .append(localisationFin.getLigne())
+                    .append(localisationFin.getLine())
                     .append(") ");
         }
     }
@@ -154,7 +154,7 @@ public class ReportingImpl implements Reporting {
         Localisation localisationDebut = code.getToken(positionPremierToken).getlocalisation();
         Localisation localisationFin = code.getToken(positionPremierToken + nombreTokenRedondant - 1).getlocalisation();
 
-        int nombreLigne = localisationFin.getLigne() - localisationDebut.getLigne();
+        int nombreLigne = localisationFin.getLine() - localisationDebut.getLine();
 
         return nombreLigne > nombreLigneMin;
     }
@@ -184,7 +184,7 @@ public class ReportingImpl implements Reporting {
                 MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
                 if (method != null) {
                     method.getRedondanceList().add(redondance);
-                    int methodLineNumber = method.getLocalisationFin().getLigne() - method.getLocalisationDebut().getLigne();
+                    int methodLineNumber = method.getLocalisationFin().getLine() - method.getLocalisationDebut().getLine();
                     int redundancyLineNumber = ligneFin - ligneDebut;
                     int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
 
@@ -196,15 +196,15 @@ public class ReportingImpl implements Reporting {
                             .append(" lines)")
                             .append(method.getMethodName())
                             .append(" from line ")
-                            .append(code.getToken(firstTokenPosition).getlocalisation().getLigne())
+                            .append(code.getToken(firstTokenPosition).getlocalisation().getLine())
                             .append(" to ")
-                            .append(code.getToken(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation().getLigne())
+                            .append(code.getToken(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation().getLine())
                             .append(" ")
 
                             .append("(method from line ")
-                            .append(method.getLocalisationDebut().getLigne())
+                            .append(method.getLocalisationDebut().getLine())
                             .append(" to ")
-                            .append(method.getLocalisationFin().getLigne())
+                            .append(method.getLocalisationFin().getLine())
                             .append(")");
 
                     // appendString(buffer, method.getLocalisationDebut());
@@ -237,7 +237,7 @@ public class ReportingImpl implements Reporting {
     }
 
     private void appendString(StringBuffer buffer, Localisation localisation) {
-        buffer.append(localisation.getLigne())
+        buffer.append(localisation.getLine())
                 .append(":")
                 .append(localisation.getColonne());
     }
@@ -257,7 +257,7 @@ public class ReportingImpl implements Reporting {
             MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
             if (method != null) {
                 method.getRedondanceList().add(redondance);
-                int methodSize = method.getLocalisationFin().getLigne() - method.getLocalisationDebut().getLigne();
+                int methodSize = method.getLocalisationFin().getLine() - method.getLocalisationDebut().getLine();
                 if (ligneFin - ligneDebut == methodSize) {
                     return true;
                 }
@@ -278,17 +278,17 @@ public class ReportingImpl implements Reporting {
     private void displayVisualRedondance(MethodLocalisation method, Integer ligneDebut, Integer ligneFin) {
         if (LOG_RESULTAT.isDebugEnabled()) {
             StringBuffer line = new StringBuffer();
-            for (int i = method.getLocalisationDebut().getLigne(); i < ligneDebut; i++) {
+            for (int i = method.getLocalisationDebut().getLine(); i < ligneDebut; i++) {
                 line.append(".");
             }
             for (int i = ligneDebut; i <= ligneFin; i++) {
                 line.append("*");
             }
-            for (int i = ligneFin; i <= method.getLocalisationFin().getLigne(); i++) {
+            for (int i = ligneFin; i <= method.getLocalisationFin().getLine(); i++) {
                 line.append(".");
             }
 
-            LOG_RESULTAT.debug(method.getMethodName() + "(" + method.getLocalisationDebut().getLigne() + ")" + line.toString());
+            LOG_RESULTAT.debug(method.getMethodName() + "(" + method.getLocalisationDebut().getLine() + ")" + line.toString());
         }
     }
 
@@ -301,7 +301,7 @@ public class ReportingImpl implements Reporting {
 
             display(token);
 
-            int currentLine = localisation.getLigne();
+            int currentLine = localisation.getLine();
             int currentColumn = localisation.getColonne();
             if (currentLine < lastLine) {
                 TRACE_TOKEN.error("Le numéro de ligne diminue");
@@ -335,7 +335,7 @@ public class ReportingImpl implements Reporting {
         for (Token token : code.getTokenList()) {
             Localisation localisation = token.getlocalisation();
 
-            int currentLine = localisation.getLigne();
+            int currentLine = localisation.getLine();
             int currentColumn = localisation.getColonne();
             if (currentLine < lastLine) {
                 LOG_RESULTAT.error("Le numéro de ligne diminue");

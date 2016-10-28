@@ -116,7 +116,7 @@ public class DuplicationCodePane extends VBox {
 
     private void addRedundancyDescription(final List<Token> tokenList, Redundancy redundancy, Integer firstTokenPosition, StringBuffer buffer,
             Integer ligneDebut, Integer ligneFin, MethodLocalisation method) {
-        int methodLineNumber = method.getLocalisationFin().getLigne() - method.getLocalisationDebut().getLigne();
+        int methodLineNumber = method.getLocalisationFin().getLine() - method.getLocalisationDebut().getLine();
         int redundancyLineNumber = ligneFin - ligneDebut;
         int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
 
@@ -128,32 +128,32 @@ public class DuplicationCodePane extends VBox {
                 .append(" lines)")
                 .append(method.getMethodName())
                 .append(" from line ")
-                .append(tokenList.get(firstTokenPosition).getlocalisation().getLigne())
+                .append(tokenList.get(firstTokenPosition).getlocalisation().getLine())
                 .append(" to ")
-                .append(tokenList.get(firstTokenPosition+redundancy.getDuplicatedTokenNumber()).getlocalisation().getLigne())
+                .append(tokenList.get(firstTokenPosition+redundancy.getDuplicatedTokenNumber()).getlocalisation().getLine())
                 .append(" ")
                 
                 .append("(method from line ")
-                .append(method.getLocalisationDebut().getLigne())
+                .append(method.getLocalisationDebut().getLine())
                 .append(" to ")
-                .append(method.getLocalisationFin().getLigne())
+                .append(method.getLocalisationFin().getLine())
                 .append(")");
     }
 
     private void displayVisualRedondance(MethodLocalisation method, Integer ligneDebut, Integer ligneFin) {
         if (isDetailDisplay) {
             StringBuffer line = new StringBuffer();
-            for (int i = method.getLocalisationDebut().getLigne(); i < ligneDebut; i++) {
+            for (int i = method.getLocalisationDebut().getLine(); i < ligneDebut; i++) {
                 line.append(".");
             }
             for (int i = ligneDebut; i <= ligneFin; i++) {
                 line.append("*");
             }
-            for (int i = ligneFin; i <= method.getLocalisationFin().getLigne(); i++) {
+            for (int i = ligneFin; i <= method.getLocalisationFin().getLine(); i++) {
                 line.append(".");
             }
 
-            addTextLine(method.getMethodName() + "(" + method.getLocalisationDebut().getLigne() + ")" + line.toString());
+            addTextLine(method.getMethodName() + "(" + method.getLocalisationDebut().getLine() + ")" + line.toString());
         }
     }
     

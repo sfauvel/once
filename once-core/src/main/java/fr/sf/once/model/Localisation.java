@@ -13,10 +13,10 @@ public class Localisation {
         this.colonne = colonne;
     }
     
-    public String getNomFichier() {
+    public String getFileName() {
         return nomFichier;
     }
-    public int getLigne() {
+    public int getLine() {
         return ligne;
     }
     public int getColonne() {

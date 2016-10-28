@@ -51,9 +51,9 @@ public class MethodLocalisation {
        
     public static MethodLocalisation findMethod(List<MethodLocalisation> methodList, Token token) {
         for (MethodLocalisation methodLocalisation : methodList) {            
-            if (methodLocalisation.start.getNomFichier().equals(token.getlocalisation().getNomFichier())
-                    && methodLocalisation.getLocalisationDebut().getLigne() <= token.getLigneDebut() 
-                    && methodLocalisation.getLocalisationFin().getLigne() >=  token.getLigneDebut() ) {
+            if (methodLocalisation.start.getFileName().equals(token.getlocalisation().getFileName())
+                    && methodLocalisation.getLocalisationDebut().getLine() <= token.getLigneDebut() 
+                    && methodLocalisation.getLocalisationFin().getLine() >=  token.getLigneDebut() ) {
                 return methodLocalisation;
             }
                     

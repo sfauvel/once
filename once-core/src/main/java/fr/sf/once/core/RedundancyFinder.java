@@ -102,12 +102,12 @@ public class RedundancyFinder {
 
     private void traceRedundancySize(List<Integer> positionList, int[] redundanciesSize) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("\nXXXX\n  traceTailleRedondance");
+            LOG.debug("\nXXXX\n  traceRedundancySize");
             int position = 0;
             for (Integer tokenPosition : positionList) {
                 traceToken(tokenPosition);
                 if (position < redundanciesSize.length) {
-                    LOG.debug("Taille redondance:" + redundanciesSize[position]);
+                    LOG.debug("Redundancy size:" + redundanciesSize[position]);
                 }
                 position++;
             }
@@ -115,16 +115,16 @@ public class RedundancyFinder {
     }
 
     public List<Redundancy> removeRedundancyIncludedInAnotherOne(List<Redundancy> redundancyList) {
-        LOG.info("Nombre de redondance avant suppression des doublons: " + redundancyList.size());
+        LOG.info("Redundancy number before removing duplicate ones: " + redundancyList.size());
         Redundancy.removeDuplicatedList(redundancyList);
-        LOG.info("Nombre de redondance après suppression des doublons: " + redundancyList.size());
+        LOG.info("Redundancy number after removing duplicate ones: " + redundancyList.size());
         return redundancyList;
     }
 
     public void sortPositionList(List<Integer> positionList, CodeComparator comparator) {
-        traceTokens(positionList, "\nXXXX\n  getListeTokenTrier non trié");
+        traceTokens(positionList, "\nXXXX\n  sortPositionList before sort");
         Collections.sort(positionList, comparator);
-        traceTokens(positionList, "\nXXXX\n  getListeTokenTrier trié");
+        traceTokens(positionList, "\nXXXX\n  sortPositionList after sort");
     }
 
     private void traceTokens(List<Integer> positionList, String message) {
@@ -137,10 +137,10 @@ public class RedundancyFinder {
         }
     }
 
-    private void traceSortedToken(List<Integer> listePosition) {
+    private void traceSortedToken(List<Integer> positionList) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Liste triée");
-            for (Integer tokenPosition : listePosition) {
+            LOG.debug("Sorted list");
+            for (Integer tokenPosition : positionList) {
                 traceToken(tokenPosition);
             }
         }
@@ -149,7 +149,7 @@ public class RedundancyFinder {
     private void traceToken(int position) {
         if (LOG.isDebugEnabled()) {
             Token token = getToken(position);
-            LOG.debug(position + "\t" + token.getlocalisation().getNomFichier() + " ligne:" + token.getlocalisation().getLigne() + "\t N° token:" + position);
+            LOG.debug(position + "\t" + token.getlocalisation().getFileName() + " line:" + token.getlocalisation().getLine() + "\t N° token:" + position);
             StringBuffer buffer = new StringBuffer();
 
             int size = getTokenList().size();
@@ -161,46 +161,46 @@ public class RedundancyFinder {
         }
     }
 
-    public List<Redundancy> computeRedundancy(List<Integer> positionList, int[] tailleRedondance, int tailleMin) {
-        List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
-        addRedundancyInternal(positionList, listeRedondance, tailleRedondance, 0, 0, 0);
-        for (int i = 1; i < tailleRedondance.length; i++) {
+    public List<Redundancy> computeRedundancy(List<Integer> positionList, int[] redundancySize, int minimalSize) {
+        List<Redundancy> redondancyList = new ArrayList<Redundancy>();
+        addRedundancyInternal(positionList, redondancyList, redundancySize, 0, 0, 0);
+        for (int i = 1; i < redundancySize.length; i++) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("index : " + i);
             }
-            if (tailleRedondance[i] > tailleRedondance[i - 1]) {
-                addRedundancyInternal(positionList, listeRedondance, tailleRedondance, i, i, Math.max(tailleMin, tailleRedondance[i - 1]));
+            if (redundancySize[i] > redundancySize[i - 1]) {
+                addRedundancyInternal(positionList, redondancyList, redundancySize, i, i, Math.max(minimalSize, redundancySize[i - 1]));
             }
         }
-        return listeRedondance;
+        return redondancyList;
     }
 
-    private void addRedundancyInternal(List<Integer> positionList, List<Redundancy> listeRedondance, int[] listeTailleRedondance, int indexDepart,
-            int indexCourant, int tailleMin) {
-        if (indexCourant >= listeTailleRedondance.length) {
+    private void addRedundancyInternal(List<Integer> positionList, List<Redundancy> redundancyList, int[] redundancySizeList, int startingIndex,
+            int currentIndex, int minimalSize) {
+        if (currentIndex >= redundancySizeList.length) {
             return;
         }
-        int tailleInitiale = listeTailleRedondance[indexCourant];
-        if (tailleInitiale <= tailleMin) {
+        int initialSize = redundancySizeList[currentIndex];
+        if (initialSize <= minimalSize) {
             return;
         }
-        while (indexCourant < listeTailleRedondance.length && tailleInitiale <= listeTailleRedondance[indexCourant]) {
-            indexCourant++;
+        while (currentIndex < redundancySizeList.length && initialSize <= redundancySizeList[currentIndex]) {
+            currentIndex++;
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("ajout depart=" + indexDepart + " nombre=" + (indexCourant - indexDepart + 1) + " taille=" + tailleInitiale);
+            LOG.debug("add starting=" + startingIndex + " number=" + (currentIndex - startingIndex + 1) + " size=" + initialSize);
         }
 
-        listeRedondance.add(createRedundancy(tailleInitiale, positionList.subList(indexDepart, indexCourant + 1)));
+        redundancyList.add(createRedundancy(initialSize, positionList.subList(startingIndex, currentIndex + 1)));
 
         if (LOG.isDebugEnabled()) {
-            for (Integer i : positionList.subList(indexDepart, indexCourant + 1)) {
+            for (Integer i : positionList.subList(startingIndex, currentIndex + 1)) {
                 LOG.debug("  position:" + i);
             }
         }
 
-        addRedundancyInternal(positionList, listeRedondance, listeTailleRedondance, indexDepart, indexCourant, tailleMin);
+        addRedundancyInternal(positionList, redundancyList, redundancySizeList, startingIndex, currentIndex, minimalSize);
     }
 
     private Redundancy createRedundancy(int redondanceSize, List<Integer> subList) {
