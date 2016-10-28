@@ -37,6 +37,7 @@ import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.launcher.Launcher.OnceProperties;
 import fr.sf.once.model.Code;
+import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.model.Localisation;
 import fr.sf.once.model.MethodLocalisation;
 import fr.sf.once.model.Redundancy;
@@ -159,7 +160,7 @@ public class OnceHandler implements HttpHandler {
         Configuration configuration = new Configuration(comparator).withTailleMin(tailleMin);
 
         RedundancyFinder manager = new RedundancyFinder(code);
-        List<Redundancy> listeRedondance = manager.getRedundancies(configuration);
+        List<FunctionalRedundancy> listeRedondance = manager.getRedundancies(configuration);
 
         LOG.info("Affichage des resultats...");
 

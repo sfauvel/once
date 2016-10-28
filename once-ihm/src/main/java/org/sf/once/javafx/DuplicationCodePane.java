@@ -51,7 +51,7 @@ public class DuplicationCodePane extends VBox {
         }
     }
 
-    public void display(final List<Token> tokenList, List<MethodLocalisation> methodList, List<Redundancy> redundancies) {
+    public void display(final List<Token> tokenList, List<MethodLocalisation> methodList, List<? extends Redundancy> redundancies) {
         for (Redundancy redundancy : redundancies) {
             display(tokenList, methodList, redundancy);
         }

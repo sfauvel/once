@@ -1,9 +1,13 @@
 package fr.sf.once.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class FunctionalRedundancy extends Redundancy {
 
@@ -24,23 +28,29 @@ public class FunctionalRedundancy extends Redundancy {
     }
 
     private void initSubstitutionList() {
-        substitutionListOfSubstitution = new ArrayList<Set<String>>();
-        int duplicatedTokenNumber = getDuplicatedTokenNumber();
-        List<Integer> firstTokenList = getStartRedundancyList();
+        List<Set<String>> tmpSubstitutionList = new ArrayList<Set<String>>();
         Set<String> substitutionList = new HashSet<String>();
-        for (int i = 0; i < duplicatedTokenNumber; i++) {
-            Set<String> listeValeur = new HashSet<String>();
-            for (Integer firstPosition : firstTokenList) {
-                int position = firstPosition + i;
-                listeValeur.add(code.getToken(position).getValeurToken());
-            }
-            if (listeValeur.size() > 1) {
-                String key = listeValeur.toString();
-                if (!substitutionList.contains(key)) {
-                    substitutionList.add(key);
-                    substitutionListOfSubstitution.add(listeValeur);
-                }
-            }
+        for (int index = 0; index < getDuplicatedTokenNumber(); index++) {
+            Set<String> substitution = getSubstitutions(getStartRedundancyList(), index);
+            if (isASubstitutionToAdd(substitutionList, substitution)) {
+                substitutionList.add(substitution.toString());
+                tmpSubstitutionList.add(substitution);
+            }             
         }
-    }   
+        substitutionListOfSubstitution = Collections.unmodifiableList(tmpSubstitutionList);
+    }
+
+    private boolean isASubstitutionToAdd(Set<String> substitutionList, Set<String> listeValeur) {
+        return listeValeur.size() > 1 && !substitutionList.contains(listeValeur.toString());
+    }
+
+    private Set<String> getSubstitutions(List<Integer> firstTokenList, int index) {
+        return mapToSet(firstTokenList, position -> code.getToken(position + index).getValeurToken());
+    }
+    
+    private <T, R> Set<R> mapToSet(Collection<T> list, Function<? super T, ? extends R> mapper) {
+        return list.stream()
+                .map(mapper)
+                .collect(Collectors.toSet());
+    } 
 }
