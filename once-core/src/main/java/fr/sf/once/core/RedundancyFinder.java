@@ -63,7 +63,7 @@ public class RedundancyFinder {
         for (Iterator<Redundancy> iterator = redundancyList.iterator(); iterator.hasNext();) {
             Redundancy redondance = iterator.next();
             redondance.removeOverlapRedundancy();
-            if (redondance.getStartRedundancyList().size() <= 1) {
+            if (redondance.getRedundancyNumber() <= 1) {
                 iterator.remove();
             }
         }

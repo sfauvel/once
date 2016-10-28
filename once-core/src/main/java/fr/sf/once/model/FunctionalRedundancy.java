@@ -36,8 +36,8 @@ public class FunctionalRedundancy extends Redundancy {
         substitutionListOfSubstitution = Collections.unmodifiableList(substitutionList);
     }
 
-    private boolean isASubstitutionToAdd(List<Set<String>> substitutionList, Set<String> listeValeur) {
-        return listeValeur.size() > 1 && !substitutionList.contains(listeValeur);
+    private boolean isASubstitutionToAdd(List<Set<String>> substitutionList, Set<String> valueList) {
+        return valueList.size() > 1 && !substitutionList.contains(valueList);
     }
 
     private Set<String> getSubstitutions(List<Integer> firstTokenList, int index) {

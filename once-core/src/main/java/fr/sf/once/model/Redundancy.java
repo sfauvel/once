@@ -10,16 +10,12 @@ import java.util.Map;
 
 public class Redundancy {
 
-    private int duplicatedTokenNumber;
-	private List<Integer> firstTokenList = new ArrayList<Integer>();
-	
-	public Redundancy(int duplicatedTokenNumber) {
-	    this.duplicatedTokenNumber = duplicatedTokenNumber;
-	}
-	
+    private final int duplicatedTokenNumber;
+	private final List<Integer> firstTokenList;
+		
 	public Redundancy(int duplicatedTokenNumber, List<Integer> firstTokenList) {
-	    this(duplicatedTokenNumber);
-	    this.firstTokenList.addAll(firstTokenList);
+	    this.duplicatedTokenNumber = duplicatedTokenNumber;
+	    this.firstTokenList = new ArrayList<Integer>(firstTokenList);
     }
 
     public int getDuplicatedTokenNumber() {
@@ -27,7 +23,7 @@ public class Redundancy {
 	}
 
     public List<Integer> getStartRedundancyList() {
-        return firstTokenList;
+        return Collections.unmodifiableList(firstTokenList);
     }
     
     public boolean contains(Redundancy includedRedundancy) {
@@ -47,7 +43,7 @@ public class Redundancy {
             Iterator<Integer> iteratorReference = firstTokenList.iterator();
             Iterator<Integer> iteratorIncluded = includedRedundancy.firstTokenList.iterator();
             
-            for (; iteratorReference.hasNext() && iteratorIncluded.hasNext();) {
+            while(iteratorReference.hasNext() && iteratorIncluded.hasNext()) {
                 int valueReference = iteratorReference.next();
                 int valueIncluded = iteratorIncluded.next();
                 if (valueReference + duplicatedTokenNumber != valueIncluded + includedRedundancy.duplicatedTokenNumber) {
@@ -136,13 +132,6 @@ public class Redundancy {
 
     public int getRedundancyNumber() {
         return firstTokenList.size();
-    }
-
-    public Redundancy between(int... tokenPositionList) {
-        for (int tokenPosition : tokenPositionList) {
-            getStartRedundancyList().add(tokenPosition);
-        }
-        return this;
     }
 
 }
