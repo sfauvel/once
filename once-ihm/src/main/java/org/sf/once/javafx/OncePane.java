@@ -133,8 +133,8 @@ public class OncePane extends StackPane {
             private void showDuplication(RedundancyFinder manager) {
                 Class<ComparateurAvecSubstitutionEtType> comparator = ComparateurAvecSubstitutionEtType.class;
                 int minimalSize = ConfStyle.BUTTON_MIN_WIDTH;
-                Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);
-                List<FunctionalRedundancy> redundancies = manager.getRedundancies(configuration);
+                Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(minimalSize);
+                List<FunctionalRedundancy> redundancies = manager.findRedundancies(configuration);
 
                 duplicationPane.display(tokenList, methodList, redundancies);
             }

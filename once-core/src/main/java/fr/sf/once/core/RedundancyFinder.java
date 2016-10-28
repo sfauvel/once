@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.comparator.CodeComparator;
-import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.model.Redundancy;
@@ -20,7 +19,7 @@ import fr.sf.once.report.ReportingImpl;
 
 
 /**
- * Find redundancy from the code. 
+ * Find redundancy into the code. 
  */
 public class RedundancyFinder {
 
@@ -31,35 +30,33 @@ public class RedundancyFinder {
         this.code = code;
     }
 
-    public List<FunctionalRedundancy> getRedundancies(int tailleMin) {
-        return getRedundancies(new Configuration(ComparatorWithSubstitution.class)
-                .withTailleMin(tailleMin));
-    }
-
-    public List<FunctionalRedundancy> getRedundancies(Configuration configuration) {
+    public List<FunctionalRedundancy> findRedundancies(Configuration configuration) {
+        LOG.info("Global token number: " + code.getTokenList().size());
         List<Integer> positionList = getPositionToManage();
-        CodeComparator comparator = configuration.getComparateur(code);
-        LOG.info("Tri des " + positionList.size() + " tokens...");
+        LOG.info("Significant token number: " + positionList.size());
+        LOG.info("Sort tokens...");
+        CodeComparator comparator = configuration.getComparator(code);
         sortPositionList(positionList, comparator);
         traceSortedToken(positionList);
-        LOG.info("Calcul des tailles de redondance...");
+        LOG.info("Compute redundancies size...");
         int[] redundancySize = comparator.getRedundancySize(positionList);
         traceRedundancySize(positionList, redundancySize);
 
-        LOG.info("Calcul des redondances...");
-        List<Redundancy> listeRedondance = computeRedundancy(positionList, redundancySize, configuration.getTailleMin());
-        LOG.info("Suppression des chevauchements...");
+        LOG.info("Build redundancies...");
+        List<Redundancy> listeRedondance = computeRedundancy(positionList, redundancySize, configuration.getMinimalTokenNumber());
+        LOG.info("Remove overlap between redundancies...");
         listeRedondance = removeOverlap(listeRedondance);
-        LOG.info("Suppression des doublons...");
+        LOG.info("Remove duplicate redundancies...");
         listeRedondance = removeRedundancyIncludedInAnotherOne(listeRedondance);
-        LOG.info("Fin du traitement");
+        LOG.info("Finished");
         
+        // TODO Transform redundancy into FunctionalRedundancy. It could be suppress when the 2 classes are merged.
         return listeRedondance.stream().map(r -> new FunctionalRedundancy(code,  r)).collect(Collectors.toList());
 
     }
 
     private List<Redundancy> removeOverlap(List<Redundancy> redundancyList) {
-        LOG.info("Nombre de redondance avant suppression des chevauchements: " + redundancyList.size());
+        LOG.info("Redundancy number before removing overlap: " + redundancyList.size());
         for (Iterator<Redundancy> iterator = redundancyList.iterator(); iterator.hasNext();) {
             Redundancy redondance = iterator.next();
             redondance.removeOverlapRedundancy();
@@ -67,28 +64,32 @@ public class RedundancyFinder {
                 iterator.remove();
             }
         }
-        LOG.info("Nombre de redondance après suppression des chevauchements: " + redundancyList.size());
+        LOG.info("Redundancy number after removing overlap: " + redundancyList.size());
 
         return redundancyList;
     }
 
     /**
-     * Permet de limiter la liste des tokens qui seront utilisés comme point de
-     * départ.
+     * Remove from list token that not significant.
+     * 
+     * It's all separator token like ';', '{', '}', '<', ...
+     * That's reduce the number of token to compute.
      * 
      * @return
      */
     private List<Integer> getPositionToManage() {
         List<Token> tokenList = getTokenList();
         List<Integer> positionList = new ArrayList<Integer>();
-        int position = 0;
-        for (Token token : tokenList) {
-            if (!Type.NON_SIGNIFICATIF.equals(token.getType())) {
+        for (int position = 0; position < tokenList.size(); position++) {
+            if (isTokenIsSignificatifForRedundancy(tokenList.get(position))) {
                 positionList.add(position);
-            }
-            position++;
+            }           
         }
         return positionList;
+    }
+
+    private boolean isTokenIsSignificatifForRedundancy(Token token) {
+        return !Type.NON_SIGNIFICATIF.equals(token.getType());
     }
 
     private List<Token> getTokenList() {
@@ -204,10 +205,6 @@ public class RedundancyFinder {
 
     private Redundancy createRedundancy(int redondanceSize, List<Integer> subList) {
         return new Redundancy(redondanceSize, subList);
-    }
-
-    public int min(int[] tableauValeur, int debut, int fin) {
-        return Arrays.stream(tableauValeur, debut, fin + 1).min().orElse(0);
     }
 
 }

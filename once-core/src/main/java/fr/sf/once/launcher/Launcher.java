@@ -164,10 +164,10 @@ public class Launcher {
 	public void execute() throws FileNotFoundException {
 		Code code = new ExtractCode().extract(sourceDir, sourceEncoding);
 
-		Configuration configuration = new Configuration(comparator).withTailleMin(minimalSize);
+		Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(minimalSize);
 
 		RedundancyFinder manager = new RedundancyFinder(code);
-		List<FunctionalRedundancy> listeRedondance = manager.getRedundancies(configuration);
+		List<FunctionalRedundancy> listeRedondance = manager.findRedundancies(configuration);
 
 		LOG.info("Affichage des resultats...");
 		Reporting reporting = new ReportingImpl(code.getMethodList());

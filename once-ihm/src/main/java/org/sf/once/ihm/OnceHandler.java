@@ -157,10 +157,10 @@ public class OnceHandler implements HttpHandler {
 
         code = new ExtractCode().extract(sourceDir, sourceEncoding);
 
-        Configuration configuration = new Configuration(comparator).withTailleMin(tailleMin);
+        Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(tailleMin);
 
         RedundancyFinder manager = new RedundancyFinder(code);
-        List<FunctionalRedundancy> listeRedondance = manager.getRedundancies(configuration);
+        List<FunctionalRedundancy> listeRedondance = manager.findRedundancies(configuration);
 
         LOG.info("Affichage des resultats...");
 

@@ -7,36 +7,42 @@ import fr.sf.once.comparator.BasicComparator;
 import fr.sf.once.model.Code;
 
 public class Configuration {
-    private int tailleMin;
-    private final Class<? extends CodeComparator> comparatorClass;
-
+    private static final int DEFAULT_MINIMAL_TOKEN_NUMBER = 20;
+    
+    private final int minimalTokenNumber;
+    private final Class<? extends CodeComparator> comparatorClass; 
+    
     public Configuration() {
         this(BasicComparator.class);
     }
 
     public Configuration(Class<? extends CodeComparator> comparatorClass) {
+        this(comparatorClass, DEFAULT_MINIMAL_TOKEN_NUMBER);
+    }     
+    
+    public Configuration(Class<? extends CodeComparator> comparatorClass, int minimalTokenNumber) {
         this.comparatorClass = comparatorClass;
+        this.minimalTokenNumber = minimalTokenNumber;
     }
 
-    public int getTailleMin() {
-        return tailleMin;
+    public int getMinimalTokenNumber() {
+        return minimalTokenNumber;
     }
 
-    public void setTailleMin(int tailleMin) {
-        this.tailleMin = tailleMin;
+    public Configuration withMinimalTokenNumber(int minimalTokenNumber) {
+        return new Configuration(this.comparatorClass, minimalTokenNumber);
     }
     
-    public Configuration withTailleMin(int tailleMin) {
-        setTailleMin(tailleMin);
-        return this;
-    }
-
-    public CodeComparator getComparateur(Code code) {
+    public CodeComparator getComparator(Code code) {
         try {
             Constructor<? extends CodeComparator> constructor = comparatorClass.getConstructor(Code.class);
             return constructor.newInstance(code);
         } catch (Exception e) {
             throw new Error(e);
         }
+    }
+    
+    public Configuration withComparator(Class<? extends CodeComparator> codeComparator) {
+        return new Configuration(codeComparator, this.minimalTokenNumber);
     }
 }

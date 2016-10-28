@@ -11,6 +11,7 @@ import org.assertj.core.api.AbstractAssert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.model.Redundancy;
@@ -29,8 +30,10 @@ public class RedundancyFinderTest {
     @Test
     public void testAfficherRedondance() {
         RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "A", "B", "B"));
-
-        List<FunctionalRedundancy> listeRedondance = manager.getRedundancies(0);
+        
+        Configuration configuration = new Configuration(ComparatorWithSubstitution.class).withMinimalTokenNumber(0);
+        List<FunctionalRedundancy> listeRedondance = manager.findRedundancies(configuration);
+        
         assertEquals(2, listeRedondance.size());
 
         // A A = B B
@@ -133,19 +136,6 @@ public class RedundancyFinderTest {
 
     private void assertRedondance(int tailleAttendu, Redundancy redondance) {
         assertEquals(tailleAttendu, redondance.getDuplicatedTokenNumber());
-    }
-
-    @Test
-    public void testMin() throws Exception {
-        RedundancyFinder managerToken = new RedundancyFinder(new Code());
-        assertEquals(5, managerToken.min(new int[] { 5 }, 0, 0));
-        assertEquals(5, managerToken.min(new int[] { 5, 6, 7, 8 }, 0, 3));
-        assertEquals(5, managerToken.min(new int[] { 5, 6, 7, 8 }, 0, 1));
-
-        assertEquals(5, managerToken.min(new int[] { 8, 7, 6, 5 }, 0, 3));
-        assertEquals(4, managerToken.min(new int[] { 5, 8, 4, 7 }, 0, 3));
-
-        assertEquals(5, managerToken.min(new int[] { 5, 8, 4, 7 }, 0, 1));
     }
 
     @Test
