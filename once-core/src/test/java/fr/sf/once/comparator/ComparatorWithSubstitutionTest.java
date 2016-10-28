@@ -230,7 +230,7 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
     }
 
     private Stream<String> tokensMapToPosition(Code code, List<Integer> positionList) {
-        return positionList.stream().map(p -> code.getToken(p).getValeurToken());
+        return positionList.stream().map(p -> code.getToken(p).getTokenValue());
     }
 
     private List<Integer> range(int endExclusive) {

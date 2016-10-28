@@ -13,11 +13,11 @@ import fr.sf.once.ast.TokenJava;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 
-public class ComparateurAvecSubstitutionEtType extends CodeComparator {
+public class ComparateurWithSubstitutionAndType extends CodeComparator {
 
-    public static final Logger LOG = Logger.getLogger(ComparateurAvecSubstitutionEtType.class);
+    public static final Logger LOG = Logger.getLogger(ComparateurWithSubstitutionAndType.class);
 
-    static final List<Token> listeTokenNonSubstituable = Arrays.asList(
+    static final List<Token> notSubstitutableTokenList = Arrays.asList(
             TokenJava.TRAVEL_LIST,
             TokenJava.OPENING_PARENTHESIS,
             TokenJava.CLOSING_PARENTHESIS,
@@ -32,30 +32,30 @@ public class ComparateurAvecSubstitutionEtType extends CodeComparator {
     private static SubstitutionTokenListWithBasicArray substitutionListRef = new SubstitutionTokenListWithBasicArray();
 
     static {
-        for (Token token : listeTokenNonSubstituable) {
+        for (Token token : notSubstitutableTokenList) {
             substitutionListRef.getPosition(token);
         }
     }
 
-    private SubstitutionTokenListWithBasicArray listeSubstitution1 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
-    private SubstitutionTokenListWithBasicArray listeSubstitution2 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
+    private SubstitutionTokenListWithBasicArray substitutionList1 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
+    private SubstitutionTokenListWithBasicArray substitutionList2 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
 
-    public ComparateurAvecSubstitutionEtType(Code code) {
+    public ComparateurWithSubstitutionAndType(Code code) {
         super(code);
     }
 
     @Override
     protected void reinit() {
         super.reinit();
-        listeSubstitution1.reinit();
-        listeSubstitution2.reinit();
+        substitutionList1.reinit();
+        substitutionList2.reinit();
     }
 
     @Override
     public int compareTokenValue(Token token1, Token token2) {
-        int positionSubstitution1 = listeSubstitution1.getPosition(token1);
-        int positionSubstitution2 = listeSubstitution2.getPosition(token2);
-        return positionSubstitution1 - positionSubstitution2;
+        int substitutionPostion1 = substitutionList1.getPosition(token1);
+        int substitutionPosition2 = substitutionList2.getPosition(token2);
+        return substitutionPostion1 - substitutionPosition2;
     }
 
 }

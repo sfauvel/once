@@ -41,7 +41,7 @@ public class FunctionalRedundancy extends Redundancy {
     }
 
     private Set<String> getSubstitutions(List<Integer> firstTokenList, int index) {
-        return mapToSet(firstTokenList, position -> code.getToken(position + index).getValeurToken());
+        return mapToSet(firstTokenList, position -> code.getToken(position + index).getTokenValue());
     }
     
 

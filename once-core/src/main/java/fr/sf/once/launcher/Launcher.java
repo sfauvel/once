@@ -18,8 +18,8 @@ import org.apache.log4j.PatternLayout;
 import fr.sf.once.ast.ExtractCode;
 import fr.sf.once.comparator.BasicComparator;
 import fr.sf.once.comparator.CodeComparator;
-import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
-import fr.sf.once.comparator.ComparateurSimpleSansString;
+import fr.sf.once.comparator.ComparateurWithSubstitutionAndType;
+import fr.sf.once.comparator.TokenValueComparatorExceptForString;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
@@ -94,7 +94,7 @@ public class Launcher {
 
 		LOG.info("Source directory:" + onceProps.getSourceDir());
 
-		Class<ComparateurAvecSubstitutionEtType> comparator = ComparateurAvecSubstitutionEtType.class;
+		Class<ComparateurWithSubstitutionAndType> comparator = ComparateurWithSubstitutionAndType.class;
 		int tailleMin = 20;
 		Launcher launcher = new Launcher().withSource(onceProps.getSourceDir(), onceProps.getSourceEncoding()).withComparator(comparator)
 				.withMinimalSize(tailleMin);
@@ -179,8 +179,8 @@ public class Launcher {
 		activeLog(CodeComparator.LOG, level, filename);
 		activeLog(BasicComparator.LOG, level, filename);
 		activeLog(ComparatorWithSubstitution.LOG, level, filename);
-		activeLog(ComparateurSimpleSansString.LOG, level, filename);
-		activeLog(ComparateurAvecSubstitutionEtType.LOG, level, filename);
+		activeLog(TokenValueComparatorExceptForString.LOG, level, filename);
+		activeLog(ComparateurWithSubstitutionAndType.LOG, level, filename);
 	}
 
 	private static void activeLog(Logger log, Level level, String filename) throws IOException {

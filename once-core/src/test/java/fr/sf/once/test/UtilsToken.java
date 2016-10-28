@@ -40,7 +40,7 @@ public final class UtilsToken {
     
     public static void afficher(List<Token> tokenList, List<Integer> positionList) {
         for (Integer tokenPosition : positionList) {
-            LOG.info(tokenList.get(tokenPosition).getValeurToken());
+            LOG.info(tokenList.get(tokenPosition).getTokenValue());
             LOG.info(tokenPosition);
         }
     }

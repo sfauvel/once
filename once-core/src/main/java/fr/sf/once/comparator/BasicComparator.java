@@ -20,7 +20,7 @@ public class BasicComparator extends CodeComparator {
     
     @Override
     public int compareTokenValue(Token token1, Token token2) {
-        return token1.getValeurToken().compareTo(token2.getValeurToken());
+        return token1.getTokenValue().compareTo(token2.getTokenValue());
         
     }
    

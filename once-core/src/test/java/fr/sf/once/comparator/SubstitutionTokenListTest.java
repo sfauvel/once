@@ -27,8 +27,8 @@ public class SubstitutionTokenListTest  {
         
         @Test
         public void should_return_the_same_position_when_search_another_instance_of_the_same_token() {
-            assertThat(substitutionList.getPosition(new Token(null, tokenA.getValeurToken(), Type.VALUE))).isEqualTo(0);
-            Token otherTokenReferenceWithSameValue = new Token(null, tokenA.getValeurToken(), tokenA.getType());
+            assertThat(substitutionList.getPosition(new Token(null, tokenA.getTokenValue(), Type.VALUE))).isEqualTo(0);
+            Token otherTokenReferenceWithSameValue = new Token(null, tokenA.getTokenValue(), tokenA.getType());
             assertThat(substitutionList.getPosition(otherTokenReferenceWithSameValue)).isEqualTo(0);
         }
 

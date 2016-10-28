@@ -81,7 +81,7 @@ public class SourceCodePane extends VBox {
         if (isText(lastType) && isText(token.getType())) {
             code += " ";
         }
-        code += token.getValeurToken();
+        code += token.getTokenValue();
         
         Label text = new Label(code);
         lastType = token.getType();
@@ -97,7 +97,7 @@ public class SourceCodePane extends VBox {
     private String getStye(Token token) {
         if (Type.KEYWORD == token.getType()) {
             return "keyword";
-        } else if (token.getValeurToken().startsWith("\"") && token.getValeurToken().endsWith("\"")) {
+        } else if (token.getTokenValue().startsWith("\"") && token.getTokenValue().endsWith("\"")) {
             return "string";
         } else {
             return "no-style";

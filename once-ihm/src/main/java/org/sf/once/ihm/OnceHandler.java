@@ -32,7 +32,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import fr.sf.once.ast.ExtractCode;
-import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
+import fr.sf.once.comparator.ComparateurWithSubstitutionAndType;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.launcher.Launcher.OnceProperties;
@@ -152,7 +152,7 @@ public class OnceHandler implements HttpHandler {
 
         LOG.info("Source directory:" + sourceDir);
 
-        Class<ComparateurAvecSubstitutionEtType> comparator = ComparateurAvecSubstitutionEtType.class;
+        Class<ComparateurWithSubstitutionAndType> comparator = ComparateurWithSubstitutionAndType.class;
         int tailleMin = 20;
 
         code = new ExtractCode().extract(sourceDir, sourceEncoding);
@@ -229,7 +229,7 @@ public class OnceHandler implements HttpHandler {
                 buffer.append("\n");
             }
 
-            buffer.append(token.getValeurToken());
+            buffer.append(token.getTokenValue());
             buffer.append(" ");
 
             line = token.getLigneDebut();
@@ -264,7 +264,7 @@ public class OnceHandler implements HttpHandler {
                 if (i==firstToken) {
                     buffer.append("<span style=\"background-color:AAA\">");
                 }
-                buffer.append(token.getValeurToken());
+                buffer.append(token.getTokenValue());
                 buffer.append(" ");
 
                 if (i==lastTokenPosition) {
@@ -375,7 +375,7 @@ public class OnceHandler implements HttpHandler {
             Set<String> listeValeur = new HashSet<String>();
             for (Integer firstPosition : firstTokenList) {
                 int position = firstPosition + i;
-                listeValeur.add(tokenList.get(position).getValeurToken());
+                listeValeur.add(tokenList.get(position).getTokenValue());
             }
             if (listeValeur.size() > 1) {
                 String join = StringUtils.join(listeValeur, ", ");

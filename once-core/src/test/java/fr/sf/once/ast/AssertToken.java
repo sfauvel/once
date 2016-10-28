@@ -104,7 +104,7 @@ public class AssertToken {
 
     public AssertToken assertToken(int position, String token, Type type, int line, int column) {
         Token tokenJava = tokenList.get(position);
-        assertEquals(token, tokenJava.getValeurToken());
+        assertEquals(token, tokenJava.getTokenValue());
         if (type != null) {
             assertEquals(type, tokenJava.getType());
         }

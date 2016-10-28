@@ -17,16 +17,16 @@ public class CodeTest {
     @Test
     public void testGetCodeBasic() {
         Code code = new Code(UtilsToken.createUnmodifiableTokenList("A"));
-        assertEquals("A", code.getToken(0).getValeurToken());
+        assertEquals("A", code.getToken(0).getTokenValue());
     }
 
     @Test
     public void testGetCode() {
         Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D"));
-        assertEquals("A", code.getToken(0).getValeurToken());
-        assertEquals("B", code.getToken(1).getValeurToken());
-        assertEquals("C", code.getToken(2).getValeurToken());
-        assertEquals("D", code.getToken(3).getValeurToken());
+        assertEquals("A", code.getToken(0).getTokenValue());
+        assertEquals("B", code.getToken(1).getTokenValue());
+        assertEquals("C", code.getToken(2).getTokenValue());
+        assertEquals("D", code.getToken(3).getTokenValue());
     }
 
     @Test

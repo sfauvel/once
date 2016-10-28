@@ -17,8 +17,8 @@ public class ComparatorWithSubstitution extends CodeComparator {
 
     public static final Logger LOG = Logger.getLogger(ComparatorWithSubstitution.class);
 
-    private SubstitutionStringList listeSubstitution1 = new SubstitutionStringList();
-    private SubstitutionStringList listeSubstitution2 = new SubstitutionStringList();
+    private SubstitutionStringList substitutionList1 = new SubstitutionStringList();
+    private SubstitutionStringList substitutionList2 = new SubstitutionStringList();
    
     public ComparatorWithSubstitution(Code code) {
         super(code);
@@ -27,23 +27,23 @@ public class ComparatorWithSubstitution extends CodeComparator {
     @Override
     protected void reinit() {
         super.reinit();
-        listeSubstitution1 = new SubstitutionStringList();
-        listeSubstitution2 = new SubstitutionStringList();
-        ajouterCaractereNonSubstituable(":", "(", ")", "{", "}", "[", "]", ";", "new", ".");
+        substitutionList1 = new SubstitutionStringList();
+        substitutionList2 = new SubstitutionStringList();
+        addNotSubtitutableCharacters(":", "(", ")", "{", "}", "[", "]", ";", "new", ".");
    
     }
 
-    private void ajouterCaractereNonSubstituable(String... listeToken) {
+    private void addNotSubtitutableCharacters(String... listeToken) {
         for (String token : listeToken) {
-            listeSubstitution1.getPosition(token);
-            listeSubstitution2.getPosition(token);
+            substitutionList1.getPosition(token);
+            substitutionList2.getPosition(token);
         }
     }
 
     @Override
     public int compareTokenValue(Token token1, Token token2) {
-        int positionSubstitution1 = listeSubstitution1.getPosition(token1.getValeurToken());
-        int positionSubstitution2 = listeSubstitution2.getPosition(token2.getValeurToken());
-        return positionSubstitution1 - positionSubstitution2;
+        int substitutionPosition1 = substitutionList1.getPosition(token1.getTokenValue());
+        int substitutionPosition2 = substitutionList2.getPosition(token2.getTokenValue());
+        return substitutionPosition1 - substitutionPosition2;
     }
    }

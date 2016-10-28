@@ -196,7 +196,7 @@ public class DuplicationCodePane extends VBox {
             Set<String> listeValeur = new HashSet<String>();
             for (Integer firstPosition : firstTokenList) {
                 int position = firstPosition + i;
-                listeValeur.add(tokenList.get(position).getValeurToken());
+                listeValeur.add(tokenList.get(position).getTokenValue());
             }
             if (listeValeur.size() > 1) {
                 String join = StringUtils.join(listeValeur, ", ");

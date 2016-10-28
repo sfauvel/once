@@ -16,7 +16,7 @@ public class TokenAssert extends AbstractAssert<TokenAssert, Token> {
     }
 
     public TokenAssert hasValue(String expected) {
-        String tokenValue = actual.getValeurToken();
+        String tokenValue = actual.getTokenValue();
         String errorMessage = String.format("Expected token(value to be <%s> but was <%s>", expected, tokenValue);
         Assertions.assertThat(tokenValue.equals(expected)).overridingErrorMessage(errorMessage).isTrue();           
         return this;

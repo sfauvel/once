@@ -70,7 +70,7 @@ public class ManagerTokenSampleTest {
             Token token = code.getToken(tokenPosition);
 //            LOG.debug(tokenPosition + ":\t" + token.getValeurToken());
 
-            if ("(".equals(token.getValeurToken())) {
+            if ("(".equals(token.getTokenValue())) {
                 nombreParentheseOuvrante++;
                 if (premiereParenthese == -1) {
                     premiereParenthese = index;
@@ -81,7 +81,7 @@ public class ManagerTokenSampleTest {
 
         assertEquals(4, nombreParentheseOuvrante);
         for (int i = premiereParenthese; i < premiereParenthese + nombreParentheseOuvrante; i++) {
-            assertEquals("Le token n°" + i + " n'est pas '(':", "(", code.getToken(positionList.get(i)).getValeurToken());
+            assertEquals("Le token n°" + i + " n'est pas '(':", "(", code.getToken(positionList.get(i)).getTokenValue());
 
         }
 

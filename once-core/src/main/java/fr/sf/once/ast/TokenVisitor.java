@@ -282,7 +282,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         }
         
         TokenJava typeObjet = n.isInterface() ? TokenJava.INTERFACE : TokenJava.CLASS;
-        endColumn += typeObjet.getValeurToken().length() + 1;
+        endColumn += typeObjet.getTokenValue().length() + 1;
         addToken(position, typeObjet, arg);
         position = nextToken(arg);
         addToken(position, n.getName(), arg);
@@ -366,13 +366,13 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         column += n.getName().length();
 
         addToken(new Position(n.getBeginLine(), column), TokenJava.OPENING_PARENTHESIS, arg);
-        column += TokenJava.OPENING_PARENTHESIS.getValeurToken().length();
+        column += TokenJava.OPENING_PARENTHESIS.getTokenValue().length();
 
         acceptList(n.getTypeParameters(), arg);
         acceptList(n.getParameters(), arg);     
 
         addToken(new Position(n.getBeginLine(), column), TokenJava.CLOSING_PARENTHESIS, arg);
-        int currentColumn = column + TokenJava.CLOSING_PARENTHESIS.getValeurToken().length();
+        int currentColumn = column + TokenJava.CLOSING_PARENTHESIS.getTokenValue().length();
 
         if (n.getThrows() != null && !n.getThrows().isEmpty()) {
             addToken(avantToken(n.getThrows().get(0), TokenJava.THROWS), TokenJava.THROWS, arg);
@@ -487,7 +487,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         Position currentPosition = finToken(n, TokenJava.FOR);
         addToken(currentPosition, TokenJava.OPENING_PARENTHESIS, arg);
 
-        currentPosition = new Position(currentPosition.line, currentPosition.column + TokenJava.OPENING_PARENTHESIS.getValeurToken().length());
+        currentPosition = new Position(currentPosition.line, currentPosition.column + TokenJava.OPENING_PARENTHESIS.getTokenValue().length());
 
         for (Expression e : notNull(n.getInit())) {
             e.accept(this, arg);
@@ -636,7 +636,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
 
         column++;
         addToken(line, column, TokenJava.CLOSING_PARENTHESIS, arg);
-        int currentColumn = column + TokenJava.CLOSING_PARENTHESIS.getValeurToken().length();
+        int currentColumn = column + TokenJava.CLOSING_PARENTHESIS.getTokenValue().length();
 
         if (n.getThrows() != null && !n.getThrows().isEmpty()) {
             addToken(avantToken(n.getThrows().get(0), TokenJava.THROWS), TokenJava.THROWS, arg);
@@ -791,7 +791,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         Position endParenthese = nextNode(n.getSelector());
         addToken(endParenthese, TokenJava.CLOSING_PARENTHESIS, arg);
 
-        Position position = new Position(endParenthese.line, endParenthese.column + TokenJava.CLOSING_PARENTHESIS.getValeurToken().length());
+        Position position = new Position(endParenthese.line, endParenthese.column + TokenJava.CLOSING_PARENTHESIS.getTokenValue().length());
         addToken(position, TokenJava.OPENING_BRACE, arg);
         acceptList(n.getEntries(), arg);       
         addToken(finNode(n), TokenJava.CLOSING_BRACE, arg);
@@ -1008,7 +1008,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     }
 
     private void addToken(int beginLine, int beginColumn, TokenJava token, List<Token> arg) {
-        addToken(beginLine, beginColumn, token.getValeurToken(), token.getType(), arg);
+        addToken(beginLine, beginColumn, token.getTokenValue(), token.getType(), arg);
     }
 
     private void addToken(int beginLine, int beginColumn, String token, List<Token> arg) {
@@ -1031,7 +1031,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             Token lastToken = getLastToken(arg);
 
             if (lastToken.getlocalisation().getNomFichier().equals(fileName)) {
-                int tailleToken = lastToken.getType().is(fr.sf.once.model.Type.BREAK) ? 0 : lastToken.getValeurToken().length();
+                int tailleToken = lastToken.getType().is(fr.sf.once.model.Type.BREAK) ? 0 : lastToken.getTokenValue().length();
 //                if (lastToken.getLigneDebut() > beginLine) {
 //                    LOG.error("Nouveau token avant le précédent");
 //                    LOG.error("Dernier:" + lastToken.format());
@@ -1152,11 +1152,11 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     }    
     
     private Position finToken(Node n, Token token) {
-        return new Position(n.getBeginLine(), n.getBeginColumn() + token.getValeurToken().length());
+        return new Position(n.getBeginLine(), n.getBeginColumn() + token.getTokenValue().length());
     }
 
     private Position avantToken(Node n, Token token) {
-        return new Position(n.getBeginLine(), n.getBeginColumn() - token.getValeurToken().length() - 1);
+        return new Position(n.getBeginLine(), n.getBeginColumn() - token.getTokenValue().length() - 1);
     }
 
     public static final Token NO_TOKEN = new Token(new Localisation("", 0, 0),"", fr.sf.once.model.Type.NON_SIGNIFICATIF);

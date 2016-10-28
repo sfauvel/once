@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 import fr.sf.once.ast.TypeJava;
-import fr.sf.once.comparator.ComparateurSimpleSansString;
+import fr.sf.once.comparator.TokenValueComparatorExceptForString;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
 
-public class ComparateurSimpleSansStringTest {
+public class TokenValueComparatorExceptForStringTest {
     /**
      *
      */
@@ -27,7 +27,7 @@ public class ComparateurSimpleSansStringTest {
         tokenList.add(new Token(null, "B", TypeJava.STRING));
         tokenList.add(new Token(null, ";", Type.BREAK));
         
-        ComparateurSimpleSansString comparator = new ComparateurSimpleSansString(new Code(tokenList));
+        TokenValueComparatorExceptForString comparator = new TokenValueComparatorExceptForString(new Code(tokenList));
         assertEquals(-1, comparator.compare(0, 1));
         assertEquals(0, comparator.compare(2, 4));
     }

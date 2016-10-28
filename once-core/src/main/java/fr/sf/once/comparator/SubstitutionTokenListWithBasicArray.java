@@ -17,7 +17,7 @@ public class SubstitutionTokenListWithBasicArray extends AbstractSubstitutionLis
             if (!token1.getType().equals(token2.getType())) {
                 return token1.getType().toString().compareTo(token2.getType().toString());
             } else {
-                return token1.getValeurToken().compareTo(token2.getValeurToken());
+                return token1.getTokenValue().compareTo(token2.getTokenValue());
             }
         }
     };

@@ -19,7 +19,7 @@ public class Token {
         this.type = type;
 	}
 	
-	public String getValeurToken() {
+	public String getTokenValue() {
 		return this.valeurToken;
 	}
 
@@ -51,7 +51,7 @@ public class Token {
 
     public void appendToken(StringBuffer buffer) {
         Localisation localisation = getlocalisation();
-        buffer.append(StringUtils.rightPad(getValeurToken(), 25));
+        buffer.append(StringUtils.rightPad(getTokenValue(), 25));
         localisation.appendLocalisation(buffer);
         buffer.append(" col:")
                 .append(StringUtils.rightPad(Integer.toString(localisation.getColonne()), 5))

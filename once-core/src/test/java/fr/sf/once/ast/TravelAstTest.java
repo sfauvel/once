@@ -657,7 +657,7 @@ public class TravelAstTest {
         for (int i = 0; i < listeSize; i++) {
             Token token = listToken.get(i);
             Localisation localisation = token.getlocalisation();
-            LOG.debug(i + ":" + token.getValeurToken() + "(" + localisation.getLigne() + ", " + localisation.getColonne() + ")");
+            LOG.debug(i + ":" + token.getTokenValue() + "(" + localisation.getLigne() + ", " + localisation.getColonne() + ")");
 
         }
     }

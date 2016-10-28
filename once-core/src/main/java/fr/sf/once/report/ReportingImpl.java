@@ -115,7 +115,7 @@ public class ReportingImpl implements Reporting {
             Set<String> listeValeur = new HashSet<String>();
             for (Integer firstPosition : firstTokenList) {
                 int position = firstPosition + i;
-                listeValeur.add(tokenList.get(position).getValeurToken());
+                listeValeur.add(tokenList.get(position).getTokenValue());
             }
             if (listeValeur.size() > 1) {
                 String key = listeValeur.toString();
@@ -137,7 +137,7 @@ public class ReportingImpl implements Reporting {
             Set<String> listeValeur = new HashSet<String>();
             for (Integer firstPosition : firstTokenList) {
                 int position = firstPosition + i;
-                listeValeur.add(code.getToken(position).getValeurToken());
+                listeValeur.add(code.getToken(position).getTokenValue());
             }
             if (listeValeur.size() > 1) {
                 String key = listeValeur.toString();
@@ -219,7 +219,7 @@ public class ReportingImpl implements Reporting {
                 if (LOG_RESULTAT.isDebugEnabled()) {
                     buffer.append(": ");
                     for (int i = firstTokenPosition; i < fin; i++) {
-                        buffer.append(code.getToken(i).getValeurToken()).append(" ");
+                        buffer.append(code.getToken(i).getTokenValue()).append(" ");
                     }
                     if (redondance.getDuplicatedTokenNumber() >= NB_MAX_DISPLAY) {
                         buffer.append("...");

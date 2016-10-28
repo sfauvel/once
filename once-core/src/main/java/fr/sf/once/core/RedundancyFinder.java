@@ -154,7 +154,7 @@ public class RedundancyFinder {
 
             int size = getTokenList().size();
             for (int i = position; i < size; i++) {
-                buffer.append(getToken(i).getValeurToken());
+                buffer.append(getToken(i).getTokenValue());
                 buffer.append(" ");
             }
             LOG.debug(buffer.toString());

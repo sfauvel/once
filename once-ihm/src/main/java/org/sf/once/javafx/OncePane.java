@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.sf.once.ihm.OnceHandler;
 
-import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
+import fr.sf.once.comparator.ComparateurWithSubstitutionAndType;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
@@ -131,7 +131,7 @@ public class OncePane extends StackPane {
             }
 
             private void showDuplication(RedundancyFinder manager) {
-                Class<ComparateurAvecSubstitutionEtType> comparator = ComparateurAvecSubstitutionEtType.class;
+                Class<ComparateurWithSubstitutionAndType> comparator = ComparateurWithSubstitutionAndType.class;
                 int minimalSize = ConfStyle.BUTTON_MIN_WIDTH;
                 Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(minimalSize);
                 List<FunctionalRedundancy> redundancies = manager.findRedundancies(configuration);

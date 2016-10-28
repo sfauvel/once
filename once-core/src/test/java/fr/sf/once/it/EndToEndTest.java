@@ -11,7 +11,7 @@ import org.apache.log4j.WriterAppender;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
+import fr.sf.once.comparator.ComparateurWithSubstitutionAndType;
 import fr.sf.once.launcher.Launcher;
 import fr.sf.once.report.Reporting;
 
@@ -29,7 +29,7 @@ public class EndToEndTest {
 
         Launcher launcher = new Launcher()
                 .withSource("src/test/resources/exempleSeparateDuplication", "UTF-8")
-                .withComparator(ComparateurAvecSubstitutionEtType.class)
+                .withComparator(ComparateurWithSubstitutionAndType.class)
                 .withMinimalSize(10);
         
         launcher.execute();
