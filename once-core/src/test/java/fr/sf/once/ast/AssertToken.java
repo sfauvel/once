@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import org.apache.log4j.Logger;
 import org.assertj.core.api.Assertions;
 
-import fr.sf.once.model.Localisation;
+import fr.sf.once.model.Location;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 import junit.framework.Assert;
@@ -42,7 +42,7 @@ public class AssertToken {
 
     private int getFirstTokenPositionOnLine(int line) {
         for (int tokenPosition = 0; tokenPosition < tokenList.size(); tokenPosition++) {
-            if (tokenList.get(tokenPosition).getLigneDebut() == line) {
+            if (tokenList.get(tokenPosition).getStartingLine() == line) {
                 return tokenPosition;
             }
         }
@@ -108,9 +108,9 @@ public class AssertToken {
         if (type != null) {
             assertEquals(type, tokenJava.getType());
         }
-        Localisation localisation = tokenJava.getlocalisation();
+        Location localisation = tokenJava.getLocation();
         assertThat(localisation.getLine()).as("Error on line with token '" + token + "'").isEqualTo(line);
-        assertThat(localisation.getColonne()).as("Error on column with token '" + token + "'").isEqualTo(column);
+        assertThat(localisation.getColumn()).as("Error on column with token '" + token + "'").isEqualTo(column);
         currentPosition = position + 1;
         return this;
     }

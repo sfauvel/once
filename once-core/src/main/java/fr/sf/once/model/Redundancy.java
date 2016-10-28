@@ -77,9 +77,9 @@ public class Redundancy {
     }
 
     /**
-     * Supprime les redondances incluses les unes dans les autres.
-     * A noter, que cette méthode ne détecte pas si une redondance est identique
-     * mais avec moins de occurrence. Ce cas ne doit pas exister fonctionnellement.
+     * Remove redundancy included in another one.
+     * This method not find a same redundancy with less occurrences. 
+     * This case should not exist.
      * @param redundancyList
      */
     public static void removeDuplicatedList(List<Redundancy> redundancyList) {
@@ -87,11 +87,11 @@ public class Redundancy {
 
         Map<String, Redundancy> searchRedundancy = new HashMap<String, Redundancy>();
         for (Iterator<Redundancy> iterator = redundancyList.iterator(); iterator.hasNext();) {
-            Redundancy redondance = iterator.next();
-            Collections.sort(redondance.firstTokenList);
-            String key = getRedundancyKey(redondance);
+            Redundancy redondancy = iterator.next();
+            Collections.sort(redondancy.firstTokenList);
+            String key = getRedundancyKey(redondancy);
             if (!searchRedundancy.containsKey(key)) {
-                searchRedundancy.put(key,  redondance);   
+                searchRedundancy.put(key,  redondancy);   
             }
             
         }

@@ -38,8 +38,8 @@ import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.launcher.Launcher.OnceProperties;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.FunctionalRedundancy;
-import fr.sf.once.model.Localisation;
-import fr.sf.once.model.MethodLocalisation;
+import fr.sf.once.model.Location;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 
@@ -225,14 +225,14 @@ public class OnceHandler implements HttpHandler {
         int line = 0;
         buffer.append("<pre>");
         for (Token token : tokenList) {
-            if (line < token.getLigneDebut()) {
+            if (line < token.getStartingLine()) {
                 buffer.append("\n");
             }
 
             buffer.append(token.getTokenValue());
             buffer.append(" ");
 
-            line = token.getLigneDebut();
+            line = token.getStartingLine();
         }
         buffer.append("</pre>");
     }
@@ -241,22 +241,22 @@ public class OnceHandler implements HttpHandler {
         int line = 0;
 
         List<Token> tokenList = code.getTokenList();
-        List<MethodLocalisation> methodList = code.getMethodList();
+        List<MethodLocation> methodList = code.getMethodList();
         Integer firstToken = redundancy.getStartRedundancyList().get(0);
         int lastTokenPosition = firstToken + redundancy.getDuplicatedTokenNumber() - 1;
         Token lastToken = tokenList.get(lastTokenPosition);
-        Integer ligneFin = lastToken.getLigneDebut();
-        MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
+        Integer ligneFin = lastToken.getStartingLine();
+        MethodLocation method = MethodLocation.findMethod(methodList, lastToken);
 
         buffer.append("<pre>");
 
         int i = 0;
         for (Token token : tokenList) {
-            if (token.getLigneDebut() >= method.getLocalisationDebut().getLine()-1
-                    && token.getLigneDebut() <= method.getLocalisationFin().getLine()) {
-                if (line < token.getLigneDebut()) {
+            if (token.getStartingLine() >= method.getStartingLocation().getLine()-1
+                    && token.getStartingLine() <= method.getEndingLocation().getLine()) {
+                if (line < token.getStartingLine()) {
                     buffer.append("\n");
-                    for (int j = 0; j < token.getColonneDebut(); j++) {
+                    for (int j = 0; j < token.getStartingColumn(); j++) {
                         buffer.append(" ");
                     }
                 }
@@ -271,7 +271,7 @@ public class OnceHandler implements HttpHandler {
                     buffer.append("</span>");
                 }
             }
-            line = token.getLigneDebut();
+            line = token.getStartingLine();
             i++;
         }
         buffer.append("</pre>");
@@ -279,7 +279,7 @@ public class OnceHandler implements HttpHandler {
 
     public void afficherCodeRedondant(StringBuffer buffer, final Code code, Redundancy redondance) {
         List<Token> tokenList = code.getTokenList();
-        List<MethodLocalisation> methodList = code.getMethodList();
+        List<MethodLocation> methodList = code.getMethodList();
 
         List<String> substitutionList = getSubstitution(tokenList, redondance);
         List<Integer> firstTokenList = redondance.getStartRedundancyList();
@@ -296,16 +296,16 @@ public class OnceHandler implements HttpHandler {
             // StringBuffer buffer = new StringBuffer();
 
             Token firstToken = tokenList.get(firstTokenPosition);
-            Integer ligneDebut = firstToken.getLigneDebut();
+            Integer ligneDebut = firstToken.getStartingLine();
             Token lastToken = tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber() - 1);
-            Integer ligneFin = lastToken.getLigneDebut();
+            Integer ligneFin = lastToken.getStartingLine();
             // if (LOG_RESULTAT.isTraceEnabled()) {
             // LOG_RESULTAT.trace("First position:" + firstTokenPosition + " start line:" + ligneDebut + " end line:" + ligneFin);
             // }
-            MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
+            MethodLocation method = MethodLocation.findMethod(methodList, lastToken);
             if (method != null) {
-                method.getRedondanceList().add(redondance);
-                int methodLineNumber = method.getLocalisationFin().getLine() - method.getLocalisationDebut().getLine();
+                method.getRedundancyList().add(redondance);
+                int methodLineNumber = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();
                 int redundancyLineNumber = ligneFin - ligneDebut;
                 int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
                 buffer.append("<div style=\"padding-left:3em;\">");
@@ -317,15 +317,15 @@ public class OnceHandler implements HttpHandler {
                         .append(" lines)")
                         .append(method.getMethodName())
                         .append(" from line ")
-                        .append(tokenList.get(firstTokenPosition).getlocalisation().getLine())
+                        .append(tokenList.get(firstTokenPosition).getLocation().getLine())
                         .append(" to ")
-                        .append(tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation().getLine())
+                        .append(tokenList.get(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getLocation().getLine())
                         .append(" ")
 
                 .append("(method from line ")
-                        .append(method.getLocalisationDebut().getLine())
+                        .append(method.getStartingLocation().getLine())
                         .append(" to ")
-                        .append(method.getLocalisationFin().getLine())
+                        .append(method.getEndingLocation().getLine())
                         .append(")");
 
                 // appendString(buffer, method.getLocalisationDebut());
@@ -395,8 +395,8 @@ public class OnceHandler implements HttpHandler {
     }
 
     private boolean isNombreLigneSuperieurA(List<Token> tokenList, Integer positionPremierToken, int nombreTokenRedondant, int nombreLigneMin) {
-        Localisation localisationDebut = tokenList.get(positionPremierToken).getlocalisation();
-        Localisation localisationFin = tokenList.get(positionPremierToken + nombreTokenRedondant - 1).getlocalisation();
+        Location localisationDebut = tokenList.get(positionPremierToken).getLocation();
+        Location localisationFin = tokenList.get(positionPremierToken + nombreTokenRedondant - 1).getLocation();
 
         int nombreLigne = localisationFin.getLine() - localisationDebut.getLine();
 

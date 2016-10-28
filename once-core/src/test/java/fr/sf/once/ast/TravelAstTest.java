@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import fr.sf.once.model.Localisation;
+import fr.sf.once.model.Location;
 import fr.sf.once.model.Token;
 import fr.sf.once.test.LogRule;
 
@@ -656,8 +656,8 @@ public class TravelAstTest {
         int listeSize = listToken.size();
         for (int i = 0; i < listeSize; i++) {
             Token token = listToken.get(i);
-            Localisation localisation = token.getlocalisation();
-            LOG.debug(i + ":" + token.getTokenValue() + "(" + localisation.getLine() + ", " + localisation.getColonne() + ")");
+            Location localisation = token.getLocation();
+            LOG.debug(i + ":" + token.getTokenValue() + "(" + localisation.getLine() + ", " + localisation.getColumn() + ")");
 
         }
     }

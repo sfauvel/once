@@ -13,7 +13,7 @@ import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.FunctionalRedundancy;
-import fr.sf.once.model.MethodLocalisation;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Token;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -106,7 +106,7 @@ public class OncePane extends StackPane {
         btn.setText(buttonLabel);
         btn.setMinWidth(100);
         btn.setOnAction(new EventHandler<ActionEvent>() {
-            private List<MethodLocalisation> methodList;
+            private List<MethodLocation> methodList;
 
             @Override
             public void handle(ActionEvent event) {

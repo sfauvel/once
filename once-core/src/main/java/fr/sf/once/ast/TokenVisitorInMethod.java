@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 
-import fr.sf.once.model.MethodLocalisation;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Token;
 
 /**
@@ -14,7 +14,7 @@ public class TokenVisitorInMethod extends TokenVisitor {
 
     private boolean isInMethod = false;
     
-    public TokenVisitorInMethod(String fileName, List<MethodLocalisation> methodList, int firstTokenNumber) {
+    public TokenVisitorInMethod(String fileName, List<MethodLocation> methodList, int firstTokenNumber) {
         super(fileName, methodList, firstTokenNumber);
     }
 

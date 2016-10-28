@@ -12,19 +12,19 @@ import java.util.Optional;
 public class Code {
     
     private final List<Token> tokenList;
-    private final List<MethodLocalisation> methodList;
+    private final List<MethodLocation> methodList;
     
     public Code() {
         this(Collections.<Token> emptyList());
     }
 
     public Code(final List<Token> tokenList) {
-        this(tokenList, Collections.<MethodLocalisation>emptyList());
+        this(tokenList, Collections.<MethodLocation>emptyList());
     }
  
-    public Code(List<Token> tokenList, List<MethodLocalisation> methodList) {
+    public Code(List<Token> tokenList, List<MethodLocation> methodList) {
         this.tokenList = Collections.unmodifiableList(new ArrayList<Token>(tokenList));
-        this.methodList = Collections.unmodifiableList(new ArrayList<MethodLocalisation>(methodList));
+        this.methodList = Collections.unmodifiableList(new ArrayList<MethodLocation>(methodList));
     }
 
 
@@ -40,11 +40,11 @@ public class Code {
         return tokenList.size();
     }
 
-    public List<MethodLocalisation> getMethodList() {
+    public List<MethodLocation> getMethodList() {
         return methodList;
     }
 
-    public MethodLocalisation getMethodAtTokenPosition(int tokenPosition) {
+    public MethodLocation getMethodAtTokenPosition(int tokenPosition) {
         return methodList.parallelStream()
                 .filter(m -> m.containsPosition(tokenPosition))
                 .findFirst()

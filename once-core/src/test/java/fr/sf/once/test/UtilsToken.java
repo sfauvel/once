@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.Localisation;
+import fr.sf.once.model.Location;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
@@ -32,7 +32,7 @@ public final class UtilsToken {
         ArrayList<Token> tokenList = new ArrayList<Token>();
         int ligne = 1;
         for (String tokenValue : tokenValueList) {
-            tokenList.add(new Token(new Localisation("", ligne, 0), tokenValue, Type.VALUE));
+            tokenList.add(new Token(new Location("", ligne, 0), tokenValue, Type.VALUE));
             ligne++;
         }
         return Collections.unmodifiableList(tokenList);
@@ -88,6 +88,6 @@ public final class UtilsToken {
 
     private static Token createToken(String tokenValue, int index) {
         Type type = "BREAK".equalsIgnoreCase(tokenValue) ? Type.BREAK : Type.VALUE;
-        return new Token(new Localisation("", index, 0), String.valueOf(tokenValue), type);
+        return new Token(new Location("", index, 0), String.valueOf(tokenValue), type);
     }
 }

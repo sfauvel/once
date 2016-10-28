@@ -102,8 +102,8 @@ import com.github.javaparser.ast.type.WildcardType;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 
-import fr.sf.once.model.Localisation;
-import fr.sf.once.model.MethodLocalisation;
+import fr.sf.once.model.Location;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Token;
 
 public class TokenVisitor implements VoidVisitor<List<Token>> {
@@ -111,7 +111,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     static final Logger logOutput = Logger.getLogger("OUTPUT");
     static final Logger LOG = Logger.getLogger(TokenVisitor.class);
     private final String fileName;
-    private final List<MethodLocalisation> methodList;
+    private final List<MethodLocation> methodList;
     private final Stack<String> currentClassList = new Stack<String>();
     private String currentPackage = "";
     private int firstTokenNumber;
@@ -121,10 +121,10 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     }
 
     public TokenVisitor(String fileName) {
-        this(fileName, new ArrayList<MethodLocalisation>(), 0);
+        this(fileName, new ArrayList<MethodLocation>(), 0);
     }
 
-    public TokenVisitor(String fileName, List<MethodLocalisation> methodList, int firstTokenNumber) {
+    public TokenVisitor(String fileName, List<MethodLocation> methodList, int firstTokenNumber) {
         this.fileName = fileName;
         this.methodList = methodList;
         this.firstTokenNumber = firstTokenNumber;
@@ -657,9 +657,9 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
             if (!currentClassList.isEmpty()) {
                 classContexte = currentClassList.peek() + ".";
             }
-            MethodLocalisation methodLocalisation =
-                    new MethodLocalisation(classContexte + n.getName(), new Localisation(fileName, startPosition.line, startPosition.column),
-                            new Localisation(fileName, endPosition.line, endPosition.column), new IntRange(startTokenPosition, endTokenPosition));
+            MethodLocation methodLocalisation =
+                    new MethodLocation(classContexte + n.getName(), new Location(fileName, startPosition.line, startPosition.column),
+                            new Location(fileName, endPosition.line, endPosition.column), new IntRange(startTokenPosition, endTokenPosition));
 
             methodList.add(methodLocalisation);
         }
@@ -1018,19 +1018,19 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     protected void addToken(int beginLine, int beginColumn, String token, fr.sf.once.model.Type type, List<Token> arg) {
         Token tokenToAdd = null;
         if (fr.sf.once.model.Type.BREAK.is(type)) {
-            tokenToAdd = new Token(new Localisation(fileName, beginLine, beginColumn), "", type) {
-                public int getColonneFin() {
-                    return getColonneDebut();
+            tokenToAdd = new Token(new Location(fileName, beginLine, beginColumn), "", type) {
+                public int getEndingColumn() {
+                    return getStartingColumn();
                 }
             };            
         } else {
-            tokenToAdd = new Token(new Localisation(fileName, beginLine, beginColumn), token, type);
+            tokenToAdd = new Token(new Location(fileName, beginLine, beginColumn), token, type);
         }
 
         if (!arg.isEmpty()) {
             Token lastToken = getLastToken(arg);
 
-            if (lastToken.getlocalisation().getFileName().equals(fileName)) {
+            if (lastToken.getLocation().getFileName().equals(fileName)) {
                 int tailleToken = lastToken.getType().is(fr.sf.once.model.Type.BREAK) ? 0 : lastToken.getTokenValue().length();
 //                if (lastToken.getLigneDebut() > beginLine) {
 //                    LOG.error("Nouveau token avant le précédent");
@@ -1131,7 +1131,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     }
 
     private Position endOfToken(Token token) {
-        return new Position(token.getLigneDebut(), token.getColonneFin());
+        return new Position(token.getStartingLine(), token.getEndingColumn());
     }
     
     /**
@@ -1148,7 +1148,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
     }
     
     private Position nextToken(Token token) {
-        return new Position(token.getLigneDebut(), token.getColonneFin() + 1);
+        return new Position(token.getStartingLine(), token.getEndingColumn() + 1);
     }    
     
     private Position finToken(Node n, Token token) {
@@ -1159,7 +1159,7 @@ public class TokenVisitor implements VoidVisitor<List<Token>> {
         return new Position(n.getBeginLine(), n.getBeginColumn() - token.getTokenValue().length() - 1);
     }
 
-    public static final Token NO_TOKEN = new Token(new Localisation("", 0, 0),"", fr.sf.once.model.Type.NON_SIGNIFICATIF);
+    public static final Token NO_TOKEN = new Token(new Location("", 0, 0),"", fr.sf.once.model.Type.NOT_SIGNIFICANT);
     private Token getLastToken(List<Token> arg) {
         if (arg.isEmpty()) {
             return NO_TOKEN;

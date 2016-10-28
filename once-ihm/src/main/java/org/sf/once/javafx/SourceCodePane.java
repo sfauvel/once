@@ -48,7 +48,7 @@ public class SourceCodePane extends VBox {
             Node text = tokenToText(token);
             addSelectionStyle(text, firstTokenPosition, nextRedundancyFirstToken, nextRedundancyFirstToken + tokenNumber, tokenIndex);
             textFlow.getChildren().add(text);
-            line = token.getLigneDebut();
+            line = token.getStartingLine();
         }
 
     }
@@ -75,7 +75,7 @@ public class SourceCodePane extends VBox {
         } 
     }
 
-    private Type lastType = Type.NON_SIGNIFICATIF;
+    private Type lastType = Type.NOT_SIGNIFICANT;
     private Node tokenToText(Token token) {
         String code = "";
         if (isText(lastType) && isText(token.getType())) {
@@ -105,8 +105,8 @@ public class SourceCodePane extends VBox {
     }
 
     private void addNewLineIfNecessary(int line, Token token) {
-        if (line < token.getLigneDebut()) {
-            String newLine = StringUtils.rightPad("\n ", token.getColonneDebut());
+        if (line < token.getStartingLine()) {
+            String newLine = StringUtils.rightPad("\n ", token.getStartingColumn());
             textFlow.getChildren().add(new Text(newLine));
               
         } 

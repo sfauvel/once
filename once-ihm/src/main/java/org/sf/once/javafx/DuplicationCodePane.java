@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.sf.once.model.MethodLocalisation;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import javafx.event.EventHandler;
@@ -51,13 +51,13 @@ public class DuplicationCodePane extends VBox {
         }
     }
 
-    public void display(final List<Token> tokenList, List<MethodLocalisation> methodList, List<? extends Redundancy> redundancies) {
+    public void display(final List<Token> tokenList, List<MethodLocation> methodList, List<? extends Redundancy> redundancies) {
         for (Redundancy redundancy : redundancies) {
             display(tokenList, methodList, redundancy);
         }
     }
     
-    public void display(final List<Token> tokenList, List<MethodLocalisation> methodList, Redundancy redundancy) {
+    public void display(final List<Token> tokenList, List<MethodLocation> methodList, Redundancy redundancy) {
 
             List<String> substitutionList = getSubstitution(tokenList, redundancy);           
             
@@ -75,14 +75,14 @@ public class DuplicationCodePane extends VBox {
             addTextLine("");
     }
 
-    private String getRedundancyDescription(final List<Token> tokenList, List<MethodLocalisation> methodList, Redundancy redundancy, Integer firstTokenPosition) {
-        Integer firstLine = tokenList.get(firstTokenPosition).getLigneDebut();
+    private String getRedundancyDescription(final List<Token> tokenList, List<MethodLocation> methodList, Redundancy redundancy, Integer firstTokenPosition) {
+        Integer firstLine = tokenList.get(firstTokenPosition).getStartingLine();
         Token lastToken = tokenList.get(firstTokenPosition + redundancy.getDuplicatedTokenNumber() - 1);
-        Integer lastLine = lastToken.getLigneDebut();
+        Integer lastLine = lastToken.getStartingLine();
          
-        MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
+        MethodLocation method = MethodLocation.findMethod(methodList, lastToken);
         if (method != null) {
-            method.getRedondanceList().add(redundancy);
+            method.getRedundancyList().add(redundancy);
             StringBuffer buffer = new StringBuffer();
             addRedundancyDescription(tokenList, redundancy, firstTokenPosition, buffer, firstLine, lastLine, method);                                       
             displayVisualRedondance(method, firstLine, lastLine);
@@ -115,8 +115,8 @@ public class DuplicationCodePane extends VBox {
     }
 
     private void addRedundancyDescription(final List<Token> tokenList, Redundancy redundancy, Integer firstTokenPosition, StringBuffer buffer,
-            Integer ligneDebut, Integer ligneFin, MethodLocalisation method) {
-        int methodLineNumber = method.getLocalisationFin().getLine() - method.getLocalisationDebut().getLine();
+            Integer ligneDebut, Integer ligneFin, MethodLocation method) {
+        int methodLineNumber = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();
         int redundancyLineNumber = ligneFin - ligneDebut;
         int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
 
@@ -128,32 +128,32 @@ public class DuplicationCodePane extends VBox {
                 .append(" lines)")
                 .append(method.getMethodName())
                 .append(" from line ")
-                .append(tokenList.get(firstTokenPosition).getlocalisation().getLine())
+                .append(tokenList.get(firstTokenPosition).getLocation().getLine())
                 .append(" to ")
-                .append(tokenList.get(firstTokenPosition+redundancy.getDuplicatedTokenNumber()).getlocalisation().getLine())
+                .append(tokenList.get(firstTokenPosition+redundancy.getDuplicatedTokenNumber()).getLocation().getLine())
                 .append(" ")
                 
                 .append("(method from line ")
-                .append(method.getLocalisationDebut().getLine())
+                .append(method.getStartingLocation().getLine())
                 .append(" to ")
-                .append(method.getLocalisationFin().getLine())
+                .append(method.getEndingLocation().getLine())
                 .append(")");
     }
 
-    private void displayVisualRedondance(MethodLocalisation method, Integer ligneDebut, Integer ligneFin) {
+    private void displayVisualRedondance(MethodLocation method, Integer ligneDebut, Integer ligneFin) {
         if (isDetailDisplay) {
             StringBuffer line = new StringBuffer();
-            for (int i = method.getLocalisationDebut().getLine(); i < ligneDebut; i++) {
+            for (int i = method.getStartingLocation().getLine(); i < ligneDebut; i++) {
                 line.append(".");
             }
             for (int i = ligneDebut; i <= ligneFin; i++) {
                 line.append("*");
             }
-            for (int i = ligneFin; i <= method.getLocalisationFin().getLine(); i++) {
+            for (int i = ligneFin; i <= method.getEndingLocation().getLine(); i++) {
                 line.append(".");
             }
 
-            addTextLine(method.getMethodName() + "(" + method.getLocalisationDebut().getLine() + ")" + line.toString());
+            addTextLine(method.getMethodName() + "(" + method.getStartingLocation().getLine() + ")" + line.toString());
         }
     }
     

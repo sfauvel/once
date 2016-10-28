@@ -60,8 +60,8 @@ public class CodeTest {
 
     @Test
     public void testGetMethodListUnmodifiable() {
-        List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
-        methodList.add(new MethodLocalisation(null, null, null));
+        List<MethodLocation> methodList = new ArrayList<MethodLocation>();
+        methodList.add(new MethodLocation(null, null, null));
         Code code = new Code(Collections.<Token> emptyList(), methodList);
 
         assertEquals(1, code.getMethodList().size());
@@ -83,9 +83,9 @@ public class CodeTest {
      */
     @Test
     public void testGetMethodList() {
-        List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
-        methodList.add(new MethodLocalisation("methodA", null, null));
-        methodList.add(new MethodLocalisation("methodB", null, null));
+        List<MethodLocation> methodList = new ArrayList<MethodLocation>();
+        methodList.add(new MethodLocation("methodA", null, null));
+        methodList.add(new MethodLocation("methodB", null, null));
         Code code = new Code(Collections.<Token> emptyList(), methodList);
 
         assertEquals("methodA", code.getMethodList().get(0).getMethodName());
@@ -97,9 +97,9 @@ public class CodeTest {
      */
     @Test
     public void testGetMethodAtTokenPosition() {
-        List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
-        methodList.add(new MethodLocalisation("methodA", new IntRange(2, 5)));
-        methodList.add(new MethodLocalisation("methodB", new IntRange(8, 15)));
+        List<MethodLocation> methodList = new ArrayList<MethodLocation>();
+        methodList.add(new MethodLocation("methodA", new IntRange(2, 5)));
+        methodList.add(new MethodLocation("methodB", new IntRange(8, 15)));
         Code code = new Code(Collections.<Token> emptyList(), methodList);
 
         assertNull(code.getMethodAtTokenPosition(1));

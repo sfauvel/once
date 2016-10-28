@@ -2,10 +2,8 @@ package fr.sf.once.model;
 
 public class Type {
     public static final Type VALUE = new Type("Value");
-    public static final Type BREAK = new Type("Break"); // Valeur coupant la redonance
-                                                 // même si le caractère est
-                                                 // identique..
-    public static final Type NON_SIGNIFICATIF = new Type("Ponctuation");
+    public static final Type BREAK = new Type("Break"); // Value stopping redundancy event value are identical.
+    public static final Type NOT_SIGNIFICANT = new Type("Ponctuation");
     public static final Type KEYWORD = new Type("Keyword");
 
     private final Type parentType;

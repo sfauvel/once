@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 
 import fr.sf.once.model.Code;
 import fr.sf.once.model.FunctionalRedundancy;
-import fr.sf.once.model.Localisation;
-import fr.sf.once.model.MethodLocalisation;
+import fr.sf.once.model.Location;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 
@@ -20,9 +20,9 @@ public class ReportingImpl implements Reporting {
 
     private Logger tokenLogger;
 
-    private List<MethodLocalisation> methodList;
+    private List<MethodLocation> methodList;
 
-    public ReportingImpl(List<MethodLocalisation> methodList) {
+    public ReportingImpl(List<MethodLocation> methodList) {
         this.methodList = methodList;
         this.tokenLogger = TRACE_TOKEN;
     }
@@ -66,8 +66,8 @@ public class ReportingImpl implements Reporting {
                 .append(duplicationScore)
                 .append(";");
         for (Integer firstTokenPosition : firstTokenList) {
-            Localisation localisationDebut = code.getToken(firstTokenPosition).getlocalisation();
-            Localisation localisationFin = code.getToken(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation();
+            Location localisationDebut = code.getToken(firstTokenPosition).getLocation();
+            Location localisationFin = code.getToken(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getLocation();
 
             bufferCsv.append(localisationDebut.getFileName())
                     .append("(")
@@ -151,8 +151,8 @@ public class ReportingImpl implements Reporting {
     }
 
     private boolean isNombreLigneSuperieurA(Code code, Integer positionPremierToken, int nombreTokenRedondant, int nombreLigneMin) {
-        Localisation localisationDebut = code.getToken(positionPremierToken).getlocalisation();
-        Localisation localisationFin = code.getToken(positionPremierToken + nombreTokenRedondant - 1).getlocalisation();
+        Location localisationDebut = code.getToken(positionPremierToken).getLocation();
+        Location localisationFin = code.getToken(positionPremierToken + nombreTokenRedondant - 1).getLocation();
 
         int nombreLigne = localisationFin.getLine() - localisationDebut.getLine();
 
@@ -175,16 +175,16 @@ public class ReportingImpl implements Reporting {
                 StringBuffer buffer = new StringBuffer();
 
                 Token firstToken = code.getToken(firstTokenPosition);
-                Integer ligneDebut = firstToken.getLigneDebut();
+                Integer ligneDebut = firstToken.getStartingLine();
                 Token lastToken = code.getToken(firstTokenPosition + redondance.getDuplicatedTokenNumber() - 1);
-                Integer ligneFin = lastToken.getLigneDebut();
+                Integer ligneFin = lastToken.getStartingLine();
                 if (LOG_RESULTAT.isTraceEnabled()) {
                     LOG_RESULTAT.trace("First position:" + firstTokenPosition + " start line:" + ligneDebut + " end line:" + ligneFin);
                 }
-                MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
+                MethodLocation method = MethodLocation.findMethod(methodList, lastToken);
                 if (method != null) {
-                    method.getRedondanceList().add(redondance);
-                    int methodLineNumber = method.getLocalisationFin().getLine() - method.getLocalisationDebut().getLine();
+                    method.getRedundancyList().add(redondance);
+                    int methodLineNumber = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();
                     int redundancyLineNumber = ligneFin - ligneDebut;
                     int pourcentage = computePourcentage(redundancyLineNumber, methodLineNumber);
 
@@ -196,15 +196,15 @@ public class ReportingImpl implements Reporting {
                             .append(" lines)")
                             .append(method.getMethodName())
                             .append(" from line ")
-                            .append(code.getToken(firstTokenPosition).getlocalisation().getLine())
+                            .append(code.getToken(firstTokenPosition).getLocation().getLine())
                             .append(" to ")
-                            .append(code.getToken(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getlocalisation().getLine())
+                            .append(code.getToken(firstTokenPosition + redondance.getDuplicatedTokenNumber()).getLocation().getLine())
                             .append(" ")
 
                             .append("(method from line ")
-                            .append(method.getLocalisationDebut().getLine())
+                            .append(method.getStartingLocation().getLine())
                             .append(" to ")
-                            .append(method.getLocalisationFin().getLine())
+                            .append(method.getEndingLocation().getLine())
                             .append(")");
 
                     // appendString(buffer, method.getLocalisationDebut());
@@ -236,10 +236,10 @@ public class ReportingImpl implements Reporting {
         }
     }
 
-    private void appendString(StringBuffer buffer, Localisation localisation) {
+    private void appendString(StringBuffer buffer, Location localisation) {
         buffer.append(localisation.getLine())
                 .append(":")
-                .append(localisation.getColonne());
+                .append(localisation.getColumn());
     }
 
     public void afficherMethodeDupliqueAvecSubtitution(final Code code, FunctionalRedundancy redondance) {
@@ -251,13 +251,13 @@ public class ReportingImpl implements Reporting {
     private boolean isFullMethodDuplicated(final Code code, Redundancy redondance) {
         List<Integer> firstTokenList = redondance.getStartRedundancyList();
         for (Integer firstTokenPosition : firstTokenList) {
-            Integer ligneDebut = code.getToken(firstTokenPosition).getLigneDebut();
+            Integer ligneDebut = code.getToken(firstTokenPosition).getStartingLine();
             Token lastToken = code.getToken(firstTokenPosition + redondance.getDuplicatedTokenNumber() - 1);
-            Integer ligneFin = lastToken.getLigneDebut();
-            MethodLocalisation method = MethodLocalisation.findMethod(methodList, lastToken);
+            Integer ligneFin = lastToken.getStartingLine();
+            MethodLocation method = MethodLocation.findMethod(methodList, lastToken);
             if (method != null) {
-                method.getRedondanceList().add(redondance);
-                int methodSize = method.getLocalisationFin().getLine() - method.getLocalisationDebut().getLine();
+                method.getRedundancyList().add(redondance);
+                int methodSize = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();
                 if (ligneFin - ligneDebut == methodSize) {
                     return true;
                 }
@@ -275,20 +275,20 @@ public class ReportingImpl implements Reporting {
 
     }
 
-    private void displayVisualRedondance(MethodLocalisation method, Integer ligneDebut, Integer ligneFin) {
+    private void displayVisualRedondance(MethodLocation method, Integer ligneDebut, Integer ligneFin) {
         if (LOG_RESULTAT.isDebugEnabled()) {
             StringBuffer line = new StringBuffer();
-            for (int i = method.getLocalisationDebut().getLine(); i < ligneDebut; i++) {
+            for (int i = method.getStartingLocation().getLine(); i < ligneDebut; i++) {
                 line.append(".");
             }
             for (int i = ligneDebut; i <= ligneFin; i++) {
                 line.append("*");
             }
-            for (int i = ligneFin; i <= method.getLocalisationFin().getLine(); i++) {
+            for (int i = ligneFin; i <= method.getEndingLocation().getLine(); i++) {
                 line.append(".");
             }
 
-            LOG_RESULTAT.debug(method.getMethodName() + "(" + method.getLocalisationDebut().getLine() + ")" + line.toString());
+            LOG_RESULTAT.debug(method.getMethodName() + "(" + method.getStartingLocation().getLine() + ")" + line.toString());
         }
     }
 
@@ -297,12 +297,12 @@ public class ReportingImpl implements Reporting {
         int lastLine = 0;
         int lastColumn = 0;
         for (Token token : listeToken) {
-            Localisation localisation = token.getlocalisation();
+            Location localisation = token.getLocation();
 
             display(token);
 
             int currentLine = localisation.getLine();
-            int currentColumn = localisation.getColonne();
+            int currentColumn = localisation.getColumn();
             if (currentLine < lastLine) {
                 TRACE_TOKEN.error("Le numéro de ligne diminue");
             } else if (currentLine == lastLine && currentColumn < lastColumn) {
@@ -333,10 +333,10 @@ public class ReportingImpl implements Reporting {
         int lastLine = 0;
         int lastColumn = 0;
         for (Token token : code.getTokenList()) {
-            Localisation localisation = token.getlocalisation();
+            Location localisation = token.getLocation();
 
             int currentLine = localisation.getLine();
-            int currentColumn = localisation.getColonne();
+            int currentColumn = localisation.getColumn();
             if (currentLine < lastLine) {
                 LOG_RESULTAT.error("Le numéro de ligne diminue");
             } else if (currentLine == lastLine && currentColumn < lastColumn) {

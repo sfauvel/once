@@ -17,7 +17,7 @@ public class TypeTest {
    public void testIs() {
        assertTrue(Type.VALUE.is(Type.VALUE));
        assertFalse(Type.VALUE.is(Type.BREAK));
-       assertFalse(Type.VALUE.is(Type.NON_SIGNIFICATIF));
+       assertFalse(Type.VALUE.is(Type.NOT_SIGNIFICANT));
        
    }
    

@@ -9,37 +9,37 @@ import org.apache.commons.lang.StringUtils;
 
 public class Token {
 	
-	private final String valeurToken;
+	private final String tokenValue;
 	private final Type type;
-	private final Localisation localisation;
+	private final Location location;
 	
-	public Token(Localisation localisation, String token, Type type) {
-		this.localisation = localisation;
-		this.valeurToken = token;
+	public Token(Location location, String token, Type type) {
+		this.location = location;
+		this.tokenValue = token;
         this.type = type;
 	}
 	
 	public String getTokenValue() {
-		return this.valeurToken;
+		return this.tokenValue;
 	}
 
-    public Localisation getlocalisation() {
-        return localisation;
+    public Location getLocation() {
+        return location;
     }
 
     public Type getType() {
         return type;
     }
     
-    public Integer getLigneDebut() {
-        return localisation.getLine();
+    public Integer getStartingLine() {
+        return location.getLine();
     }
-    public Integer getColonneDebut() {
-        return localisation.getColonne();
+    public Integer getStartingColumn() {
+        return location.getColumn();
     }
 
-    public int getColonneFin() {
-        return getColonneDebut() + valeurToken.length();
+    public int getEndingColumn() {
+        return getStartingColumn() + tokenValue.length();
     }
     
     public String format() {
@@ -50,11 +50,11 @@ public class Token {
     }
 
     public void appendToken(StringBuffer buffer) {
-        Localisation localisation = getlocalisation();
+        Location location = getLocation();
         buffer.append(StringUtils.rightPad(getTokenValue(), 25));
-        localisation.appendLocalisation(buffer);
+        location.appendLocation(buffer);
         buffer.append(" col:")
-                .append(StringUtils.rightPad(Integer.toString(localisation.getColonne()), 5))
+                .append(StringUtils.rightPad(Integer.toString(location.getColumn()), 5))
                 .append(" type:")
                 .append(getType().toString());
     }

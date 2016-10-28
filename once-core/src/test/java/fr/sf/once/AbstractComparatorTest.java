@@ -50,7 +50,7 @@ public abstract class AbstractComparatorTest {
      */
     protected void changeTokenType(List<Token> tokenList, int position, Type newType) {
         Token token = tokenList.get(position);
-        tokenList.set(position, new Token(token.getlocalisation(), token.getTokenValue(), newType));
+        tokenList.set(position, new Token(token.getLocation(), token.getTokenValue(), newType));
     }    
     
     protected Code createCode(String... tokenList) {

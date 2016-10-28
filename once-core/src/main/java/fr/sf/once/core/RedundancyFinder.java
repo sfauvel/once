@@ -89,7 +89,7 @@ public class RedundancyFinder {
     }
 
     private boolean isTokenIsSignificatifForRedundancy(Token token) {
-        return !Type.NON_SIGNIFICATIF.equals(token.getType());
+        return !Type.NOT_SIGNIFICANT.equals(token.getType());
     }
 
     private List<Token> getTokenList() {
@@ -149,7 +149,7 @@ public class RedundancyFinder {
     private void traceToken(int position) {
         if (LOG.isDebugEnabled()) {
             Token token = getToken(position);
-            LOG.debug(position + "\t" + token.getlocalisation().getFileName() + " line:" + token.getlocalisation().getLine() + "\t N° token:" + position);
+            LOG.debug(position + "\t" + token.getLocation().getFileName() + " line:" + token.getLocation().getLine() + "\t N° token:" + position);
             StringBuffer buffer = new StringBuffer();
 
             int size = getTokenList().size();

@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.sf.commons.Files;
-import fr.sf.once.model.MethodLocalisation;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Token;
 
 public class ExtractTokenFileVisitor extends TravelAst implements Files.FileVisitor {
     private final List<Token> tokenList = new ArrayList<Token>();
-    private List<MethodLocalisation> methodList = new ArrayList<MethodLocalisation>();
+    private List<MethodLocation> methodList = new ArrayList<MethodLocation>();
     private TokenVisitorBuilder tokenVisitorBuilder;
     private String rootPath;
 
@@ -56,7 +56,7 @@ public class ExtractTokenFileVisitor extends TravelAst implements Files.FileVisi
         return tokenList;
     }
 
-    public List<MethodLocalisation> getMethodList() {
+    public List<MethodLocation> getMethodList() {
         return methodList;
     }
 }
