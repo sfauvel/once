@@ -32,7 +32,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import fr.sf.once.ast.ExtractCode;
-import fr.sf.once.comparator.ComparateurWithSubstitutionAndType;
+import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.launcher.Launcher.OnceProperties;
@@ -152,7 +152,7 @@ public class OnceHandler implements HttpHandler {
 
         LOG.info("Source directory:" + sourceDir);
 
-        Class<ComparateurWithSubstitutionAndType> comparator = ComparateurWithSubstitutionAndType.class;
+        Class<ComparatorWithSubstitutionAndType> comparator = ComparatorWithSubstitutionAndType.class;
         int tailleMin = 20;
 
         code = new ExtractCode().extract(sourceDir, sourceEncoding);

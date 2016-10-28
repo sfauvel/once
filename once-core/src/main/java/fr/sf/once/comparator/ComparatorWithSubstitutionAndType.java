@@ -13,9 +13,9 @@ import fr.sf.once.ast.TokenJava;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Token;
 
-public class ComparateurWithSubstitutionAndType extends CodeComparator {
+public class ComparatorWithSubstitutionAndType extends CodeComparator {
 
-    public static final Logger LOG = Logger.getLogger(ComparateurWithSubstitutionAndType.class);
+    public static final Logger LOG = Logger.getLogger(ComparatorWithSubstitutionAndType.class);
 
     static final List<Token> notSubstitutableTokenList = Arrays.asList(
             TokenJava.TRAVEL_LIST,
@@ -40,7 +40,7 @@ public class ComparateurWithSubstitutionAndType extends CodeComparator {
     private SubstitutionTokenListWithBasicArray substitutionList1 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
     private SubstitutionTokenListWithBasicArray substitutionList2 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
 
-    public ComparateurWithSubstitutionAndType(Code code) {
+    public ComparatorWithSubstitutionAndType(Code code) {
         super(code);
     }
 
