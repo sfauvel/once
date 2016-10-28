@@ -15,11 +15,11 @@ class ComparatorRedundancySubstitution implements Comparator<FunctionalRedundanc
     }
     
     @Override
-    public int compare(FunctionalRedundancy redondance1, FunctionalRedundancy redondance2) {
-        int size1 = redondance1.getSubstitutionList().size();
-        int size2 = redondance2.getSubstitutionList().size();
+    public int compare(FunctionalRedundancy redundancy1, FunctionalRedundancy redundancy2) {
+        int size1 = redundancy1.getSubstitutionList().size();
+        int size2 = redundancy2.getSubstitutionList().size();
         
-        return (redondance2.getDuplicatedTokenNumber() / (size2 + 1)) - (redondance1.getDuplicatedTokenNumber() / (size1 + 1));
+        return (redundancy2.getDuplicatedTokenNumber() / (size2 + 1)) - (redundancy1.getDuplicatedTokenNumber() / (size1 + 1));
     }
 
 }

@@ -6,17 +6,17 @@ import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.MethodDefinition;
 import fr.sf.once.model.Redundancy;
 
-public class ReportingMethodPurcentage {
+public class ReportingMethodPercentage {
 
     private final RedundancyFinder manager;
     private final List<Redundancy> redundancyList;
 
-    public ReportingMethodPurcentage(RedundancyFinder manager, List<Redundancy> redundancyList) {
+    public ReportingMethodPercentage(RedundancyFinder manager, List<Redundancy> redundancyList) {
         this.manager = manager;
         this.redundancyList = redundancyList;
     }
 
-    public int getPurcentageBetween(MethodDefinition methodA, MethodDefinition methodB) {
+    public int getPercentageBetween(MethodDefinition methodA, MethodDefinition methodB) {
         int totalTokenRedundancy = 0;
         for (Redundancy redundancy : redundancyList) {
             if (isRedundancyBetweenMethods(methodA, methodB, redundancy)) {

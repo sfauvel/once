@@ -118,7 +118,7 @@ public class Launcher {
 			RedundancyFinder.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
 			RedundancyFinder.LOG.setLevel(Level.INFO);
 		}
-		activateLog(Reporting.LOG_RESULTAT, Level.INFO, "result/once.txt");
+		activateLog(Reporting.LOG_RESULT, Level.INFO, "result/once.txt");
 		activateLog(RedundancyFinder.LOG, Level.INFO, null);
 		activateLog(LOG, Level.INFO, null);
 	}
@@ -172,7 +172,7 @@ public class Launcher {
 		LOG.info("Affichage des resultats...");
 		Reporting reporting = new ReportingImpl(code.getMethodList());
 		reporting.display(code);
-		reporting.afficherRedondance(code, 20, listeRedondance);
+		reporting.displayRedundancy(code, 20, listeRedondance);
 	}
 
 	private static void activateComparatorLog(Level level, String filename) throws IOException {

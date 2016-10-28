@@ -12,10 +12,10 @@ import fr.sf.once.model.Token;
 public interface Reporting {
 
     Logger TRACE_TOKEN = Logger.getLogger("TOKEN");
-    Logger LOG_RESULTAT = Logger.getLogger("RESULTAT");
+    Logger LOG_RESULT = Logger.getLogger("RESULT");
     Logger LOG_CSV = Logger.getLogger("CSV");
-    void afficherRedondance(final Code code, int tailleMin, List<FunctionalRedundancy> listeRedondance);
-    void afficherCodeRedondant(final Code code, FunctionalRedundancy redondance);
-    void afficheListeToken(List<Token> listeToken);
+    void displayRedundancy(final Code code, int minimalSize, List<FunctionalRedundancy> redundancyList);
+    void displayRedundantCode(final Code code, FunctionalRedundancy redundancy);
+    void displayTokenList(List<Token> tokenList);
     void display(final Code code);
 }

@@ -20,8 +20,8 @@ public class EndToEndTest {
 
     @Before
     public void setReporter() {
-        Reporting.LOG_RESULTAT.addAppender(new WriterAppender(new PatternLayout("%m\n"), writer));
-        Reporting.LOG_RESULTAT.setLevel(Level.INFO);
+        Reporting.LOG_RESULT.addAppender(new WriterAppender(new PatternLayout("%m\n"), writer));
+        Reporting.LOG_RESULT.setLevel(Level.INFO);
     }
     
     @Test
