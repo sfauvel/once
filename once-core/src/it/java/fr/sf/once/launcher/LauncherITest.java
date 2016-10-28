@@ -10,7 +10,7 @@ import org.apache.log4j.WriterAppender;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.sf.once.comparator.ComparateurAvecSubstitutionEtType;
+import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.report.Reporting;
 
 public class LauncherITest {
@@ -18,8 +18,8 @@ public class LauncherITest {
 
     @Before
     public void setReporter() {
-        Reporting.LOG_RESULTAT.addAppender(new WriterAppender(new PatternLayout("%m\n"), writer));
-        Reporting.LOG_RESULTAT.setLevel(Level.INFO);
+        Reporting.LOG_RESULT.addAppender(new WriterAppender(new PatternLayout("%m\n"), writer));
+        Reporting.LOG_RESULT.setLevel(Level.INFO);
     }
 
     @Test
@@ -27,7 +27,7 @@ public class LauncherITest {
 
         Launcher launcher = new Launcher()
                 .withSource("src/test/resources/exemple", "UTF-8")
-                .withComparator(ComparateurAvecSubstitutionEtType.class)
+                .withComparator(ComparatorWithSubstitutionAndType.class)
                 .withMinimalSize(10);
         
         launcher.execute();
@@ -44,7 +44,7 @@ public class LauncherITest {
 
         Launcher launcher = new Launcher()
                 .withSource("src/test/resources/exemple", "UTF-8")
-                .withComparator(ComparateurAvecSubstitutionEtType.class)
+                .withComparator(ComparatorWithSubstitutionAndType.class)
                 .withMinimalSize(10);
         
         launcher.execute();
