@@ -3,8 +3,11 @@ package fr.sf.once.core;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -44,9 +47,9 @@ public class RedundancyFinder {
 
         LOG.info("Build redundancies...");
         List<Redundancy> listeRedondance = computeRedundancy(positionList, redundancySize, configuration.getMinimalTokenNumber());
-        LOG.info("Remove overlap between redundancies...");
-        listeRedondance = removeOverlap(listeRedondance);
-        LOG.info("Remove duplicate redundancies...");
+//        LOG.info("Remove overlap between redundancies...");
+//        listeRedondance = removeOverlap(listeRedondance);
+//        LOG.info("Remove duplicate redundancies...");
         listeRedondance = removeRedundancyIncludedInAnotherOne(listeRedondance);
         LOG.info("Finished");
         
@@ -57,13 +60,19 @@ public class RedundancyFinder {
 
     private List<Redundancy> removeOverlap(List<Redundancy> redundancyList) {
         LOG.info("Redundancy number before removing overlap: " + redundancyList.size());
-        for (Iterator<Redundancy> iterator = redundancyList.iterator(); iterator.hasNext();) {
-            Redundancy redondance = iterator.next();
-            redondance.removeOverlapRedundancy();
-            if (redondance.getRedundancyNumber() <= 1) {
-                iterator.remove();
-            }
-        }
+//        for (Redundancy redundancy : redundancyList) {
+//            redundancy.removeOverlapRedundancy();
+//        }
+
+//        redundancyList.removeIf(redundancy -> redundancy.getRedundancyNumber() <= 1);
+        
+//        for (Iterator<Redundancy> iterator = redundancyList.iterator(); iterator.hasNext();) {
+//            Redundancy redondance = iterator.next();
+//            redondance.removeOverlapRedundancy();
+//            if (redondance.getRedundancyNumber() <= 1) {
+//                iterator.remove();
+//            }
+//        }
         LOG.info("Redundancy number after removing overlap: " + redundancyList.size());
 
         return redundancyList;
@@ -116,7 +125,20 @@ public class RedundancyFinder {
 
     public List<Redundancy> removeRedundancyIncludedInAnotherOne(List<Redundancy> redundancyList) {
         LOG.info("Redundancy number before removing duplicate ones: " + redundancyList.size());
-        Redundancy.removeDuplicatedList(redundancyList);
+        Collections.sort(redundancyList, Redundancy::compareByDuplicatedTokenNumber);
+
+        Set<String> redundancyAlreadyPresent = new HashSet<String>();
+        for (Iterator<Redundancy> iterator = redundancyList.iterator(); iterator.hasNext();) {
+            Redundancy redundancy = iterator.next();
+            String key = redundancy.getEndRedundancyList().toString();
+            if (!redundancyAlreadyPresent.contains(key)) {
+                redundancyAlreadyPresent.add(key);
+            } else {
+                iterator.remove();
+            }
+        }
+        
+        
         LOG.info("Redundancy number after removing duplicate ones: " + redundancyList.size());
         return redundancyList;
     }
@@ -163,7 +185,7 @@ public class RedundancyFinder {
 
     public List<Redundancy> computeRedundancy(List<Integer> positionList, int[] redundancySize, int minimalSize) {
         List<Redundancy> redondancyList = new ArrayList<Redundancy>();
-        addRedundancyInternal(positionList, redondancyList, redundancySize, 0, 0, 0);
+        addRedundancyInternal(positionList, redondancyList, redundancySize, 0, 0, minimalSize);
         for (int i = 1; i < redundancySize.length; i++) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("index : " + i);
@@ -175,13 +197,14 @@ public class RedundancyFinder {
         return redondancyList;
     }
 
-    private void addRedundancyInternal(List<Integer> positionList, List<Redundancy> redundancyList, int[] redundancySizeList, int startingIndex,
-            int currentIndex, int minimalSize) {
+    private void addRedundancyInternal(List<Integer> positionList, List<Redundancy> redundancyList, int[] redundancySizeList, final int startingIndex,
+            int currentIndex, final int minimalSize) {
+        LOG.debug("addRedundancyInternal startingIndex=" + startingIndex + " currentIndex=" + currentIndex);
         if (currentIndex >= redundancySizeList.length) {
             return;
         }
         int initialSize = redundancySizeList[currentIndex];
-        if (initialSize <= minimalSize) {
+        if (initialSize < minimalSize) {
             return;
         }
         while (currentIndex < redundancySizeList.length && initialSize <= redundancySizeList[currentIndex]) {
@@ -192,7 +215,11 @@ public class RedundancyFinder {
             LOG.debug("add starting=" + startingIndex + " number=" + (currentIndex - startingIndex + 1) + " size=" + initialSize);
         }
 
-        redundancyList.add(createRedundancy(initialSize, positionList.subList(startingIndex, currentIndex + 1)));
+        List<Integer> positionRedundancy = cleanPositionList(initialSize, positionList.subList(startingIndex, currentIndex + 1));
+        if (positionRedundancy.size() > 1) {
+            redundancyList.add(createRedundancy(initialSize, positionRedundancy));
+        }
+//        redundancyList.add(createRedundancy(initialSize, positionList.subList(startingIndex, currentIndex + 1)));
 
         if (LOG.isDebugEnabled()) {
             for (Integer i : positionList.subList(startingIndex, currentIndex + 1)) {
@@ -200,10 +227,28 @@ public class RedundancyFinder {
             }
         }
 
-        addRedundancyInternal(positionList, redundancyList, redundancySizeList, startingIndex, currentIndex, minimalSize);
+      //  addRedundancyInternal(positionList, redundancyList, redundancySizeList, startingIndex, currentIndex, minimalSize);
+    }
+
+    private List<Integer> cleanPositionList(int duplicatedTokenNumber, List<Integer> subList) {
+        List<Integer> cleanPosition = new ArrayList<Integer>(subList);
+        Collections.sort(cleanPosition);
+        
+        int lastFirstValue = -1;
+        for (Iterator<Integer> tokenIterator = cleanPosition.iterator(); tokenIterator.hasNext();) {
+            Integer tokenPosition = tokenIterator.next();            
+            if (tokenPosition < lastFirstValue) {
+                tokenIterator.remove();
+            } else {
+                lastFirstValue = tokenPosition  + duplicatedTokenNumber;
+            }
+        }
+        
+        return cleanPosition;
     }
 
     private Redundancy createRedundancy(int redondanceSize, List<Integer> subList) {
+        LOG.debug("Create redundancy size=" + redondanceSize + " positions=" + Arrays.toString(subList.toArray(new Integer[0])));
         return new Redundancy(redondanceSize, subList);
     }
 

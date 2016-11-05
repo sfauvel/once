@@ -88,7 +88,7 @@ public class Launcher {
 
 		OnceProperties onceProps = loadConfiguration(args);
 
-		// Logger.getRootLogger().setLevel(Level.INFO);
+		//Logger.getRootLogger().setLevel(Level.INFO);
 
 		setLogger(onceProps.isVerbose());
 

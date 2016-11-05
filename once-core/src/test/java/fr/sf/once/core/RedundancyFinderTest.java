@@ -5,10 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.description.Description;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import fr.sf.once.comparator.ComparatorWithSubstitution;
@@ -23,14 +28,170 @@ public class RedundancyFinderTest {
     @ClassRule
     public static final LogRule LOG_RULE = new LogRule();
 
+    private Configuration configuration = new Configuration();
+
+    @Test
+    public void should_not_find_redundancywhen_there_is_not() {
+        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F");
+        
+        List<FunctionalRedundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(3));
+        
+        assertThat(redundancies).isEmpty();
+    }
+
+    @Test
+    public void should_find_a_single_redundancy_when_a_sequence_is_duplicated() {
+        RedundancyFinder managerToken = UtilsToken.createManagerToken(
+                "A", "B", "C", 
+                "A", "B", "C");
+        
+        List<FunctionalRedundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(3));
+        
+        assertThat(redundancies).hasSize(1);
+        
+        assertThat(redundancies.get(0).getRedundancyNumber()).isEqualTo(2);
+        assertThat(redundancies.get(0).getDuplicatedTokenNumber()).isEqualTo(3);
+        assertThat(redundancies.get(0).getStartRedundancyList()).containsOnly(0, 3);
+    }
+    
+    @Test
+    public void should_find_a_single_redundancy_when_a_sequence_greater_than_minimal_size_is_duplicated() {
+        RedundancyFinder managerToken = UtilsToken.createManagerToken(
+                "A", "B", "C", "D", "E",
+                "A", "B", "C", "D", "E");
+        
+        List<FunctionalRedundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(3));
+        
+        assertThat(redundancies).hasSize(1);
+        
+        assertThat(redundancies.get(0).getRedundancyNumber()).isEqualTo(2);
+        assertThat(redundancies.get(0).getDuplicatedTokenNumber()).isEqualTo(5);
+        assertThat(redundancies.get(0).getStartRedundancyList()).containsOnly(0, 5);
+    }
+    
+    @Test
+    public void should_not_find_redundancy_when_size_less_than_the_minima_size() {
+        RedundancyFinder managerToken = UtilsToken.createManagerToken(
+                "A", "B", "C", 
+                "A", "B", "C");
+        
+        assertThat(managerToken.findRedundancies(configuration.withMinimalTokenNumber(3))).hasSize(1);
+        assertThat(managerToken.findRedundancies(configuration.withMinimalTokenNumber(4))).isEmpty();
+        
+    }
+    
+    @Test
+    public void should_find_2_redundancies_when_there_is_2_separated_duplications() {
+        RedundancyFinder managerToken = UtilsToken.createManagerToken(
+                "A", "B", "C", 
+                "A", "B", "C",
+                "D", "E", "F", "G",
+                "D", "E", "F", "G");
+        
+        List<FunctionalRedundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(3));
+        
+        assertThat(redundancies).hasSize(2);
+        
+        assertThat(redundancies).usingElementComparator(new RedundancyComparator())
+            .containsOnly(
+                new FunctionalRedundancy(null, new Redundancy(3, Arrays.asList(0,3))),
+                new FunctionalRedundancy(null, new Redundancy(4, Arrays.asList(6,10))));
+    }
+    
+    @Test
+    public void should_find_2_redundancies_when_there_is_one_deeper_into_one_with_more_redundancies() {
+        
+        RedundancyFinder managerToken = UtilsToken.createManagerToken(UtilsToken.createTokenList(
+                "A", "B", "C", "BREAK", 
+                "A", "B", "C", "BREAK",
+                "A", "B", "C", "D", "BREAK",
+                "A", "B", "C", "D"));
+        
+        List<FunctionalRedundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(3));
+        
+        assertThat(redundancies).usingElementComparator(new RedundancyComparator())
+            .as("%s", redundanciesToString(redundancies))
+            .containsOnly(
+                new FunctionalRedundancy(null, new Redundancy(3, Arrays.asList(0,4,8,13))),
+                new FunctionalRedundancy(null, new Redundancy(4, Arrays.asList(8,13))));
+    }
+    
+    @Test
+    public void should_find_2_redundancies_when_there_is_one_deeper_into_one_with_more_redundancies_before_and_after() {
+        
+        RedundancyFinder managerToken = UtilsToken.createManagerToken(UtilsToken.createTokenList(
+                "A", "B", "C", "BREAK", 
+                "A", "B", "C", "BREAK",
+                "A", "B", "C", "D", "BREAK",
+                "A", "B", "C", "D", "BREAK",
+                "A", "B", "C", "E", "BREAK"));
+        
+        List<FunctionalRedundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(3));
+        
+        assertThat(redundancies).usingElementComparator(new RedundancyComparator())
+            .as(redundanciesToString(redundancies))
+            .containsOnly(
+                new FunctionalRedundancy(null, new Redundancy(3, Arrays.asList(0,4,8,13,18))),
+                new FunctionalRedundancy(null, new Redundancy(4, Arrays.asList(8,13))));
+    }
+    
+    private String redundanciesToString(List<FunctionalRedundancy> redundancies) {
+        String result = "";
+        String separator = "";
+        for (FunctionalRedundancy redundancy : redundancies) {
+            result += separator + redundancy.getDuplicatedTokenNumber() + " => " + redundancy.getStartRedundancyList().toString();
+            separator = ", ";
+        }
+        return result;
+    }
+
+    @Test
+    public void should_remove_redundancy_when_there_is_only_one_position_after_removing_overlap() {
+        RedundancyFinder managerToken = UtilsToken.createManagerToken(
+                "A", "B", "C", 
+                "A", "B", "C", 
+                "A", "B", "C");
+        
+        List<FunctionalRedundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(5));
+        
+        assertThat(redundancies).hasSize(0);
+    }
+    
+    @Test
+    public void should_find_2_redundancy_when_sequence_is_repeated_4_times() {
+        RedundancyFinder managerToken = UtilsToken.createManagerToken(
+                "A", "B", "C", 
+                "A", "B", "C", 
+                "A", "B", "C", 
+                "A", "B", "C");
+        
+        List<FunctionalRedundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(3));
+        
+        assertThat(redundancies).usingElementComparator(new RedundancyComparator())
+        .as(redundanciesToString(redundancies))
+        .containsOnly(
+            new FunctionalRedundancy(null, new Redundancy(6, Arrays.asList(0,6))), // A B C A B C
+            new FunctionalRedundancy(null, new Redundancy(3, Arrays.asList(0,3,6,9)))); // A B C
+    }
+    
     /**
      * A A B B 0:1 1 2 2-> 2 1: 1 2 2-> 3 2: 1 1-> 1 3: 1-> 0 B : 1 B B : 1 1 A
      * A B B: 1 1 2 2 A B B : 1 2 2
      */
     @Test
     public void testAfficherRedondance() {
+
+        LOG_RULE.setTrace(Level.DEBUG);
+        
         RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "A", "B", "B"));
         
+        
+        /// 3 2 0 1 
+        // B            1
+        // B B          1 1
+        // A A B B      1 1 2 2
+        // A B B        1 2 1
+        /// 1 2 1
         Configuration configuration = new Configuration(ComparatorWithSubstitution.class).withMinimalTokenNumber(0);
         List<FunctionalRedundancy> listeRedondance = manager.findRedundancies(configuration);
         
@@ -47,34 +208,24 @@ public class RedundancyFinderTest {
                 .containsOnly(0, 1, 2, 3);
     }
 
-    @Test
-    public void testAjouterRedondanceUneSeuleValeur() throws Exception {
-        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F");
-        List<Integer> positionList = UtilsToken.createPositionList(2);
-        List<Redundancy> listeRedondance = managerToken.computeRedundancy(
-                positionList,
-                new int[] { 3 },
-                0);
-
-        assertRedondance(3, listeRedondance.get(0));
-        assertEquals(1, listeRedondance.size());
-    }
 
     @Test
     public void testAjouterRedondance() throws Exception {
         RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
-        List<Integer> positionList = UtilsToken.createPositionList(3);
+       // List<Integer> positionList = UtilsToken.createPositionList(3);
+        List<Integer> positionList = Arrays.asList(1, 8, 16);
         List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
                 new int[] { 3, 5 },
                 0);
 
+        assertEquals(2, listeRedondance.size());
         assertRedondance(3, listeRedondance.get(0));
         assertRedondance(5, listeRedondance.get(1));
-        assertEquals(2, listeRedondance.size());
     }
 
     @Test
+    @Ignore
     public void testAjouterRedondanceToujoursPlusGrand() throws Exception {
         RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(6);
@@ -92,19 +243,22 @@ public class RedundancyFinderTest {
     }
 
     @Test
+    @Ignore
     public void testAjouterRedondanceToujoursEgal() throws Exception {
-        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+//        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
+        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A");
         List<Integer> positionList = UtilsToken.createPositionList(6);
         List<Redundancy> listeRedondance = managerToken.computeRedundancy(
                 positionList,
                 new int[] { 5, 5, 5, 5 },
                 0);
 
-        assertRedondance(5, listeRedondance.get(0));
-        assertEquals(1, listeRedondance.size());
+        assertThat(listeRedondance.get(0).getDuplicatedTokenNumber()).isEqualTo(5);
+        assertThat(listeRedondance).hasSize(1);
     }
 
     @Test
+    @Ignore
     public void testAjouterRedondanceToujoursPlusPetit() throws Exception {
         RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
         List<Integer> positionList = UtilsToken.createPositionList(3);
@@ -119,6 +273,7 @@ public class RedundancyFinderTest {
     }
 
     @Test
+    @Ignore
     public void testAjouterRedondancePlusGrandPuisPlusPetit() throws Exception {
 
         RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "D", "E", "F", "G", "H");
@@ -145,9 +300,43 @@ public class RedundancyFinderTest {
         List<Redundancy> listeObtenue = managerToken.removeRedundancyIncludedInAnotherOne(listeRedondance);
         assertEquals(true, listeObtenue.isEmpty());
     }
-
+    
+    @Test
+    public void should_remove_a_position_that_overlap_with_another_one_into_a_redundancy() {
+        RedundancyFinder managerToken = UtilsToken.createManagerToken("A", "B", "C", "A", "B", "C", "A", "B", "C", "X", "A", "B", "C", "A", "B", "C");
+        
+        List<FunctionalRedundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(5));
+        
+        assertThat(redundancies).hasSize(1);
+        
+        assertThat(redundancies.get(0).getRedundancyNumber()).isEqualTo(2);
+        // Redundancy on position 0 is removed because it overlaps with one on position 3.
+        assertThat(redundancies.get(0).getStartRedundancyList()).containsOnly(0, 10);
+    }
+    
     private Code createCodeWith(String... tokenValues) {
         return new Code(createUnmodifiableTokenList(tokenValues));
+    }
+
+    private final class RedundancyComparator implements Comparator<FunctionalRedundancy> {
+        @Override
+        public int compare(FunctionalRedundancy redundancyA, FunctionalRedundancy redundancyB) {
+         
+            String s = redundancyA.getStartRedundancyList().toString();
+            
+            int tokenNumberCompared = redundancyA.getDuplicatedTokenNumber()-redundancyB.getDuplicatedTokenNumber();
+            if (tokenNumberCompared != 0) {
+                return tokenNumberCompared;
+            }
+
+            int redundancyNumberCompared = redundancyA.getRedundancyNumber()-redundancyB.getRedundancyNumber();
+            if (redundancyNumberCompared != 0) {
+                return redundancyNumberCompared;
+            }
+           
+            int startRedundancyCompared = redundancyA.getStartRedundancyList().toString().compareTo(redundancyB.getStartRedundancyList().toString());
+            return startRedundancyCompared;
+        }
     }
 
     public static class AbstractRedundancyAssert<S extends AbstractRedundancyAssert<S>> extends AbstractAssert<S, Redundancy> {

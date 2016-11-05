@@ -1,6 +1,7 @@
 package fr.sf.once.report;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -30,11 +31,11 @@ public class ReportingImpl implements Reporting {
     public void displayRedundancy(final Code code, final int minimalSize, List<FunctionalRedundancy> redundancyList) {
          LOG_CSV.info("Redundancy size;Redundancy number;Note");
 
-//        Collections.sort(listeRedondance, new ComparatorRedundancyByTokenNumber());
-        Collections.sort(redundancyList, new ComparatorRedundancySubstitution(code));
+        Collections.sort(redundancyList, new ComparatorRedundancyByTokenNumber());
+//        Collections.sort(redundancyList, new ComparatorRedundancySubstitution(code));
 
         for (FunctionalRedundancy redudancy : redundancyList) {
-            List<Integer> firstTokenList = redudancy.getStartRedundancyList();
+            List<Integer> firstTokenList = new ArrayList<Integer>(redudancy.getStartRedundancyList());
             Integer firstTokenPosition = firstTokenList.get(0);
             if (isLineNumberGreaterThan(code, firstTokenPosition, redudancy.getDuplicatedTokenNumber(), 0)) {
                 long score = computeScore(redudancy);
@@ -55,25 +56,22 @@ public class ReportingImpl implements Reporting {
     }
 
     private void appendCsvInformation(StringBuffer bufferCsv, final Code code, Redundancy redundancy, long score) {
-        List<Integer> firstTokenList = redundancy.getStartRedundancyList();
+        Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
         int redundancyNumber = redundancy.getRedundancyNumber();
 
-        bufferCsv.append(redundancy.getDuplicatedTokenNumber())
-                .append(";")
-                .append(redundancyNumber)
-                .append(";")
-                .append(score)
-                .append(";");
+        bufferCsv.append(String.format("%s;%s;%s;", 
+                redundancy.getDuplicatedTokenNumber(),
+                redundancyNumber,
+                score));
+        
         for (Integer firstTokenPosition : firstTokenList) {
             Location startingLocation = code.getToken(firstTokenPosition).getLocation();
             Location endingLocation = code.getToken(firstTokenPosition + redundancy.getDuplicatedTokenNumber()).getLocation();
 
-            bufferCsv.append(startingLocation.getFileName())
-                    .append("(")
-                    .append(startingLocation.getLine())
-                    .append("/")
-                    .append(endingLocation.getLine())
-                    .append(") ");
+            bufferCsv.append(String.format("%s(%s/%s);", 
+                    startingLocation.getFileName(),
+                    startingLocation.getLine(),
+                    endingLocation.getLine()));
         }
     }
 
@@ -108,7 +106,7 @@ public class ReportingImpl implements Reporting {
     private List<Set<String>> getSubstitutionList(final List<Token> tokenList, Redundancy redundancy) {
         List<Set<String>> substitutionListOfSubstitution = new ArrayList<Set<String>>();
         int duplicatedTokenNumber = redundancy.getDuplicatedTokenNumber();
-        List<Integer> firstTokenList = redundancy.getStartRedundancyList();
+        Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
         Set<String> substitutionList = new HashSet<String>();
         for (int i = 0; i < duplicatedTokenNumber; i++) {
             Set<String> valueList = new HashSet<String>();
@@ -130,7 +128,7 @@ public class ReportingImpl implements Reporting {
     List<Set<String>> getSubstitutionList(final Code code, Redundancy redundancy) {
         List<Set<String>> substitutionListOfSubstitution = new ArrayList<Set<String>>();
         int duplicatedTokenNumber = redundancy.getDuplicatedTokenNumber();
-        List<Integer> firstTokenList = redundancy.getStartRedundancyList();
+        Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
         Set<String> substitutionList = new HashSet<String>();
         for (int i = 0; i < duplicatedTokenNumber; i++) {
             Set<String> valueList = new HashSet<String>();
@@ -162,7 +160,7 @@ public class ReportingImpl implements Reporting {
         if (LOG_RESULT.isInfoEnabled()) {
 
             List<String> substitutionList = getSubstitution(code, redundancy);
-            List<Integer> firstTokenList = redundancy.getStartRedundancyList();
+            Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
             int redundancyNumber = firstTokenList.size();
             LOG_RESULT.info("Tokens number:" + redundancy.getDuplicatedTokenNumber() + " Duplications number:" + redundancyNumber + " Substitutions number:"
                     + substitutionList.size());
@@ -248,7 +246,7 @@ public class ReportingImpl implements Reporting {
     }
 
     private boolean isFullMethodDuplicated(final Code code, Redundancy redundancy) {
-        List<Integer> firstTokenList = redundancy.getStartRedundancyList();
+        Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
         for (Integer firstTokenPosition : firstTokenList) {
             Integer startingLine = code.getToken(firstTokenPosition).getStartingLine();
             Token lastToken = code.getToken(firstTokenPosition + redundancy.getDuplicatedTokenNumber() - 1);

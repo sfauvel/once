@@ -3,6 +3,7 @@ package fr.sf.once.model;
 import static fr.sf.commons.CollectionsShortcuts.mapToSet;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class FunctionalRedundancy extends Redundancy {
         return valueList.size() > 1 && !substitutionList.contains(valueList);
     }
 
-    private Set<String> getSubstitutions(List<Integer> firstTokenList, int index) {
+    private Set<String> getSubstitutions(Collection<Integer> firstTokenList, int index) {
         return mapToSet(firstTokenList, position -> code.getToken(position + index).getTokenValue());
     }
     

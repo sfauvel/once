@@ -15,11 +15,15 @@ public class LogRule implements TestRule {
     @Override
     public Statement apply(Statement paramStatement, Description paramDescription) {
         if (isActiveTrace) {
-            Logger rootLogger = Logger.getRootLogger();
-            rootLogger.addAppender(new ConsoleAppender(new SimpleLayout()));
-            rootLogger.setLevel(Level.ERROR);
+            setTrace(Level.ERROR);
         }
         return paramStatement;
+    }
+    
+    public void setTrace(Level level) {
+        Logger rootLogger = Logger.getRootLogger();
+        rootLogger.addAppender(new ConsoleAppender(new SimpleLayout()));
+        rootLogger.setLevel(level);
     }
 
 }
