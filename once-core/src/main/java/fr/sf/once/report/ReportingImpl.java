@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.model.Code;
-import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.model.Location;
 import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
@@ -28,13 +27,13 @@ public class ReportingImpl implements Reporting {
         this.tokenLogger = TRACE_TOKEN;
     }
 
-    public void displayRedundancy(final Code code, final int minimalSize, List<FunctionalRedundancy> redundancyList) {
+    public void displayRedundancy(final Code code, final int minimalSize, List<Redundancy> redundancyList) {
          LOG_CSV.info("Redundancy size;Redundancy number;Note");
 
         Collections.sort(redundancyList, new ComparatorRedundancyByTokenNumber());
 //        Collections.sort(redundancyList, new ComparatorRedundancySubstitution(code));
 
-        for (FunctionalRedundancy redudancy : redundancyList) {
+        for (Redundancy redudancy : redundancyList) {
             List<Integer> firstTokenList = new ArrayList<Integer>(redudancy.getStartRedundancyList());
             Integer firstTokenPosition = firstTokenList.get(0);
             if (isLineNumberGreaterThan(code, firstTokenPosition, redudancy.getDuplicatedTokenNumber(), 0)) {
@@ -80,7 +79,7 @@ public class ReportingImpl implements Reporting {
         return redundancyNumber * redondance.getDuplicatedTokenNumber();
     }
 
-    private List<String> getSubstitution(final Code code, FunctionalRedundancy redundancy) {
+    private List<String> getSubstitution(final Code code, Redundancy redundancy) {
         List<Set<String>> substitutionListOfSubstitution = redundancy.getSubstitutionList();
         List<String> substitutionList = new ArrayList<String>();
         Set<String> substitution = new HashSet<String>();
@@ -156,7 +155,7 @@ public class ReportingImpl implements Reporting {
         return lineNumber > minimalLineNumber;
     }
 
-    public void displayRedundantCode(final Code code, FunctionalRedundancy redundancy) {
+    public void displayRedundantCode(final Code code, Redundancy redundancy) {
         if (LOG_RESULT.isInfoEnabled()) {
 
             List<String> substitutionList = getSubstitution(code, redundancy);
@@ -239,7 +238,7 @@ public class ReportingImpl implements Reporting {
                 .append(location.getColumn());
     }
 
-    public void displayDuplicatedMethodWithSubstitution(final Code code, FunctionalRedundancy redundancy) {
+    public void displayDuplicatedMethodWithSubstitution(final Code code, Redundancy redundancy) {
         if (redundancy.getStartRedundancyList().size() > 0 && isFullMethodDuplicated(code, redundancy)) {
             displayRedundantCode(code, redundancy);
         }

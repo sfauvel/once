@@ -11,10 +11,12 @@ import java.util.Collections;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import fr.sf.once.test.UtilsToken;
+
 public class RedundancyTest {
     @Test
     public void redundancy_between_5_and_20() {
-        Redundancy redundancy = new Redundancy(4, Arrays.asList(5, 20));
+        Redundancy redundancy = new Redundancy(null, 4, Arrays.asList(5, 20));
         
         assertThat(redundancy.getStartRedundancyList()).containsExactly(5, 20);
     }
@@ -24,14 +26,14 @@ public class RedundancyTest {
         final int FIRST_POSITION = 34;
         final int SECOND_POSITION = 65;
 
-        Redundancy redundancy = new Redundancy(1, Arrays.asList(FIRST_POSITION, SECOND_POSITION));
+        Redundancy redundancy = new Redundancy(null, 1, Arrays.asList(FIRST_POSITION, SECOND_POSITION));
 
         assertThat(redundancy.getStartRedundancyList()).containsOnly(FIRST_POSITION, SECOND_POSITION);
     }
 
     @Test
     public void creating_a_redundancy_between_3_block_the_redundancy_number_is_3_and_it_s_equal_to_redundancy_size() {
-        Redundancy redundancy = new Redundancy(1, Arrays.asList(11, 22, 33));
+        Redundancy redundancy = new Redundancy(null, 1, Arrays.asList(11, 22, 33));
 
         assertThat(redundancy.getRedundancyNumber())
                 .isEqualTo(3)
@@ -42,7 +44,7 @@ public class RedundancyTest {
     public void creating_a_redundancy_on_7_tokens_the_duplicate_token_number_is_7() {
         final int REDUNDANCY_TOKEN_NUMBER = 3;
 
-        Redundancy redundancy = new Redundancy(REDUNDANCY_TOKEN_NUMBER, Arrays.asList(11, 22, 33));
+        Redundancy redundancy = new Redundancy(null, REDUNDANCY_TOKEN_NUMBER, Arrays.asList(11, 22, 33));
 
         assertThat(redundancy.getDuplicatedTokenNumber()).isEqualTo(REDUNDANCY_TOKEN_NUMBER);
     }
@@ -179,8 +181,51 @@ public class RedundancyTest {
         assertEquals(2, redundancyWithoutOverlap.removeOverlapRedundancy().getStartRedundancyList().size());
     }
     
+    @Test
+    public void should_have_no_substitution_when_all_token_are_identical() throws Exception {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "A", "B", "C", "D"));
+        Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(1, 5));
+
+        assertThat(redundancy.getSubstitutionList()).isEmpty();
+    }
+
+    @Test
+    public void should_have_one_substitution_when_only_one_token_is_different() throws Exception {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "A", "b", "C", "D"));
+        Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(1, 5));
+
+        assertThat(redundancy.getSubstitutionList().get(0)).containsOnly("B", "b");
+    }
+
+    @Test
+    public void should_have_all_substitutions_when_several_tokens_are_differents() throws Exception {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "a", "b", "c", "d"));
+        Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(0, 4));
+
+        assertThat(redundancy.getSubstitutionList().get(0)).containsOnly("A", "a");
+        assertThat(redundancy.getSubstitutionList().get(1)).containsOnly("B", "b");
+        assertThat(redundancy.getSubstitutionList().get(2)).containsOnly("C", "c");
+    }
+
+    @Test
+    public void should_no_repeat_a_substitutions_when_there_is_the_same_twice() throws Exception {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "A", "D", "a", "B", "a", "D"));
+        Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(0, 4));
+
+        assertThat(redundancy.getSubstitutionList()).hasSize(1);
+        assertThat(redundancy.getSubstitutionList().get(0)).containsOnly("A", "a");
+    }
+
+    @Test
+    public void should_have_3_substitutions_when_redundancy_contains_3_redundancies_on_different_token() throws Exception {
+        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "X", "C", "D", "A", "Y", "C", "D", "A", "Z", "C", "D"));
+        Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(0, 4, 8));
+
+        assertThat(redundancy.getSubstitutionList().get(0)).containsOnly("X", "Y", "Z");
+    }
+    
     private Redundancy createRedundancyThatContains(final int redundancySize, final int indentifiedRedundancy) {
-        return  new Redundancy(redundancySize, Collections.emptyList()) {
+        return  new Redundancy(null, redundancySize, Collections.emptyList()) {
             @Override
             public boolean containsWithSortedRedundancy(Redundancy includedRedundancy) {
                 return includedRedundancy.getDuplicatedTokenNumber() == indentifiedRedundancy;
@@ -190,7 +235,7 @@ public class RedundancyTest {
     }
     
     private Redundancy createRedundancy(final int redundancySize, final Integer... firstTokenList) {
-         Redundancy redondance = new Redundancy(redundancySize, Arrays.asList(firstTokenList));      
+         Redundancy redondance = new Redundancy(null, redundancySize, Arrays.asList(firstTokenList));      
          return redondance;
     }
 }

@@ -12,8 +12,8 @@ import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.model.MethodLocation;
+import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -134,7 +134,7 @@ public class OncePane extends StackPane {
                 Class<ComparatorWithSubstitutionAndType> comparator = ComparatorWithSubstitutionAndType.class;
                 int minimalSize = ConfStyle.BUTTON_MIN_WIDTH;
                 Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(minimalSize);
-                List<FunctionalRedundancy> redundancies = manager.findRedundancies(configuration);
+                List<Redundancy> redundancies = manager.findRedundancies(configuration);
 
                 duplicationPane.display(tokenList, methodList, redundancies);
             }

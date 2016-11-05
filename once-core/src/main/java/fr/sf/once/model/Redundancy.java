@@ -1,9 +1,13 @@
 package fr.sf.once.model;
 
+import static fr.sf.commons.CollectionsShortcuts.mapToSet;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -12,8 +16,11 @@ public class Redundancy {
 
     private final int duplicatedTokenNumber;
     private final SortedSet<Integer> firstTokenList;
-
-    public Redundancy(final int duplicatedTokenNumber, final Collection<Integer> firstTokenList) {
+    private final Code code;
+    private List<Set<String>> substitutionListOfSubstitution = null;
+    
+    public Redundancy(final Code code, final int duplicatedTokenNumber, final Collection<Integer> firstTokenList) {
+        this.code = code;
         this.duplicatedTokenNumber = duplicatedTokenNumber;
         this.firstTokenList = Collections.unmodifiableSortedSet(new TreeSet<Integer>(firstTokenList));
     }
@@ -78,7 +85,7 @@ public class Redundancy {
                 lastFirstValue = tokenPosition;
             }
         }
-        return new Redundancy(duplicatedTokenNumber, tokenList);
+        return new Redundancy(code, duplicatedTokenNumber, tokenList);
     }
 
     public int getRedundancyNumber() {
@@ -89,4 +96,30 @@ public class Redundancy {
         return redundancyB.getDuplicatedTokenNumber() - redundancyA.getDuplicatedTokenNumber();
     }
 
+    public List<Set<String>> getSubstitutionList() {
+        if (substitutionListOfSubstitution == null) {
+            initSubstitutionList();
+        }
+        return substitutionListOfSubstitution;
+    }
+
+    private void initSubstitutionList() {
+        List<Set<String>> substitutionList = new ArrayList<Set<String>>();
+        for (int index = 0; index < getDuplicatedTokenNumber(); index++) {
+            Set<String> substitution = getSubstitutions(getStartRedundancyList(), index);
+            if (isASubstitutionToAdd(substitutionList, substitution)) {
+                substitutionList.add(substitution);
+            }             
+        }
+        substitutionListOfSubstitution = Collections.unmodifiableList(substitutionList);
+    }
+
+    private boolean isASubstitutionToAdd(List<Set<String>> substitutionList, Set<String> valueList) {
+        return valueList.size() > 1 && !substitutionList.contains(valueList);
+    }
+
+    private Set<String> getSubstitutions(Collection<Integer> firstTokenList, int index) {
+        return mapToSet(firstTokenList, position -> code.getToken(position + index).getTokenValue());
+    }
+    
 }

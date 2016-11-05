@@ -3,18 +3,15 @@ package fr.sf.once.core;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.FunctionalRedundancy;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
@@ -33,7 +30,7 @@ public class RedundancyFinder {
         this.code = code;
     }
 
-    public List<FunctionalRedundancy> findRedundancies(Configuration configuration) {
+    public List<Redundancy> findRedundancies(Configuration configuration) {
         LOG.info("Global token number: " + code.getTokenList().size());
         List<Integer> positionList = getPositionToManage();
         LOG.info("Significant token number: " + positionList.size());
@@ -53,8 +50,7 @@ public class RedundancyFinder {
         listeRedondance = removeRedundancyIncludedInAnotherOne(listeRedondance);
         LOG.info("Finished");
         
-        // TODO Transform redundancy into FunctionalRedundancy. It could be suppress when the 2 classes are merged.
-        return listeRedondance.stream().map(r -> new FunctionalRedundancy(code,  r)).collect(Collectors.toList());
+        return listeRedondance;
 
     }
 
@@ -249,7 +245,7 @@ public class RedundancyFinder {
 
     private Redundancy createRedundancy(int redondanceSize, List<Integer> subList) {
         LOG.debug("Create redundancy size=" + redondanceSize + " positions=" + Arrays.toString(subList.toArray(new Integer[0])));
-        return new Redundancy(redondanceSize, subList);
+        return new Redundancy(code, redondanceSize, subList);
     }
 
 }

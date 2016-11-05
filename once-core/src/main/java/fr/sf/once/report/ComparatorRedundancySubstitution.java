@@ -3,9 +3,9 @@ package fr.sf.once.report;
 import java.util.Comparator;
 
 import fr.sf.once.model.Code;
-import fr.sf.once.model.FunctionalRedundancy;
+import fr.sf.once.model.Redundancy;
 
-class ComparatorRedundancySubstitution implements Comparator<FunctionalRedundancy> {
+class ComparatorRedundancySubstitution implements Comparator<Redundancy> {
     /**
      * 
      */
@@ -15,7 +15,7 @@ class ComparatorRedundancySubstitution implements Comparator<FunctionalRedundanc
     }
     
     @Override
-    public int compare(FunctionalRedundancy redundancy1, FunctionalRedundancy redundancy2) {
+    public int compare(Redundancy redundancy1, Redundancy redundancy2) {
         int size1 = redundancy1.getSubstitutionList().size();
         int size2 = redundancy2.getSubstitutionList().size();
         

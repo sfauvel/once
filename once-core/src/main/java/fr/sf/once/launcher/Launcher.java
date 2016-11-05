@@ -18,13 +18,13 @@ import org.apache.log4j.PatternLayout;
 import fr.sf.once.ast.ExtractCode;
 import fr.sf.once.comparator.BasicComparator;
 import fr.sf.once.comparator.CodeComparator;
+import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.comparator.TokenValueComparatorExceptForString;
-import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
-import fr.sf.once.model.FunctionalRedundancy;
+import fr.sf.once.model.Redundancy;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingImpl;
 
@@ -167,7 +167,7 @@ public class Launcher {
 		Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(minimalSize);
 
 		RedundancyFinder manager = new RedundancyFinder(code);
-		List<FunctionalRedundancy> listeRedondance = manager.findRedundancies(configuration);
+		List<Redundancy> listeRedondance = manager.findRedundancies(configuration);
 
 		LOG.info("Affichage des resultats...");
 		Reporting reporting = new ReportingImpl(code.getMethodList());
