@@ -13,6 +13,7 @@ import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -175,8 +176,8 @@ public class OnceHandler implements HttpHandler {
 
         List<Token> tokenList = code.getTokenList();
         for (Redundancy redondance : listeRedondance) {
-            List<Integer> firstTokenList = redondance.getStartRedundancyList();
-            Integer positionPremierToken = firstTokenList.get(0);
+            Collection<Integer> firstTokenList = redondance.getStartRedundancyList();
+            Integer positionPremierToken = firstTokenList.iterator().next();
             if (isNombreLigneSuperieurA(tokenList, positionPremierToken, redondance.getDuplicatedTokenNumber(), 0)) {
                 long duplicationScore = computeScore(redondance);
                 if (redondance.getDuplicatedTokenNumber() > 5 && duplicationScore > tailleMin) {
@@ -242,7 +243,7 @@ public class OnceHandler implements HttpHandler {
 
         List<Token> tokenList = code.getTokenList();
         List<MethodLocation> methodList = code.getMethodList();
-        Integer firstToken = redundancy.getStartRedundancyList().get(0);
+        Integer firstToken = redundancy.getStartRedundancyList().iterator().next();
         int lastTokenPosition = firstToken + redundancy.getDuplicatedTokenNumber() - 1;
         Token lastToken = tokenList.get(lastTokenPosition);
         Integer ligneFin = lastToken.getStartingLine();
@@ -282,7 +283,7 @@ public class OnceHandler implements HttpHandler {
         List<MethodLocation> methodList = code.getMethodList();
 
         List<String> substitutionList = getSubstitution(tokenList, redondance);
-        List<Integer> firstTokenList = redondance.getStartRedundancyList();
+        Collection<Integer> firstTokenList = redondance.getStartRedundancyList();
         int redundancyNumber = firstTokenList.size();
         buffer.append("<div>")
                 .append("Tokens number:" + redondance.getDuplicatedTokenNumber() + " Duplications number:" + redundancyNumber + " Substitutions number:"
@@ -369,7 +370,7 @@ public class OnceHandler implements HttpHandler {
     private List<String> getSubstitution(final List<Token> tokenList, Redundancy redondance) {
         List<String> substitutionList = new ArrayList<String>();
         int duplicatedTokenNumber = redondance.getDuplicatedTokenNumber();
-        List<Integer> firstTokenList = redondance.getStartRedundancyList();
+        Collection<Integer> firstTokenList = redondance.getStartRedundancyList();
         Set<String> substitution = new HashSet<String>();
         for (int i = 0; i < duplicatedTokenNumber; i++) {
             Set<String> listeValeur = new HashSet<String>();

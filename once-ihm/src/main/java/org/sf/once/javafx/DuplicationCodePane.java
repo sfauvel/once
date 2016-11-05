@@ -1,6 +1,7 @@
 package org.sf.once.javafx;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -101,7 +102,7 @@ public class DuplicationCodePane extends VBox {
                 dialog.initModality(Modality.APPLICATION_MODAL);
                 VBox dialogVbox = new VBox(20);
                 SourceCodePane sourceCodePane = new SourceCodePane();
-                List<Integer> startRedundancyList = redundancy.getStartRedundancyList();
+                List<Integer> startRedundancyList = new ArrayList<Integer>(redundancy.getStartRedundancyList());
                 sourceCodePane.displayCode(tokenList, firstTokenPosition, startRedundancyList, redundancy.getDuplicatedTokenNumber());
                 dialogVbox.getChildren().add(sourceCodePane);
                 Scene dialogScene = new Scene(dialogVbox, 500, 400);
@@ -190,7 +191,7 @@ public class DuplicationCodePane extends VBox {
     private List<String> getSubstitution(final List<Token> tokenList, Redundancy redondance) {
         List<String> substitutionList = new ArrayList<String>();
         int duplicatedTokenNumber = redondance.getDuplicatedTokenNumber();
-        List<Integer> firstTokenList = redondance.getStartRedundancyList();
+        Collection<Integer> firstTokenList = redondance.getStartRedundancyList();
         Set<String> substitution = new HashSet<String>();
         for (int i = 0; i < duplicatedTokenNumber; i++) {
             Set<String> listeValeur = new HashSet<String>();
