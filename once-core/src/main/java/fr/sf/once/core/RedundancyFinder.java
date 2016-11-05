@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.log4j.Logger;
 
@@ -83,14 +85,9 @@ public class RedundancyFinder {
      * @return
      */
     private List<Integer> getPositionToManage() {
-        List<Token> tokenList = getTokenList();
-        List<Integer> positionList = new ArrayList<Integer>();
-        for (int position = 0; position < tokenList.size(); position++) {
-            if (isTokenIsSignificatifForRedundancy(tokenList.get(position))) {
-                positionList.add(position);
-            }           
-        }
-        return positionList;
+        return IntStream.range(0, code.getSize())
+            .filter(position -> isTokenIsSignificatifForRedundancy(getToken(position)))
+            .boxed().collect(Collectors.toList());
     }
 
     private boolean isTokenIsSignificatifForRedundancy(Token token) {

@@ -65,29 +65,6 @@ public class Redundancy {
         return true;
     }
 
-    public static String getRedundancyKey(Redundancy redondance) {
-        return redondance.getEndRedundancyList().toString();
-    }
-
-    /**
-     * Remove duplication starting before the end of the last one.
-     */
-    public Redundancy removeOverlapRedundancy() {
-        // TODO The first token list should be always sorted.
-        ArrayList<Integer> tokenList = new ArrayList<Integer>(firstTokenList);
-        Collections.sort(tokenList, Collections.reverseOrder());
-        int lastFirstValue = Integer.MAX_VALUE;
-        for (Iterator<Integer> tokenIterator = tokenList.iterator(); tokenIterator.hasNext();) {
-            Integer tokenPosition = tokenIterator.next();
-            if (tokenPosition + duplicatedTokenNumber > lastFirstValue) {
-                tokenIterator.remove();
-            } else {
-                lastFirstValue = tokenPosition;
-            }
-        }
-        return new Redundancy(code, duplicatedTokenNumber, tokenList);
-    }
-
     public int getRedundancyNumber() {
         return firstTokenList.size();
     }

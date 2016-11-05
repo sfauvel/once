@@ -150,38 +150,6 @@ public class RedundancyTest {
     }
     
     @Test
-    public void testRemoveOverlapRedundancyWithNoOverlap() {
-        Redundancy redundancy = createRedundancy(5, new Integer[]{2, 12});
-        assertEquals(2, redundancy.getStartRedundancyList().size());
-        redundancy.removeOverlapRedundancy();
-        assertEquals(2, redundancy.getStartRedundancyList().size());
-    }
-    
-    @Test
-    public void testRemoveOverlapRedundancyWithOneOverlap() {
-        Redundancy redundancy = createRedundancy(5, new Integer[]{2, 4});
-        assertEquals(2, redundancy.getStartRedundancyList().size());
-        assertThat( redundancy.removeOverlapRedundancy().getStartRedundancyList()).containsOnly(4);
-    }
-    
-    @Test
-    public void testRemoveOverlapRedundancyWithSeveralOverlap() {
-        Redundancy redundancy = createRedundancy(5, new Integer[]{2, 4, 8, 11, 14});
-        assertEquals(5, redundancy.getStartRedundancyList().size());
-        Redundancy redundancyWithoutOverlap = redundancy.removeOverlapRedundancy();
-        assertThat(redundancyWithoutOverlap.getStartRedundancyList()).containsOnly(2, 8, 14);
-    }
-    
-    @Test
-    public void testRemoveOverlapRedundancyLimit() {
-        Redundancy redundancyWithOverlap = createRedundancy(5, new Integer[]{2, 6});
-        assertEquals(1, redundancyWithOverlap.removeOverlapRedundancy().getStartRedundancyList().size());
-        
-        Redundancy redundancyWithoutOverlap = createRedundancy(5, new Integer[]{2, 7});
-        assertEquals(2, redundancyWithoutOverlap.removeOverlapRedundancy().getStartRedundancyList().size());
-    }
-    
-    @Test
     public void should_have_no_substitution_when_all_token_are_identical() throws Exception {
         Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "A", "B", "C", "D"));
         Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(1, 5));
