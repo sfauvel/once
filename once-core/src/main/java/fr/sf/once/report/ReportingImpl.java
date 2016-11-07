@@ -34,14 +34,18 @@ public class ReportingImpl implements Reporting {
 //        Collections.sort(redundancyList, new ComparatorRedundancySubstitution(code));
 
         for (Redundancy redudancy : redundancyList) {
-            List<Integer> firstTokenList = new ArrayList<Integer>(redudancy.getStartRedundancyList());
-            Integer firstTokenPosition = firstTokenList.get(0);
-            if (isLineNumberGreaterThan(code, firstTokenPosition, redudancy.getDuplicatedTokenNumber(), 0)) {
-                long score = computeScore(redudancy);
-                if (redudancy.getDuplicatedTokenNumber() > 5 && score > minimalSize) {
-                    displayCsvRedundancy(code, redudancy, score);
-                    displayRedundantCode(code, redudancy);
-                }
+            displayRedundancy(code, minimalSize, redudancy);
+        }
+    }
+
+    private void displayRedundancy(final Code code, final int minimalSize, Redundancy redudancy) {
+        Collection<Integer> firstTokenList = redudancy.getStartRedundancyList();
+        Integer firstTokenPosition = firstTokenList.iterator().next();
+        if (isLineNumberGreaterThan(code, firstTokenPosition, redudancy.getDuplicatedTokenNumber(), 0)) {
+            long score = computeScore(redudancy);
+            if (redudancy.getDuplicatedTokenNumber() > 5 && score > minimalSize) {
+                displayCsvRedundancy(code, redudancy, score);
+                displayRedundantCode(code, redudancy);
             }
         }
     }
