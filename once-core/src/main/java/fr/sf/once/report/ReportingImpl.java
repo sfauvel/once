@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -83,51 +84,13 @@ public class ReportingImpl implements Reporting {
         return redundancyNumber * redondance.getDuplicatedTokenNumber();
     }
 
-    private List<String> getSubstitution(final Code code, Redundancy redundancy) {
-        List<Set<String>> substitutionListOfSubstitution = redundancy.getSubstitutionList();
-        List<String> substitutionList = new ArrayList<String>();
-        Set<String> substitution = new HashSet<String>();
-        for (Set<String> valueList : substitutionListOfSubstitution) {
-            if (valueList.size() > 1) {
-                String join = StringUtils.join(valueList, ", ");
-                if (!substitution.contains(join)) {
-                    substitution.add(join);
-                    StringBuffer buffer = new StringBuffer();
-                    buffer.append("  ")
-                            .append(valueList.size())
-                            .append(" values: ");
-
-                    buffer.append(join);
-                    substitutionList.add(buffer.toString());
-                }
-            }
-
-        }
-        return substitutionList;
+    private List<String> getSubstitution(Redundancy redundancy) {
+        return redundancy.getSubstitutionList().stream()
+            .filter(substitution -> substitution.size() > 1)
+            .map(substitution -> String.format("  %d values: %s", substitution.size(),  StringUtils.join(substitution, ", ")))
+            .collect(Collectors.toList());
     }
 
-    private List<Set<String>> getSubstitutionList(final List<Token> tokenList, Redundancy redundancy) {
-        List<Set<String>> substitutionListOfSubstitution = new ArrayList<Set<String>>();
-        int duplicatedTokenNumber = redundancy.getDuplicatedTokenNumber();
-        Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
-        Set<String> substitutionList = new HashSet<String>();
-        for (int i = 0; i < duplicatedTokenNumber; i++) {
-            Set<String> valueList = new HashSet<String>();
-            for (Integer firstPosition : firstTokenList) {
-                int position = firstPosition + i;
-                valueList.add(tokenList.get(position).getTokenValue());
-            }
-            if (valueList.size() > 1) {
-                String key = valueList.toString();
-                if (!substitutionList.contains(key)) {
-                    substitutionList.add(key);
-                    substitutionListOfSubstitution.add(valueList);
-                }
-            }
-        }
-        return substitutionListOfSubstitution;
-    }
-    
     List<Set<String>> getSubstitutionList(final Code code, Redundancy redundancy) {
         List<Set<String>> substitutionListOfSubstitution = new ArrayList<Set<String>>();
         int duplicatedTokenNumber = redundancy.getDuplicatedTokenNumber();
@@ -162,15 +125,13 @@ public class ReportingImpl implements Reporting {
     public void displayRedundantCode(final Code code, Redundancy redundancy) {
         if (LOG_RESULT.isInfoEnabled()) {
 
-            List<String> substitutionList = getSubstitution(code, redundancy);
+            List<String> substitutionList = getSubstitution(redundancy);
             Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
-            int redundancyNumber = firstTokenList.size();
-            LOG_RESULT.info("Tokens number:" + redundancy.getDuplicatedTokenNumber() + " Duplications number:" + redundancyNumber + " Substitutions number:"
-                    + substitutionList.size());
+            LOG_RESULT.info("Tokens number:" + redundancy.getDuplicatedTokenNumber() 
+                + " Duplications number:" + firstTokenList.size() 
+                + " Substitutions number:" + substitutionList.size());
 
             for (Integer firstTokenPosition : firstTokenList) {
-                final int NB_MAX_DISPLAY = 200;
-                int fin = firstTokenPosition + Math.min(NB_MAX_DISPLAY, redundancy.getDuplicatedTokenNumber());
 
                 StringBuffer buffer = new StringBuffer();
 
@@ -181,50 +142,9 @@ public class ReportingImpl implements Reporting {
                 if (LOG_RESULT.isTraceEnabled()) {
                     LOG_RESULT.trace("First position:" + firstTokenPosition + " start line:" + startingLine + " end line:" + endingLine);
                 }
-                MethodLocation method = MethodLocation.findMethod(methodList, firstTokenPosition);
-                if (method != null) {
-                    method.getRedundancyList().add(redundancy);
-                    int methodLineNumber = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();
-                    int redundancyLineNumber = endingLine - startingLine;
-                    int pourcentage = computePercentage(redundancyLineNumber, methodLineNumber);
+                appendOneRedundancyDescription(code, redundancy, firstTokenPosition, buffer, startingLine, endingLine);
 
-                    buffer.append(pourcentage)
-                            .append("% (")
-                            .append(redundancyLineNumber)
-                            .append(" of ")
-                            .append(methodLineNumber)
-                            .append(" lines)")
-                            .append(method.getMethodName())
-                            .append(" from line ")
-                            .append(code.getToken(firstTokenPosition).getLocation().getLine())
-                            .append(" to ")
-                            .append(code.getToken(firstTokenPosition + redundancy.getDuplicatedTokenNumber()).getLocation().getLine())
-                            .append(" ")
-
-                            .append("(method from line ")
-                            .append(method.getStartingLocation().getLine())
-                            .append(" to ")
-                            .append(method.getEndingLocation().getLine())
-                            .append(")");
-
-                    // appendString(buffer, method.getLocalisationDebut());
-                    // buffer.append(" <-> ");
-                    // appendString(buffer, method.getLocalisationFin());
-
-                    displayVisualRedundancy(method, startingLine, endingLine);
-                } else {
-                    buffer.append(" No method ");
-                }
-
-                if (LOG_RESULT.isDebugEnabled()) {
-                    buffer.append(": ");
-                    for (int i = firstTokenPosition; i < fin; i++) {
-                        buffer.append(code.getToken(i).getTokenValue()).append(" ");
-                    }
-                    if (redundancy.getDuplicatedTokenNumber() >= NB_MAX_DISPLAY) {
-                        buffer.append("...");
-                    }
-                }
+                appendTokens(buffer, code, redundancy, firstTokenPosition);
                 LOG_RESULT.info("  " + buffer.toString());
 
             }
@@ -233,6 +153,56 @@ public class ReportingImpl implements Reporting {
                 LOG_RESULT.info("  " + substitution);
             }
             LOG_RESULT.info("");
+        }
+    }
+
+    private void appendOneRedundancyDescription(final Code code, Redundancy redundancy, Integer firstTokenPosition, StringBuffer buffer, Integer startingLine,
+            Integer endingLine) {
+        MethodLocation method = MethodLocation.findMethod(methodList, firstTokenPosition);
+        if (method != null) {
+            method.getRedundancyList().add(redundancy);
+            int methodLineNumber = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();
+            int redundancyLineNumber = endingLine - startingLine;
+            int pourcentage = computePercentage(redundancyLineNumber, methodLineNumber);
+
+            buffer.append(pourcentage)
+                    .append("% (")
+                    .append(redundancyLineNumber)
+                    .append(" of ")
+                    .append(methodLineNumber)
+                    .append(" lines)")
+                    .append(method.getMethodName())
+                    .append(" from line ")
+                    .append(code.getToken(firstTokenPosition).getLocation().getLine())
+                    .append(" to ")
+                    .append(code.getToken(firstTokenPosition + redundancy.getDuplicatedTokenNumber()).getLocation().getLine())
+                    .append(" ")
+
+                    .append("(method from line ")
+                    .append(method.getStartingLocation().getLine())
+                    .append(" to ")
+                    .append(method.getEndingLocation().getLine())
+                    .append(")");
+
+            displayVisualRedundancy(method, startingLine, endingLine);
+        } else {
+            buffer.append(" No method ");
+        }
+    }
+
+    private void appendTokens(StringBuffer buffer, final Code code, Redundancy redundancy, Integer firstTokenPosition) {
+     
+        if (LOG_RESULT.isDebugEnabled()) {
+            final int NB_MAX_DISPLAY = 200;
+            int fin = firstTokenPosition + Math.min(NB_MAX_DISPLAY, redundancy.getDuplicatedTokenNumber());
+
+            buffer.append(": ");
+            for (int i = firstTokenPosition; i < fin; i++) {
+                buffer.append(code.getToken(i).getTokenValue()).append(" ");
+            }
+            if (redundancy.getDuplicatedTokenNumber() >= NB_MAX_DISPLAY) {
+                buffer.append("...");
+            }
         }
     }
 
