@@ -181,7 +181,7 @@ public class ReportingImpl implements Reporting {
                 if (LOG_RESULT.isTraceEnabled()) {
                     LOG_RESULT.trace("First position:" + firstTokenPosition + " start line:" + startingLine + " end line:" + endingLine);
                 }
-                MethodLocation method = MethodLocation.findMethod(methodList, lastToken);
+                MethodLocation method = MethodLocation.findMethod(methodList, firstTokenPosition);
                 if (method != null) {
                     method.getRedundancyList().add(redundancy);
                     int methodLineNumber = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();

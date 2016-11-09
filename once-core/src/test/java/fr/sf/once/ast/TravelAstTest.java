@@ -1,19 +1,24 @@
 package fr.sf.once.ast;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import fr.sf.once.model.Location;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Token;
+import fr.sf.once.model.Type;
 import fr.sf.once.test.LogRule;
 
 public class TravelAstTest {
@@ -28,6 +33,8 @@ public class TravelAstTest {
     public static final String ____ = "  ";
     public static final String TAB = ____;
 
+    private List<MethodLocation> methodList = new ArrayList<MethodLocation>();
+    
     private String getCode(String... lines) {
         return String.join("\n", Arrays.asList(lines));
     }
@@ -630,13 +637,34 @@ public class TravelAstTest {
                         .hasTokens("}");
     }
 
+
+    @Test
+    public void testStartAndEndMethodLocation() throws Exception {
+        List<? extends Token> tokens = extraireToken(getCode(
+                "class MyClass {",
+                "  void myMethod() {",
+                "      call();",
+                "  }",
+                "}"));
+
+        MethodLocation methodLocation = methodList.get(0);
+        assertThat(methodLocation.getMethodName()).endsWith("myMethod");
+        assertThat(methodLocation.getTokenRange()).isEqualTo(new IntRange(7, 14));
+        
+        IntRange range = methodLocation.getTokenRange();
+        assertThat(tokens.get(range.getMinimumInteger()).getType()).isEqualTo(Type.BREAK);
+        assertThat(tokens.get(range.getMinimumInteger()+1).getTokenValue()).isEqualTo("{");
+        assertThat(tokens.get(range.getMaximumInteger()-1).getTokenValue()).isEqualTo("}");
+        assertThat(tokens.get(range.getMaximumInteger()).getType()).isEqualTo(Type.BREAK);
+    }
+    
     private List<? extends Token> extraireToken(String code) throws UnsupportedEncodingException {
         InputStream input = new ByteArrayInputStream(code.getBytes("UTF-8"));
         List<? extends Token> listToken = null;
 
         try {
             TravelAst parcoursAst = new TravelAst();
-            listToken = parcoursAst.extractToken(input, new TokenVisitor());
+            listToken = parcoursAst.extractToken(input, new TokenVisitor("", methodList, 0));
         } catch (Error t) {
             t.printStackTrace();
             fail(t.getMessage());

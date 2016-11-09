@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Level;
 import org.assertj.core.api.AbstractAssert;
 import org.junit.ClassRule;
@@ -17,7 +18,9 @@ import org.junit.Test;
 
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.model.Code;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
+import fr.sf.once.model.Token;
 import fr.sf.once.test.LogRule;
 import fr.sf.once.test.UtilsToken;
 
@@ -165,11 +168,31 @@ public class RedundancyFinderTest {
         
         List<Redundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(3));
         
-        assertThat(redundancies).usingElementComparator(new RedundancyComparator())
-        .as(redundanciesToString(redundancies))
-        .containsOnly(
-            new Redundancy(null, 6, Arrays.asList(0,6)), // A B C A B C
-            new Redundancy(null, 3, Arrays.asList(0,3,6,9))); // A B C
+        assertThat(redundancies)
+            .usingElementComparator(new RedundancyComparator())
+            .as(redundanciesToString(redundancies))
+            .containsOnly(
+                    new Redundancy(null, 6, Arrays.asList(0,6)), // A B C A B C
+                    new Redundancy(null, 3, Arrays.asList(0,3,6,9))); // A B C
+    }
+
+    @Test
+    public void should_not_find_redundancies_outside_of_methods() {
+        List<Token> tokenList = createUnmodifiableTokenList( 
+                "A", "B", "C", "D", "E", "BREAK", 
+                "A", "B", "C", "D", "E", "BREAK");
+        
+        List<MethodLocation> methodList = Arrays.asList(
+                new MethodLocation("method", new IntRange(2, 5)),
+                new MethodLocation("method", new IntRange(6, 11)));
+        RedundancyFinder managerToken =  new RedundancyFinder(new Code(tokenList, methodList));
+        List<Redundancy> redundancies = managerToken.findRedundancies(configuration.withMinimalTokenNumber(3));
+        
+        assertThat(redundancies)
+            .usingElementComparator(new RedundancyComparator())
+            .as(redundanciesToString(redundancies))
+            .containsOnly(
+                    new Redundancy(null, 4, Arrays.asList(2,8))); 
     }
     
     /**
@@ -181,8 +204,7 @@ public class RedundancyFinderTest {
 
         LOG_RULE.setTrace(Level.DEBUG);
         
-        RedundancyFinder manager = new RedundancyFinder(createCodeWith("A", "A", "B", "B"));
-        
+        RedundancyFinder manager = UtilsToken.createManagerToken("A", "A", "B", "B");
         
         /// 3 2 0 1 
         // B            1
@@ -312,9 +334,10 @@ public class RedundancyFinderTest {
         assertThat(redundancies.get(0).getStartRedundancyList()).containsOnly(0, 10);
     }
     
-    private Code createCodeWith(String... tokenValues) {
-        return new Code(createUnmodifiableTokenList(tokenValues));
-    }
+//    private Code createCodeWith(String... tokenValues) {
+//        List<Token> tokenList = createUnmodifiableTokenList(tokenValues);
+//        return new Code(tokenList, Arrays.asList(new MethodLocation("", new IntRange(0, tokenList.size()-1))));
+//    }
 
     private final class RedundancyComparator implements Comparator<Redundancy> {
         @Override

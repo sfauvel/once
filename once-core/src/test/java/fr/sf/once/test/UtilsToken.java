@@ -1,15 +1,20 @@
 package fr.sf.once.test;
 
+import static fr.sf.once.test.UtilsToken.createUnmodifiableTokenList;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Location;
+import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
@@ -64,7 +69,8 @@ public final class UtilsToken {
     }
     
     public static RedundancyFinder createManagerToken(final List<Token> tokenList) {
-        return new RedundancyFinder(new Code(tokenList));
+        List<MethodLocation> methodList = Arrays.asList(new MethodLocation("", new IntRange(0, tokenList.size()-1)));
+        return new RedundancyFinder(new Code(tokenList, methodList));
     }
     
     public static RedundancyFinder createManagerToken(String... tokenValueList) {

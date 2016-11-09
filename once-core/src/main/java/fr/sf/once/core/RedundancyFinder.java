@@ -85,8 +85,9 @@ public class RedundancyFinder {
      * @return
      */
     private List<Integer> getPositionToManage() {
-        return IntStream.range(0, code.getSize())
+        return IntStream.range(0, code.getSize()).parallel()
             .filter(position -> isTokenIsSignificatifForRedundancy(getToken(position)))
+            .filter(position -> code.getMethodAtTokenPosition(position)!=null)
             .boxed().collect(Collectors.toList());
     }
 

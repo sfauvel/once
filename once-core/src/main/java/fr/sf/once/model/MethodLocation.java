@@ -60,6 +60,7 @@ public class MethodLocation {
         }
         return null;
     }
+    
     public static MethodLocation findMethod(List<MethodLocation> methodList, Integer tokenPosition) {
         for (MethodLocation methodLocalisation : methodList) {
             if (methodLocalisation.containsPosition(tokenPosition)) {
