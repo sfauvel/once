@@ -25,12 +25,11 @@ public class ReportingImpl implements Reporting {
     public void displayRedundancy(final Code code, final int minimalSize, List<Redundancy> redundancyList) {
          LOG_CSV.info("Redundancy size;Redundancy number;Note");
 
-        Collections.sort(redundancyList, new ComparatorRedundancyByTokenNumber());
-//        Collections.sort(redundancyList, new ComparatorRedundancySubstitution(code));
-
-        for (Redundancy redudancy : redundancyList) {
-            displayRedundancy(code, minimalSize, redudancy);
-        }
+         redundancyList.stream()
+             .sorted( new ComparatorRedundancyByTokenNumber())
+//             .sorted( new ComparatorRedundancySubstitution())
+             .forEach(redundancy ->  displayRedundancy(code, minimalSize, redundancy));
+         
     }
 
     private void displayRedundancy(final Code code, final int minimalSize, Redundancy redudancy) {
@@ -176,12 +175,6 @@ public class ReportingImpl implements Reporting {
                 buffer.append("...");
             }
         }
-    }
-
-    private void appendString(StringBuffer buffer, Location location) {
-        buffer.append(location.getLine())
-                .append(":")
-                .append(location.getColumn());
     }
 
     public void displayDuplicatedMethodWithSubstitution(final Code code, Redundancy redundancy) {
