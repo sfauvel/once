@@ -45,11 +45,7 @@ public class Code {
     }
 
     public MethodLocation getMethodAtTokenPosition(int tokenPosition) {
-        return methodList.parallelStream()
-                .filter(m -> m.containsPosition(tokenPosition))
-                .findFirst()
-                .orElse(null);
+        return MethodLocation.findMethod(methodList, tokenPosition);
     }
-
 
 }

@@ -145,7 +145,7 @@ public class RedundancyFinder {
 
     private void traceTokens(List<Integer> positionList, String message) {
         if (ReportingImpl.TRACE_TOKEN.isDebugEnabled()) {
-            ReportingImpl report = new ReportingImpl(null);
+            ReportingImpl report = new ReportingImpl();
             ReportingImpl.TRACE_TOKEN.debug(message);
             for (Integer position : positionList) {
                 report.display(getToken(position));

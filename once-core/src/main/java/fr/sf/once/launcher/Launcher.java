@@ -170,7 +170,7 @@ public class Launcher {
 		List<Redundancy> listeRedondance = manager.findRedundancies(configuration);
 
 		LOG.info("Affichage des resultats...");
-		Reporting reporting = new ReportingImpl(code.getMethodList());
+		Reporting reporting = new ReportingImpl();
 		reporting.display(code);
 		reporting.displayRedundancy(code, 20, listeRedondance);
 	}

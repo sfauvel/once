@@ -69,8 +69,19 @@ public final class UtilsToken {
     }
     
     public static RedundancyFinder createManagerToken(final List<Token> tokenList) {
+        return new RedundancyFinder(createCode(tokenList));
+    }
+    
+    public static Code createCode(final String... stringTokenList) {
+        return createCode(createTokenList(stringTokenList));
+//        List<MethodLocation> methodList = Arrays.asList(new MethodLocation("", new IntRange(0, tokenList.size()-1)));
+//        Code code = new Code(tokenList, methodList);
+//        return code;
+    }
+
+    public static Code createCode(final List<Token> tokenList) {
         List<MethodLocation> methodList = Arrays.asList(new MethodLocation("", new IntRange(0, tokenList.size()-1)));
-        return new RedundancyFinder(new Code(tokenList, methodList));
+        return new Code(tokenList, methodList);
     }
     
     public static RedundancyFinder createManagerToken(String... tokenValueList) {

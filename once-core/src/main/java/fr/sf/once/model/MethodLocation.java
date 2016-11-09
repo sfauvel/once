@@ -19,7 +19,7 @@ public class MethodLocation {
         this(methodName, startingLocation, endingLocation, null);
     }
     public MethodLocation(String methodName, IntRange tokenRange) {
-        this(methodName, null, null, tokenRange);
+        this(methodName, new Location("", tokenRange.getMinimumInteger(), 1), new Location("", tokenRange.getMaximumInteger(), 1), tokenRange);
     }
     
     public MethodLocation(String methodName, Location startingLocation, Location endingLocation, IntRange tokenRange) {
@@ -62,12 +62,10 @@ public class MethodLocation {
     }
     
     public static MethodLocation findMethod(List<MethodLocation> methodList, Integer tokenPosition) {
-        for (MethodLocation methodLocalisation : methodList) {
-            if (methodLocalisation.containsPosition(tokenPosition)) {
-                return methodLocalisation;
-            }
-        }
-        return null;
+        return methodList.parallelStream()
+                .filter(m -> m.containsPosition(tokenPosition))
+                .findFirst()
+                .orElse(null);
     }
     
     public boolean containsPosition(int tokenPosition) {

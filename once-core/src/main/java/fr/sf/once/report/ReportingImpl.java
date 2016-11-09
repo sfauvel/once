@@ -1,11 +1,8 @@
 package fr.sf.once.report;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,10 +18,7 @@ public class ReportingImpl implements Reporting {
 
     private Logger tokenLogger;
 
-    private List<MethodLocation> methodList;
-
-    public ReportingImpl(List<MethodLocation> methodList) {
-        this.methodList = methodList;
+    public ReportingImpl() {
         this.tokenLogger = TRACE_TOKEN;
     }
 
@@ -91,28 +85,6 @@ public class ReportingImpl implements Reporting {
             .collect(Collectors.toList());
     }
 
-    List<Set<String>> getSubstitutionList(final Code code, Redundancy redundancy) {
-        List<Set<String>> substitutionListOfSubstitution = new ArrayList<Set<String>>();
-        int duplicatedTokenNumber = redundancy.getDuplicatedTokenNumber();
-        Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
-        Set<String> substitutionList = new HashSet<String>();
-        for (int i = 0; i < duplicatedTokenNumber; i++) {
-            Set<String> valueList = new HashSet<String>();
-            for (Integer firstPosition : firstTokenList) {
-                int position = firstPosition + i;
-                valueList.add(code.getToken(position).getTokenValue());
-            }
-            if (valueList.size() > 1) {
-                String key = valueList.toString();
-                if (!substitutionList.contains(key)) {
-                    substitutionList.add(key);
-                    substitutionListOfSubstitution.add(valueList);
-                }
-            }
-        }
-        return substitutionListOfSubstitution;
-    }
-
     private boolean isLineNumberGreaterThan(Code code, Integer firstTokenPosition, int redundantTokenNumber, int minimalLineNumber) {
         Location startingLocation = code.getToken(firstTokenPosition).getLocation();
         Location edingLocation = code.getToken(firstTokenPosition + redundantTokenNumber - 1).getLocation();
@@ -158,7 +130,7 @@ public class ReportingImpl implements Reporting {
 
     private void appendOneRedundancyDescription(final Code code, Redundancy redundancy, Integer firstTokenPosition, StringBuffer buffer, Integer startingLine,
             Integer endingLine) {
-        MethodLocation method = MethodLocation.findMethod(methodList, firstTokenPosition);
+        MethodLocation method = code.getMethodAtTokenPosition(firstTokenPosition);
         if (method != null) {
             method.getRedundancyList().add(redundancy);
             int methodLineNumber = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();
@@ -222,9 +194,10 @@ public class ReportingImpl implements Reporting {
         Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
         for (Integer firstTokenPosition : firstTokenList) {
             Integer startingLine = code.getToken(firstTokenPosition).getStartingLine();
-            Token lastToken = code.getToken(firstTokenPosition + redundancy.getDuplicatedTokenNumber() - 1);
+            int lastTokenPosition = firstTokenPosition + redundancy.getDuplicatedTokenNumber() - 1;
+            Token lastToken = code.getToken(lastTokenPosition);
             Integer endingLine = lastToken.getStartingLine();
-            MethodLocation method = MethodLocation.findMethod(methodList, lastToken);
+            MethodLocation method = code.getMethodAtTokenPosition(lastTokenPosition);
             if (method != null) {
                 method.getRedundancyList().add(redundancy);
                 int methodSize = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();

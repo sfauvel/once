@@ -22,18 +22,21 @@ import fr.sf.once.test.UtilsToken;
 public class ReportingImplTest {
 
     private Code code;
-    Reporting reporting = new ReportingImpl(Collections.emptyList());
+    Reporting reporting = new ReportingImpl();
 
     @Rule
     public StringWriterLogRule logRule = new StringWriterLogRule(Reporting.LOG_RESULT, Level.INFO);
 
     @Before
     public void initCode() {
-        code = new Code(UtilsToken.createTokenList(
+//        code = new Code(UtilsToken.createTokenList(
+//                "A B C D E F G H I J",
+//                "K L M N O P Q R S T",
+//                "U V W X Y Z"));
+        code = UtilsToken.createCode(
                 "A B C D E F G H I J",
                 "K L M N O P Q R S T",
-                "U V W X Y Z"));
-
+                "U V W X Y Z");
     }
 
     @Test
@@ -69,15 +72,20 @@ public class ReportingImplTest {
 
     @Test
     public void should_show_method() throws Exception {
-        Reporting reporting = new ReportingImpl(Arrays.asList(
-                new MethodLocation("methodA",
-                        new Location("", 1, 0),
-                        new Location("", 6, 0),
-                        new IntRange(0, 5))) );
+        Code code =  new Code(
+                UtilsToken.createTokenList(
+                    "A B C D E F G H I J",
+                    "K L M N O P Q R S T",
+                    "U V W X Y Z"), 
+                Arrays.asList(
+                    new MethodLocation("methodA",
+                            new Location("", 1, 0),
+                            new Location("", 6, 0),
+                            new IntRange(0, 5))));
 
         Redundancy redundancy = new Redundancy(code, 2, Arrays.asList(2, 10));
         reporting.displayRedundantCode(code, redundancy);
-
+        
         Assertions.assertThat(logRule.getLog())
                 .contains("20% (1 of 5 lines)methodA from line 2 to 4 (method from line 1 to 6)");
     }
