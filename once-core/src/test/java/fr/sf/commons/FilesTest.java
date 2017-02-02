@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,10 +33,10 @@ public class FilesTest {
     }
 
     @Test
-    public void when_file_does_not_exist_an_excpetion_is_thrown() throws Exception {
+    public void should_throw_a_FILE_NOT_FOUND_EXCEPTION_when_file_does_not_exist() throws Exception {
         try {
             Files.visitFile("/NoExistingFolder", VISITOR_RECORDER);
-        } catch (Exception r) {
+        } catch (FileNotFoundException r) {
             return;
         }
 
@@ -43,13 +44,13 @@ public class FilesTest {
     }
 
     @Test
-    public void should_visit_all_files() throws Exception {
+    public void should_visit_recursivley_all_files_and_folders_from_the_root_path() throws Exception {
         Files.visitFile(tmp.getRoot().getAbsolutePath(), VISITOR_RECORDER);
         assertThat(VISITOR_RECORDER.fileVisited).containsExactly("folderA", "subFolderA_A", "FileA_A_A", "FileA_A_B", "folderB");
     }
 
     @Test
-    public void should_do_nothing_when_folder_is_empty() throws Exception {
+    public void should_visit_no_node_when_folder_tree_is_empty() throws Exception {
         Path path = Paths.get(tmp.getRoot().getAbsolutePath(), "folderB");
 
         Files.visitFile(path.toString(), VISITOR_RECORDER);
@@ -57,7 +58,7 @@ public class FilesTest {
     }
 
     @Test
-    public void should_do_nothing_when_a_file_is_given() throws Exception {
+    public void should_visit_nothing_when_a_file_is_given_as_root_path() throws Exception {
         Path path = Paths.get(tmp.getRoot().getAbsolutePath(), "folderA", "subFolderA_A", "FileA_A_A");
 
         Files.visitFile(path.toString(), VISITOR_RECORDER);
