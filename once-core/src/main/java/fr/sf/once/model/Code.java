@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * Structure to handle source tokens.
  */
-public class Code {
+public class Code implements ICode {
     
     private final List<Token> tokenList;
     private final List<MethodLocation> methodList;
@@ -28,22 +28,27 @@ public class Code {
     }
 
 
+    @Override
     public List<Token> getTokenList() {
         return tokenList;
     }
     
+    @Override
     public Token getToken(int position) {
         return tokenList.get(position);
     }
 
+    @Override
     public int getSize() {
         return tokenList.size();
     }
 
+    @Override
     public List<MethodLocation> getMethodList() {
         return methodList;
     }
 
+    @Override
     public MethodLocation getMethodAtTokenPosition(int tokenPosition) {
         return MethodLocation.findMethod(methodList, tokenPosition);
     }

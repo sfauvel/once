@@ -134,7 +134,7 @@ public class ReportingImpl implements Reporting {
             method.getRedundancyList().add(redundancy);
             int methodLineNumber = method.getEndingLocation().getLine() - method.getStartingLocation().getLine();
             int redundancyLineNumber = endingLine - startingLine;
-            int pourcentage = computePercentage(redundancyLineNumber, methodLineNumber);
+            long pourcentage = computePercentage(redundancyLineNumber, methodLineNumber);
 
             buffer.append(pourcentage)
                     .append("% (")
@@ -202,7 +202,7 @@ public class ReportingImpl implements Reporting {
         return false;
     }
 
-    private int computePercentage(int value, int total) {
+    protected long computePercentage(long value, long total) {
         if (total == 0) {
             return 0;
         } else {

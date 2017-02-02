@@ -26,6 +26,7 @@ import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.report.Reporting;
+import fr.sf.once.report.ReportingCrossMethod;
 import fr.sf.once.report.ReportingImpl;
 
 public class Launcher {
@@ -169,8 +170,9 @@ public class Launcher {
 		RedundancyFinder manager = new RedundancyFinder(code);
 		List<Redundancy> listeRedondance = manager.findRedundancies(configuration);
 
-		LOG.info("Affichage des resultats...");
-		Reporting reporting = new ReportingImpl();
+		LOG.info("Display results...");
+//		Reporting reporting = new ReportingImpl();
+		Reporting reporting = new ReportingCrossMethod();
 		reporting.display(code);
 		reporting.displayRedundancy(code, 20, listeRedondance);
 	}

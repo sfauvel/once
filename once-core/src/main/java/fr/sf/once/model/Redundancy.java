@@ -12,6 +12,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.math.IntRange;
+
 public class Redundancy {
 
     private final int duplicatedTokenNumber;
@@ -97,6 +99,25 @@ public class Redundancy {
 
     private Set<String> getSubstitutions(Collection<Integer> firstTokenList, int index) {
         return mapToSet(firstTokenList, position -> code.getToken(position + index).getTokenValue());
+    }
+
+    public boolean isOverlap(Redundancy redundancy) {
+        for (Integer firstToken : this.firstTokenList) {
+            for (Integer otherToken : redundancy.firstTokenList) {
+                if (getRange(this, firstToken).overlapsRange(getRange(redundancy, otherToken))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private IntRange getRange(Redundancy redundancy, int firstToken) {
+        return new IntRange(firstToken, firstToken + redundancy.getDuplicatedTokenNumber() - 1);
+    }
+
+    public MethodLocation getMethodAtTokenPosition(int tokenPosition) {
+        return code.getMethodAtTokenPosition(tokenPosition);
     }
     
 }

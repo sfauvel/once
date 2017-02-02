@@ -107,4 +107,35 @@ public final class UtilsToken {
         Type type = "BREAK".equalsIgnoreCase(tokenValue) ? Type.BREAK : Type.VALUE;
         return new Token(new Location("", index, 0), String.valueOf(tokenValue), type);
     }
+    
+    
+    public static MethodLocation createMethod(String methodName, int firstLine, int lastLine, IntRange tokenRange) {
+        return new MethodLocation(methodName,
+                new Location("", firstLine, 0),
+                new Location("", lastLine, 0),
+                tokenRange);
+    }
+    
+    public static Code initCode(String... methodDefinition) {
+        List<MethodLocation> methodList = new ArrayList<>();
+        String codeText = "";
+        int lastToken = 0;
+        for (String methodString : methodDefinition) {
+            int indexOf = methodString.indexOf(":");
+            String methodName = methodString.substring(0, indexOf);
+            String methodBody = methodString.substring(indexOf+1);
+            methodList.add(UtilsToken.createMethod(methodName, lastToken+1, lastToken+methodBody.length()+1, new IntRange(lastToken, lastToken+methodBody.length())));
+            lastToken += methodBody.length();
+            String prepareCode = "";
+            for (char c: methodBody.toCharArray()) {
+                prepareCode += " " + c;
+            }
+            codeText += prepareCode.substring(1);
+            
+        } 
+        return  new Code(
+                UtilsToken.createTokenList(codeText),
+                methodList);
+    }
+    
 }

@@ -33,7 +33,7 @@ public class RedundancyFinder {
     }
 
     public List<Redundancy> findRedundancies(Configuration configuration) {
-        LOG.info("Global token number: " + code.getTokenList().size());
+        LOG.info("Global token number: " + code.getSize());
         List<Integer> positionList = getPositionToManage();
         LOG.info("Significant token number: " + positionList.size());
         LOG.info("Sort tokens...");
@@ -93,10 +93,6 @@ public class RedundancyFinder {
 
     private boolean isTokenIsSignificatifForRedundancy(Token token) {
         return !Type.NOT_SIGNIFICANT.equals(token.getType());
-    }
-
-    private List<Token> getTokenList() {
-        return code.getTokenList();
     }
 
     private Token getToken(Integer position) {
@@ -168,7 +164,8 @@ public class RedundancyFinder {
             LOG.debug(position + "\t" + token.getLocation().getFileName() + " line:" + token.getLocation().getLine() + "\t N° token:" + position);
             StringBuffer buffer = new StringBuffer();
 
-            int size = getTokenList().size();
+            
+            int size = code.getSize();
             for (int i = position; i < size; i++) {
                 buffer.append(getToken(i).getTokenValue());
                 buffer.append(" ");
