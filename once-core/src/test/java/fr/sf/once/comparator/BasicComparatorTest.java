@@ -18,17 +18,23 @@ import fr.sf.once.test.UtilsToken;
 public class BasicComparatorTest extends AbstractComparatorTest {
 
     /**
-     * 0: a b a
-     * 1: b a
-     * 2: a
+     *       0 1 2 
+     * Code: a b a
+     *    2:     a 
+     *    0: a b a       
+     *    1:   b a
      */
     @Test
     public void comparing_token_give_alphabetic_order() throws Exception {
         CodeComparator comparator = createComparatorWithCode("a b a");
 
+        assertThat(comparator.compare(2, 0)).isLessThan(0);
+        assertThat(comparator.compare(2, 1)).isLessThan(0);
         assertThat(comparator.compare(0, 1)).isLessThan(0);
+        
         assertThat(comparator.compare(0, 2)).isGreaterThan(0);
         assertThat(comparator.compare(1, 2)).isGreaterThan(0);
+        assertThat(comparator.compare(1, 0)).isGreaterThan(0);
     }
 
     @Test

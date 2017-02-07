@@ -27,8 +27,12 @@ import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingCrossMethod;
-import fr.sf.once.report.ReportingImpl;
 
+/**
+ * Application main class. 
+ * 
+ * 
+ */
 public class Launcher {
 
 	public static class OnceProperties {
@@ -87,7 +91,7 @@ public class Launcher {
 	public static void main(String[] args) throws IOException {
 		long startTime = System.currentTimeMillis();
 
-		OnceProperties onceProps = loadConfiguration(args);
+		OnceProperties onceProps = extractConfigurationFrom(args);
 
 		//Logger.getRootLogger().setLevel(Level.INFO);
 
@@ -124,7 +128,7 @@ public class Launcher {
 		activateLog(LOG, Level.INFO, null);
 	}
 
-	public static OnceProperties loadConfiguration(String[] args) throws FileNotFoundException, IOException {
+	public static OnceProperties extractConfigurationFrom(String[] args) throws FileNotFoundException, IOException {
 		return loadConfiguration(args, new File(ONCE_PROPERTY));
 	}
 	

@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Methods to write easly some simple collection transformations.
+ * Methods to write easily some simple collection transformations.
  */
 public final class CollectionsShortcuts {
     
