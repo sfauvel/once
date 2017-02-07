@@ -18,16 +18,16 @@ public class LauncherTest {
 	
 	@Test
 	public void should_use_default_source_directory_when_no_args() throws Exception {
-		OnceProperties properties = Launcher.loadConfiguration(
+		OnceProperties properties = Launcher.OnceProperties.extractConfiguration(
 				new String[] {}, 
 				createFile());
 
-		Assertions.assertThat(properties.getSourceDir()).isEqualTo(OnceProperties.DEFAULT_SOURCE_DIR);
+		Assertions.assertThat(properties.getSourceDir()).isEqualTo(".");
 	}
 
 	@Test
 	public void should_use_source_directory_given_into_parameters() throws Exception {
-		OnceProperties properties = Launcher.loadConfiguration(
+		OnceProperties properties = Launcher.OnceProperties.extractConfiguration(
 				new String[] {"./src"},
 				createFile());
 		
@@ -36,16 +36,16 @@ public class LauncherTest {
 	
 	@Test
 	public void should_use_source_directory_given_into_properties_file_when_no_parameter() throws Exception {
-		OnceProperties properties = Launcher.loadConfiguration(
+		OnceProperties properties = Launcher.OnceProperties.extractConfiguration(
 				new String[] {}, 
-				createFile(OnceProperties.SRC_DIR + "=./src"));
+				createFile(OnceProperties.Key.SRC_DIR + "=./src"));
 		
 		Assertions.assertThat(properties.getSourceDir()).isEqualTo("./src");
 	}
 
 	@Test
 	public void should_use_source_directory_given_into_parameters_behind_this_one_in_properties_file() throws Exception {
-		OnceProperties properties = Launcher.loadConfiguration(
+		OnceProperties properties = Launcher.OnceProperties.extractConfiguration(
 				new String[] {"./argSrc"}, 
 				createFile());
 		

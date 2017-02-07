@@ -14,6 +14,7 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.Priority;
 
 import fr.sf.once.ast.ExtractCode;
 import fr.sf.once.comparator.BasicComparator;
@@ -29,174 +30,195 @@ import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingCrossMethod;
 
 /**
- * Application main class. 
+ * Application main class.
  * 
  * 
  */
 public class Launcher {
 
-	public static class OnceProperties {
+    public static class OnceProperties extends Properties {
 
-		public static final String DEFAULT_SOURCE_DIR = ".";
-		public static final String SRC_DIR = "once.sourceDir";
-		public static final String SRC_ENCODING = "once.sourceEncoding";
-		public static final String VERBOSE = "once.verbose";
-		
-		private final String sourceDir;
-		private final String sourceEncoding;
-		private final boolean isVerbose;
+        private static final long serialVersionUID = 1L;
 
-		private OnceProperties(Properties applicationProps) {
-			this(applicationProps, "");
-		}
-		private OnceProperties(Properties applicationProps, String defaultSourceDir) {
-			if (defaultSourceDir.isEmpty()) {
-				sourceDir = applicationProps.getProperty(OnceProperties.SRC_DIR, DEFAULT_SOURCE_DIR);
-			} else {
-				sourceDir = defaultSourceDir;
-			}
-			sourceEncoding = applicationProps.getProperty(OnceProperties.SRC_ENCODING, "iso8859-1");
-			isVerbose = Boolean.parseBoolean(applicationProps.getProperty(OnceProperties.VERBOSE, "false"));
-		}
+        private static final String ONCE_PROPERTY = "once.properties";
 
-		public String getSourceDir() {
-			return sourceDir;
-		}
-		
-		public String getSourceEncoding() {
-			return sourceEncoding;
-		}
-		
-		public boolean isVerbose() {
-			return isVerbose;
-		}
-	}
+        public static class Key {
+            static final Key SRC_DIR = new Key("once.sourceDir");
+            static final Key SRC_ENCODING = new Key("once.sourceEncoding");
+            static final Key VERBOSE = new Key("once.verbose");
 
-	private static final String ONCE_PROPERTY = "once.properties";
+            private final String key;
 
-	public static final Logger LOG = Logger.getLogger(Launcher.class);
+            private Key(String key) {
+                this.key = key;
+            };
 
-	private String sourceDir;
+            @Override
+            public String toString() {
+                return key;
+            }
+        }
 
-	private String sourceEncoding;
+        private OnceProperties(Properties applicationProps) {
+            super(applicationProps);
+        }
 
-	private Class<? extends CodeComparator> comparator;
+        public String getSourceDir() {
+            return get(Key.SRC_DIR, ".");
+        }
 
-	private int minimalSize;
+        public String getSourceEncoding() {
+            return get(Key.SRC_ENCODING, "iso8859-1");
+        }
 
-	/**
-	 * @param args
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws IOException {
-		long startTime = System.currentTimeMillis();
+        public boolean isVerbose() {
+            return Boolean.parseBoolean(get(Key.VERBOSE, "false"));
+        }
 
-		OnceProperties onceProps = extractConfigurationFrom(args);
+        private String get(Key key, String defaultValue) {
+            return getProperty(key.toString(), defaultValue);
+        }
 
-		//Logger.getRootLogger().setLevel(Level.INFO);
+        public static OnceProperties extractConfigurationFrom(String[] args) throws FileNotFoundException, IOException {
+            return extractConfiguration(args, new File(ONCE_PROPERTY));
+        }
 
-		setLogger(onceProps.isVerbose());
+        public static OnceProperties extractConfiguration(String[] args, File propertiesFile) throws FileNotFoundException, IOException {
+            Properties applicationProperties = getPropertiesFromFile(propertiesFile);
+            logProperties(Level.DEBUG, applicationProperties);
+            return getPropertiesWithArguments(applicationProperties, args);
+        }
 
-		LOG.info("Source directory:" + onceProps.getSourceDir());
+        private static OnceProperties getPropertiesWithArguments(Properties applicationProperties, String[] args) {
+            OnceProperties onceProperties = new OnceProperties(applicationProperties);
+            if (args.length > 0) {
+                onceProperties.put(Key.SRC_DIR.toString(), args[0]);
+            }
+            return onceProperties;
+        }
 
-		Class<ComparatorWithSubstitutionAndType> comparator = ComparatorWithSubstitutionAndType.class;
-		int tailleMin = 20;
-		Launcher launcher = new Launcher()
-		        .withSource(onceProps.getSourceDir(), onceProps.getSourceEncoding())
-		        .withComparator(comparator)
-				.withMinimalSize(tailleMin);
-		launcher.execute();
+        private static Properties getPropertiesFromFile(File propertiesFile) throws FileNotFoundException, IOException {
+            Properties applicationProperties = new Properties();
+            if (propertiesFile.exists()) {
+                InputStream resourceAsStream = new FileInputStream(propertiesFile);
+                applicationProperties.load(resourceAsStream);
+            }
+            return applicationProperties;
+        }
 
-		long endTime = System.currentTimeMillis();
-		LOG.info("End (" + (endTime - startTime) + "ms)");
+        private static void logProperties(Level level, Properties applicationProperties) {
+            if (!LOG.isEnabledFor(level)) {
+                return;
+            }
+            
+            LOG.log(level, "Properties:");
+            for (Entry<Object, Object> entry : applicationProperties.entrySet()) {
+                LOG.log(level, entry.getKey() + ":" + entry.getValue());
+            }
+        }
+    }
 
-	}
+    public static final Logger LOG = Logger.getLogger(Launcher.class);
 
-	private static void setLogger(boolean isVerbose) throws IOException {
-		if (isVerbose) {
-			Reporting.LOG_CSV.addAppender(new FileAppender(new PatternLayout("%m\n"), "result/outputFile.csv", false));
-			activateLog(Reporting.TRACE_TOKEN, Level.INFO, "result/tokenList.txt");
-			activateLog(LOG, Level.INFO, "result/token.txt");
-			activateComparatorLog(Level.INFO, "result/comparator.txt");
-			activateLog(ComparatorWithSubstitution.LOG, Level.DEBUG, null);
+    private String sourceDir;
 
-			RedundancyFinder.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
-			RedundancyFinder.LOG.setLevel(Level.INFO);
-		}
-		activateLog(Reporting.LOG_RESULT, Level.INFO, "result/once.txt");
-		activateLog(RedundancyFinder.LOG, Level.INFO, null);
-		activateLog(LOG, Level.INFO, null);
-	}
+    private String sourceEncoding;
 
-	public static OnceProperties extractConfigurationFrom(String[] args) throws FileNotFoundException, IOException {
-		return loadConfiguration(args, new File(ONCE_PROPERTY));
-	}
-	
-	public static OnceProperties loadConfiguration(String[] args, File propertiesFile) throws FileNotFoundException, IOException {
-		Properties applicationProperties = new Properties();
-		if (propertiesFile.exists()) {
-			InputStream resourceAsStream = new FileInputStream(propertiesFile);
-			applicationProperties.load(resourceAsStream);
-		}
+    private Class<? extends CodeComparator> comparator;
 
-		LOG.debug("Properties:");
-		for (Entry<Object, Object> entry : applicationProperties.entrySet()) {
-			LOG.debug(entry.getKey() + ":" + entry.getValue());
-		}
-		if (args.length > 0) {
-			return new OnceProperties(applicationProperties, args[0]);
-		} else {
-			return new OnceProperties(applicationProperties);
-		}
-	}
+    private int minimalSize;
 
-	public Launcher withMinimalSize(int minimalSize) {
-		this.minimalSize = minimalSize;
-		return this;
-	}
+    /**
+     * @param args
+     * @throws IOException
+     */
+    public static void main(String[] args) throws IOException {
+        long startTime = System.currentTimeMillis();
 
-	public Launcher withComparator(Class<? extends CodeComparator> comparator) {
-		this.comparator = comparator;
-		return this;
-	}
+        OnceProperties onceProps = OnceProperties.extractConfigurationFrom(args);
 
-	public Launcher withSource(String sourceDir, String sourceEncoding) {
-		this.sourceDir = sourceDir;
-		this.sourceEncoding = sourceEncoding;
-		return this;
-	}
+        // Logger.getRootLogger().setLevel(Level.INFO);
 
-	public void execute() throws FileNotFoundException {
-		Code code = new ExtractCode().extract(sourceDir, sourceEncoding);
+        setLogger(onceProps.isVerbose());
 
-		Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(minimalSize);
+        LOG.info("Source directory:" + onceProps.getSourceDir());
 
-		RedundancyFinder manager = new RedundancyFinder(code);
-		List<Redundancy> listeRedondance = manager.findRedundancies(configuration);
+        Class<ComparatorWithSubstitutionAndType> comparator = ComparatorWithSubstitutionAndType.class;
+        int tailleMin = 20;
+        Launcher launcher = new Launcher()
+                .withSource(onceProps.getSourceDir(), onceProps.getSourceEncoding())
+                .withComparator(comparator)
+                .withMinimalSize(tailleMin);
+        launcher.execute();
 
-		LOG.info("Display results...");
-//		Reporting reporting = new ReportingImpl();
-		Reporting reporting = new ReportingCrossMethod();
-		reporting.display(code);
-		reporting.displayRedundancy(code, 20, listeRedondance);
-	}
+        long endTime = System.currentTimeMillis();
+        LOG.info("End (" + (endTime - startTime) + "ms)");
 
-	private static void activateComparatorLog(Level level, String filename) throws IOException {
-		activateLog(CodeComparator.LOG, level, filename);
-		activateLog(BasicComparator.LOG, level, filename);
-		activateLog(ComparatorWithSubstitution.LOG, level, filename);
-		activateLog(TokenValueComparatorExceptForString.LOG, level, filename);
-		activateLog(ComparatorWithSubstitutionAndType.LOG, level, filename);
-	}
+    }
 
-	private static void activateLog(Logger log, Level level, String filename) throws IOException {
-		if (filename == null) {
-			log.addAppender(new ConsoleAppender(new PatternLayout("%d{HH:mm:ss,SSS} - %-5p %c{1} - %m%n")));
-		} else {
-			log.addAppender(new FileAppender(new PatternLayout(), filename, false));
-		}
-		log.setLevel(level);
+    private static void setLogger(boolean isVerbose) throws IOException {
+        if (isVerbose) {
+            Reporting.LOG_CSV.addAppender(new FileAppender(new PatternLayout("%m\n"), "result/outputFile.csv", false));
+            activateLog(Reporting.TRACE_TOKEN, Level.INFO, "result/tokenList.txt");
+            activateLog(LOG, Level.INFO, "result/token.txt");
+            activateComparatorLog(Level.INFO, "result/comparator.txt");
+            activateLog(ComparatorWithSubstitution.LOG, Level.DEBUG, null);
 
-	}
+            RedundancyFinder.LOG.addAppender(new ConsoleAppender(new PatternLayout("%d{dd MMM yyyy HH:mm:ss,SSS} %m" + PatternLayout.LINE_SEP)));
+            RedundancyFinder.LOG.setLevel(Level.INFO);
+        }
+        activateLog(Reporting.LOG_RESULT, Level.INFO, "result/once.txt");
+        activateLog(RedundancyFinder.LOG, Level.INFO, null);
+        activateLog(LOG, Level.INFO, null);
+    }
+
+    public Launcher withMinimalSize(int minimalSize) {
+        this.minimalSize = minimalSize;
+        return this;
+    }
+
+    public Launcher withComparator(Class<? extends CodeComparator> comparator) {
+        this.comparator = comparator;
+        return this;
+    }
+
+    public Launcher withSource(String sourceDir, String sourceEncoding) {
+        this.sourceDir = sourceDir;
+        this.sourceEncoding = sourceEncoding;
+        return this;
+    }
+
+    public void execute() throws FileNotFoundException {
+        Code code = new ExtractCode().extract(sourceDir, sourceEncoding);
+
+        Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(minimalSize);
+
+        RedundancyFinder manager = new RedundancyFinder(code);
+        List<Redundancy> listeRedondance = manager.findRedundancies(configuration);
+
+        LOG.info("Display results...");
+        // Reporting reporting = new ReportingImpl();
+        Reporting reporting = new ReportingCrossMethod();
+        reporting.display(code);
+        reporting.displayRedundancy(code, 20, listeRedondance);
+    }
+
+    private static void activateComparatorLog(Level level, String filename) throws IOException {
+        activateLog(CodeComparator.LOG, level, filename);
+        activateLog(BasicComparator.LOG, level, filename);
+        activateLog(ComparatorWithSubstitution.LOG, level, filename);
+        activateLog(TokenValueComparatorExceptForString.LOG, level, filename);
+        activateLog(ComparatorWithSubstitutionAndType.LOG, level, filename);
+    }
+
+    private static void activateLog(Logger log, Level level, String filename) throws IOException {
+        if (filename == null) {
+            log.addAppender(new ConsoleAppender(new PatternLayout("%d{HH:mm:ss,SSS} - %-5p %c{1} - %m%n")));
+        } else {
+            log.addAppender(new FileAppender(new PatternLayout(), filename, false));
+        }
+        log.setLevel(level);
+
+    }
 
 }
