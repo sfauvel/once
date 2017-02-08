@@ -10,15 +10,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import fr.sf.once.launcher.Launcher.OnceProperties;
-
 public class LauncherTest {
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 	
 	@Test
 	public void should_use_default_source_directory_when_no_args() throws Exception {
-		OnceProperties properties = Launcher.OnceProperties.extractConfiguration(
+		OnceProperties properties = OnceProperties.extractConfiguration(
 				new String[] {}, 
 				createFile());
 
@@ -27,7 +25,7 @@ public class LauncherTest {
 
 	@Test
 	public void should_use_source_directory_given_into_parameters() throws Exception {
-		OnceProperties properties = Launcher.OnceProperties.extractConfiguration(
+		OnceProperties properties = OnceProperties.extractConfiguration(
 				new String[] {"./src"},
 				createFile());
 		
@@ -36,7 +34,7 @@ public class LauncherTest {
 	
 	@Test
 	public void should_use_source_directory_given_into_properties_file_when_no_parameter() throws Exception {
-		OnceProperties properties = Launcher.OnceProperties.extractConfiguration(
+		OnceProperties properties = OnceProperties.extractConfiguration(
 				new String[] {}, 
 				createFile(OnceProperties.Key.SRC_DIR + "=./src"));
 		
@@ -45,7 +43,7 @@ public class LauncherTest {
 
 	@Test
 	public void should_use_source_directory_given_into_parameters_behind_this_one_in_properties_file() throws Exception {
-		OnceProperties properties = Launcher.OnceProperties.extractConfiguration(
+		OnceProperties properties = OnceProperties.extractConfiguration(
 				new String[] {"./argSrc"}, 
 				createFile());
 		

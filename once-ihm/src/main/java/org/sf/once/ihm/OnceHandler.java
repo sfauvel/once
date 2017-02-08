@@ -36,7 +36,7 @@ import fr.sf.once.ast.ExtractCode;
 import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
-import fr.sf.once.launcher.Launcher.OnceProperties;
+import fr.sf.once.launcher.OnceProperties;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Location;
 import fr.sf.once.model.MethodLocation;
@@ -146,9 +146,9 @@ public class OnceHandler implements HttpHandler {
         for (Entry<Object, Object> entry : applicationProps.entrySet()) {
             LOG.debug(entry.getKey() + ":" + entry.getValue());
         }
-        String sourceDir = applicationProps.getProperty(OnceProperties.SRC_DIR, srcDir);
-        String sourceEncoding = applicationProps.getProperty(OnceProperties.SRC_ENCODING, "iso8859-1");
-        boolean isVerbose = Boolean.parseBoolean(applicationProps.getProperty(OnceProperties.VERBOSE, "false"));
+        String sourceDir = applicationProps.getProperty(OnceProperties.Key.SRC_DIR.toString(), srcDir);
+        String sourceEncoding = applicationProps.getProperty(OnceProperties.Key.SRC_ENCODING.toString(), "iso8859-1");
+        boolean isVerbose = Boolean.parseBoolean(applicationProps.getProperty(OnceProperties.Key.VERBOSE.toString(), "false"));
 
         LOG.info("Source directory:" + sourceDir);
 
