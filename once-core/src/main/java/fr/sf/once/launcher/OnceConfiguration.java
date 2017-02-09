@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -29,6 +31,20 @@ public class OnceConfiguration implements RedundancyFinderConfiguration {
         public static final Property VERBOSE = new Property("once.verbose", Boolean.FALSE.toString());
         public static final Property MINIMAL_SIZE_DETECTION = new Property("once.minimalSizeDetection", "20");
         public static final Property CLASS_COMPARATOR = new Property("once.classComparator", ComparatorWithSubstitutionAndType.class.getName());
+        
+        public static void generateDefaultConfigurationFile(PrintStream outputStream) {
+            outputStream.println("# Configuration property file example");
+            Field[] declaredFields = OnceConfiguration.OnceProperty.class.getDeclaredFields();
+            for (Field field : declaredFields) {
+                try {
+                    Property property = (Property) field.get(null);
+                    outputStream.println(property.getKey() + "=" + property.getDefaultValue());
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    outputStream.println("# Value could not be generated for field: "+ field.getName());
+                }
+            }
+            outputStream.println();
+        }
     }
     
     private final Properties properties;

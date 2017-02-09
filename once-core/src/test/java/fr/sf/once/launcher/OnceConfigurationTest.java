@@ -5,7 +5,9 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
@@ -70,5 +72,10 @@ public class OnceConfigurationTest {
 	    Object obj = Class.forName(BasicComparator.class.getName());
 	    Class<? extends CodeComparator> clazz = (Class<? extends CodeComparator> ) obj; 
 	    System.out.println(obj);
+    }
+	
+	@Test
+    public void generateConfigurationFile() throws Exception {
+	    OnceConfiguration.OnceProperty.generateDefaultConfigurationFile(System.out);
     }
 }
