@@ -2,9 +2,7 @@ package org.sf.once.ihm;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -21,7 +19,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -33,10 +30,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import fr.sf.once.ast.ExtractCode;
-import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
-import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
-import fr.sf.once.launcher.OnceProperties;
+import fr.sf.once.launcher.OnceConfiguration;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Location;
 import fr.sf.once.model.MethodLocation;
@@ -132,35 +127,14 @@ public class OnceHandler implements HttpHandler {
         String ONCE_PROPERTY = "once.properties";
         // String srcDir = "D:\\Projets\\PQL\\Projets\\COLORIS\\COLORIS-G02R02C02P1\\coloris-web\\src\\main\\java\\com\\ft\\coloris\\web\\action\\profil";
         Properties applicationProperties = new Properties();
+        OnceConfiguration onceConfiguration = OnceConfiguration.load(new String[] {srcDir}, new File(ONCE_PROPERTY));
 
-        File propertiesFile = new File(ONCE_PROPERTY);
+        LOG.info("Source directory:" + onceConfiguration.getSourceDir());
 
-        Properties applicationProps = new Properties();
-        if (propertiesFile.exists()) {
-            InputStream resourceAsStream = new FileInputStream(propertiesFile);
-            applicationProperties.load(resourceAsStream);
-            applicationProps = new Properties(applicationProperties);
-        }
-
-        LOG.debug("Properties:");
-        for (Entry<Object, Object> entry : applicationProps.entrySet()) {
-            LOG.debug(entry.getKey() + ":" + entry.getValue());
-        }
-        String sourceDir = applicationProps.getProperty(OnceProperties.Key.SRC_DIR.toString(), srcDir);
-        String sourceEncoding = applicationProps.getProperty(OnceProperties.Key.SRC_ENCODING.toString(), "iso8859-1");
-        boolean isVerbose = Boolean.parseBoolean(applicationProps.getProperty(OnceProperties.Key.VERBOSE.toString(), "false"));
-
-        LOG.info("Source directory:" + sourceDir);
-
-        Class<ComparatorWithSubstitutionAndType> comparator = ComparatorWithSubstitutionAndType.class;
-        int tailleMin = 20;
-
-        code = new ExtractCode().extract(sourceDir, sourceEncoding);
-
-        Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(tailleMin);
+        code = new ExtractCode().extract(onceConfiguration.getSourceDir(), onceConfiguration.getSourceEncoding());
 
         RedundancyFinder manager = new RedundancyFinder(code);
-        List<Redundancy> listeRedondance = manager.findRedundancies(configuration);
+        List<Redundancy> listeRedondance = manager.findRedundancies(onceConfiguration);
 
         LOG.info("Affichage des resultats...");
 
@@ -179,7 +153,7 @@ public class OnceHandler implements HttpHandler {
             Integer positionPremierToken = firstTokenList.iterator().next();
             if (isNombreLigneSuperieurA(tokenList, positionPremierToken, redondance.getDuplicatedTokenNumber(), 0)) {
                 long duplicationScore = computeScore(redondance);
-                if (redondance.getDuplicatedTokenNumber() > 5 && duplicationScore > tailleMin) {
+                if (redondance.getDuplicatedTokenNumber() > 5 && duplicationScore > onceConfiguration.getMinimalTokenNumberDetection()) {
                     // displayCsvRedundancy(tokenList, redondance, duplicationScore);
                     afficherCodeRedondant(buffer, code, redondance);
                 }

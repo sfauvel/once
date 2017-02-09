@@ -8,9 +8,10 @@ import java.util.List;
 
 import org.sf.once.ihm.OnceHandler;
 
+import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
-import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
+import fr.sf.once.core.RedundancyFinderConfiguration;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
@@ -131,9 +132,11 @@ public class OncePane extends StackPane {
             }
 
             private void showDuplication(RedundancyFinder manager) {
-                Class<ComparatorWithSubstitutionAndType> comparator = ComparatorWithSubstitutionAndType.class;
-                int minimalSize = ConfStyle.BUTTON_MIN_WIDTH;
-                Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(minimalSize);
+                RedundancyFinderConfiguration configuration = new RedundancyFinderConfiguration() {
+                    @Override public int getMinimalTokenNumberDetection() { return ConfStyle.BUTTON_MIN_WIDTH; }
+                    @Override public Class<? extends CodeComparator> getCodeComparatorClass() { return ComparatorWithSubstitutionAndType.class; }
+                };
+                
                 List<Redundancy> redundancies = manager.findRedundancies(configuration);
 
                 duplicationPane.display(tokenList, methodList, redundancies);

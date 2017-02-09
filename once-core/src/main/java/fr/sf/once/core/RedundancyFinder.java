@@ -1,5 +1,6 @@
 package fr.sf.once.core;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,12 +33,12 @@ public class RedundancyFinder {
         this.code = code;
     }
 
-    public List<Redundancy> findRedundancies(Configuration configuration) {
+    public List<Redundancy> findRedundancies(RedundancyFinderConfiguration configuration) {
         LOG.info("Global token number: " + code.getSize());
         List<Integer> positionList = getPositionToManage();
         LOG.info("Significant token number: " + positionList.size());
         LOG.info("Sort tokens...");
-        CodeComparator comparator = configuration.getComparator(code);
+        CodeComparator comparator = buildComparator(configuration.getCodeComparatorClass(), code);
         sortPositionList(positionList, comparator);
         traceSortedToken(positionList);
         LOG.info("Compute redundancies size...");
@@ -45,7 +46,7 @@ public class RedundancyFinder {
         traceRedundancySize(positionList, redundancySize);
 
         LOG.info("Build redundancies...");
-        List<Redundancy> listeRedondance = computeRedundancy(positionList, redundancySize, configuration.getMinimalTokenNumber());
+        List<Redundancy> listeRedondance = computeRedundancy(positionList, redundancySize, configuration.getMinimalTokenNumberDetection());
 //        LOG.info("Remove overlap between redundancies...");
 //        listeRedondance = removeOverlap(listeRedondance);
 //        LOG.info("Remove duplicate redundancies...");
@@ -54,6 +55,15 @@ public class RedundancyFinder {
         
         return listeRedondance;
 
+    }
+    
+    public CodeComparator buildComparator(Class<? extends CodeComparator> codeComparatorClass, Code code) {
+        try {
+            Constructor<? extends CodeComparator> constructor = codeComparatorClass.getConstructor(Code.class);
+            return constructor.newInstance(code);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
     private List<Redundancy> removeOverlap(List<Redundancy> redundancyList) {

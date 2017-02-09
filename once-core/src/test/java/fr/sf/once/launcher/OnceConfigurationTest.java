@@ -1,5 +1,7 @@
 package fr.sf.once.launcher;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,13 +12,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class LauncherTest {
+import fr.sf.once.comparator.BasicComparator;
+import fr.sf.once.comparator.CodeComparator;
+
+public class OnceConfigurationTest {
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 	
 	@Test
 	public void should_use_default_source_directory_when_no_args() throws Exception {
-		OnceProperties properties = OnceProperties.extractConfiguration(
+		OnceConfiguration properties = OnceConfiguration.load(
 				new String[] {}, 
 				createFile());
 
@@ -25,7 +30,7 @@ public class LauncherTest {
 
 	@Test
 	public void should_use_source_directory_given_into_parameters() throws Exception {
-		OnceProperties properties = OnceProperties.extractConfiguration(
+		OnceConfiguration properties = OnceConfiguration.load(
 				new String[] {"./src"},
 				createFile());
 		
@@ -34,16 +39,16 @@ public class LauncherTest {
 	
 	@Test
 	public void should_use_source_directory_given_into_properties_file_when_no_parameter() throws Exception {
-		OnceProperties properties = OnceProperties.extractConfiguration(
+		OnceConfiguration properties = OnceConfiguration.load(
 				new String[] {}, 
-				createFile(OnceProperties.Key.SRC_DIR + "=./src"));
+				createFile(OnceConfiguration.OnceProperty.SRC_DIR.getKey() + "=./src"));
 		
 		Assertions.assertThat(properties.getSourceDir()).isEqualTo("./src");
 	}
 
 	@Test
 	public void should_use_source_directory_given_into_parameters_behind_this_one_in_properties_file() throws Exception {
-		OnceProperties properties = OnceProperties.extractConfiguration(
+		OnceConfiguration properties = OnceConfiguration.load(
 				new String[] {"./argSrc"}, 
 				createFile());
 		
@@ -59,4 +64,11 @@ public class LauncherTest {
 		printWriter.close();
 		return propertiesFile;
 	}
+	
+	@Test
+    public void testName() throws Exception {
+	    Object obj = Class.forName(BasicComparator.class.getName());
+	    Class<? extends CodeComparator> clazz = (Class<? extends CodeComparator> ) obj; 
+	    System.out.println(obj);
+    }
 }

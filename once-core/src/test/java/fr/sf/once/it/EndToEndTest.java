@@ -13,10 +13,13 @@ import org.junit.Test;
 
 import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.launcher.Launcher;
+import fr.sf.once.launcher.OnceConfiguration;
 import fr.sf.once.report.Reporting;
 
 public class EndToEndTest {
     private StringWriter writer = new StringWriter();
+
+    private Launcher launcher = new Launcher();
 
     @Before
     public void setReporter() {
@@ -26,13 +29,10 @@ public class EndToEndTest {
     
     @Test
     public void should_detect_separate_duplication() throws Exception {
-
-        Launcher launcher = new Launcher()
+        launcher.execute( new OnceConfiguration()
                 .withSource("src/test/resources/exempleSeparateDuplication", "UTF-8")
-                .withComparator(ComparatorWithSubstitutionAndType.class)
-                .withMinimalSize(10);
-        
-        launcher.execute();
+                .withCodeComparatorClass(ComparatorWithSubstitutionAndType.class)
+                .withMinimalTokenNumberDetection(10));
 
         Comparator<? super String> comparator = new Comparator<String> () {
 

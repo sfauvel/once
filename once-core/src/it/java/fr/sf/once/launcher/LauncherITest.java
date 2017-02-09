@@ -15,6 +15,7 @@ import fr.sf.once.report.Reporting;
 
 public class LauncherITest {
     private StringWriter writer = new StringWriter();
+    private Launcher launcher = new Launcher();
 
     @Before
     public void setReporter() {
@@ -24,13 +25,11 @@ public class LauncherITest {
 
     @Test
     public void make_a_full_execution() throws Exception {
-
-        Launcher launcher = new Launcher()
+        launcher.execute(new OnceConfiguration()
                 .withSource("src/test/resources/exemple", "UTF-8")
-                .withComparator(ComparatorWithSubstitutionAndType.class)
-                .withMinimalSize(10);
-        
-        launcher.execute();
+                .withCodeComparatorClass(ComparatorWithSubstitutionAndType.class)
+                .withMinimalTokenNumberDetection(10)
+                );
 
         assertThat(writer.toString().split("\n")).contains(new String[] {
                 "Tokens number:63 Duplications number:2 Substitutions number:0",
@@ -41,13 +40,12 @@ public class LauncherITest {
     
     @Test
     public void should_detect_separate_duplication() throws Exception {
-
-        Launcher launcher = new Launcher()
-                .withSource("src/test/resources/exemple", "UTF-8")
-                .withComparator(ComparatorWithSubstitutionAndType.class)
-                .withMinimalSize(10);
         
-        launcher.execute();
+        launcher.execute(new OnceConfiguration()
+                .withSource("src/test/resources/exemple", "UTF-8")
+                .withCodeComparatorClass(ComparatorWithSubstitutionAndType.class)
+                .withMinimalTokenNumberDetection(10)
+                );
 
         assertThat(writer.toString().split("\n")).contains(new String[] {
                 "Tokens number:63 Duplications number:2 Substitutions number:0",

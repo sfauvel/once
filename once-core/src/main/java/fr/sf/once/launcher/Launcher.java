@@ -16,12 +16,11 @@ import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.comparator.TokenValueComparatorExceptForString;
-import fr.sf.once.core.Configuration;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.report.Reporting;
-import fr.sf.once.report.ReportingCrossMethod;
+import fr.sf.once.report.ReportingImpl;
 
 /**
  * Application main class.
@@ -32,14 +31,6 @@ public class Launcher {
 
     public static final Logger LOG = Logger.getLogger(Launcher.class);
 
-    private String sourceDir;
-
-    private String sourceEncoding;
-
-    private Class<? extends CodeComparator> comparator;
-
-    private int minimalSize;
-
     /**
      * @param args
      * @throws IOException
@@ -47,25 +38,42 @@ public class Launcher {
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
 
-        OnceProperties onceProps = OnceProperties.extractConfigurationFrom(args);
+        OnceConfiguration configuration = OnceConfiguration.load(args);
 
         // Logger.getRootLogger().setLevel(Level.INFO);
+        setLogger(configuration.isVerbose());
+        LOG.info("Source directory:" + configuration.getSourceDir());
 
-        setLogger(onceProps.isVerbose());
-
-        LOG.info("Source directory:" + onceProps.getSourceDir());
-
-        Class<ComparatorWithSubstitutionAndType> comparator = ComparatorWithSubstitutionAndType.class;
-        int tailleMin = 20;
-        Launcher launcher = new Launcher()
-                .withSource(onceProps.getSourceDir(), onceProps.getSourceEncoding())
-                .withComparator(comparator)
-                .withMinimalSize(tailleMin);
-        launcher.execute();
+        new Launcher().execute(configuration);
 
         long endTime = System.currentTimeMillis();
         LOG.info("End (" + (endTime - startTime) + "ms)");
 
+    }
+
+    public void execute(OnceConfiguration configuration) throws FileNotFoundException {
+        Code code = retreiveCode(configuration);
+        List<Redundancy> redundancies = findRedundancies(configuration, code);
+        formatResult(code, redundancies);
+    }
+
+    private void formatResult(Code code, List<Redundancy> listeRedondance) {
+        LOG.info("Display results...");
+         Reporting reporting = new ReportingImpl();
+//        Reporting reporting = new ReportingCrossMethod();
+        reporting.display(code);
+        reporting.displayRedundancy(code, 20, listeRedondance);
+    }
+
+    private List<Redundancy> findRedundancies(OnceConfiguration configuration, Code code) {
+        RedundancyFinder manager = new RedundancyFinder(code);
+        List<Redundancy> listeRedondance = manager.findRedundancies(configuration);
+        return listeRedondance;
+    }
+
+    private Code retreiveCode(OnceConfiguration configuration) throws FileNotFoundException {
+        Code code = new ExtractCode().extract(configuration.getSourceDir(), configuration.getSourceEncoding());
+        return code;
     }
 
     private static void setLogger(boolean isVerbose) throws IOException {
@@ -83,38 +91,7 @@ public class Launcher {
         activateLog(RedundancyFinder.LOG, Level.INFO, null);
         activateLog(LOG, Level.INFO, null);
     }
-
-    public Launcher withMinimalSize(int minimalSize) {
-        this.minimalSize = minimalSize;
-        return this;
-    }
-
-    public Launcher withComparator(Class<? extends CodeComparator> comparator) {
-        this.comparator = comparator;
-        return this;
-    }
-
-    public Launcher withSource(String sourceDir, String sourceEncoding) {
-        this.sourceDir = sourceDir;
-        this.sourceEncoding = sourceEncoding;
-        return this;
-    }
-
-    public void execute() throws FileNotFoundException {
-        Code code = new ExtractCode().extract(sourceDir, sourceEncoding);
-
-        Configuration configuration = new Configuration(comparator).withMinimalTokenNumber(minimalSize);
-
-        RedundancyFinder manager = new RedundancyFinder(code);
-        List<Redundancy> listeRedondance = manager.findRedundancies(configuration);
-
-        LOG.info("Display results...");
-        // Reporting reporting = new ReportingImpl();
-        Reporting reporting = new ReportingCrossMethod();
-        reporting.display(code);
-        reporting.displayRedundancy(code, 20, listeRedondance);
-    }
-
+    
     private static void activateComparatorLog(Level level, String filename) throws IOException {
         activateLog(CodeComparator.LOG, level, filename);
         activateLog(BasicComparator.LOG, level, filename);
