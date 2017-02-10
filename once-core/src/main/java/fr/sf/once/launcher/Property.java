@@ -1,6 +1,6 @@
 package fr.sf.once.launcher;
 
-class Property {
+public class Property {
     private final String key;
     private final String defaultValue;
 

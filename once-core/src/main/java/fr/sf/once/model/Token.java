@@ -5,8 +5,19 @@ package fr.sf.once.model;
 
 import org.apache.commons.lang.StringUtils;
 
+import fr.sf.commons.Domain;
 
 
+/**
+ * The smallest piece of code. 
+ * 
+ *  It could be:
+ *  - a name (variable, type, method,...)
+ *  - a symbol (+, *, &, <=, {, }, ...)
+ *  - a non existing symbol added (end of method, ...) 
+ *  
+ */
+@Domain
 public class Token {
 	
 	private final String tokenValue;

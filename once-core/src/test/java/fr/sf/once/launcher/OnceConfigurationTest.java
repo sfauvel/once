@@ -74,8 +74,5 @@ public class OnceConfigurationTest {
 	    System.out.println(obj);
     }
 	
-	@Test
-    public void generateConfigurationFile() throws Exception {
-	    OnceConfiguration.OnceProperty.generateDefaultConfigurationFile(System.out);
-    }
+
 }

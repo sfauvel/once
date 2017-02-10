@@ -1,0 +1,10 @@
+/*
+* My living doc css
+*/
+
+div.content {
+    padding:5px;
+    background-color: #e1fde4;
+    border: solid 1px grey;
+    margin-left: 3em;
+}

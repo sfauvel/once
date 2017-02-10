@@ -8,6 +8,7 @@
 	<modules>
 		<module>once-core</module>
 		<module>once-ihm</module>
+		<module>once-doc</module>
 	</modules>
 
 	<distributionManagement>

@@ -14,6 +14,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.IntRange;
 
+import fr.sf.commons.Domain;
+
+/**
+ * A suite of code parts that are duplicated. 
+ */
+@Domain
 public class Redundancy {
 
     private final int duplicatedTokenNumber;
