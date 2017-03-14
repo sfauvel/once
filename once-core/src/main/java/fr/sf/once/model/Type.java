@@ -1,5 +1,11 @@
 package fr.sf.once.model;
 
+import fr.sf.commons.Domain;
+
+/**
+ * Define a type of token.
+ */
+@Domain
 public class Type {
     public static final Type VALUE = new Type("Value");
     public static final Type BREAK = new Type("Break"); // Value stopping redundancy event value are identical.
