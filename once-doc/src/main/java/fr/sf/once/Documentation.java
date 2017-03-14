@@ -20,12 +20,12 @@ public class Documentation {
         assertPathExists(HTML_OUTPUT_PATH);
 
         Documentation doc = new Documentation();
-         doc.generateTestDoc();
+       //  doc.generateTestDoc();
          doc.generateConfigurationFile();
-         doc.generateDomainDoc();
+         //doc.generateDomainDoc();
 
         
-        doc.generateArchi();
+       // doc.generateArchi();
         // doc.allFiles(".\\src\\main\\java");
 
     }
@@ -41,7 +41,10 @@ public class Documentation {
     }
 
     private void generateConfigurationFile() throws Exception {
-        new ConfigurationDoc().generateConfigurationFile();
+        generateJavadoc("GenerateConfigurationDoc", ConfigurationDoclet.class, Paths.get("..", "once-core", "src", "main", "java"), "fr.sf");
+
+        Documentation.generateHtmlFromAsciidoc(Documentation.ASCIIDOC_OUTPUT_PATH, Documentation.HTML_OUTPUT_PATH, "configuration");
+      //  new ConfigurationDoc().generateConfigurationFile();
     }
 
     public void generateDomainDoc() throws FileNotFoundException {

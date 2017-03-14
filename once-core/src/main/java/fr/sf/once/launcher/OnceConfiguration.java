@@ -28,12 +28,12 @@ public class OnceConfiguration implements RedundancyFinderConfiguration {
     private static final String ONCE_PROPERTY_FILE_NAME = "once.properties";
 
     public static class OnceProperty {
-        public static final Property SRC_DIR = new Property("once.sourceDir", ".");
-        public static final Property SRC_ENCODING = new Property("once.sourceEncoding", "iso8859-1");
+        public static final Property SOURCE_DIRECTORY = new Property("once.sourceDir", ".");
+        public static final Property SOURCE_ENCODING = new Property("once.sourceEncoding", "iso8859-1");
         public static final Property VERBOSE = new Property("once.verbose", Boolean.FALSE.toString());
         public static final Property MINIMAL_SIZE_DETECTION = new Property("once.minimalSizeDetection", "20");
         public static final Property CLASS_COMPARATOR = new Property("once.classComparator", ComparatorWithSubstitutionAndType.class.getName());
-        public static final Property REPORTING = new Property("once.reporting", ReportingImpl.class.getName());
+        public static final Property CLASS_REPORTING = new Property("once.reporting", ReportingImpl.class.getName());
     }
     
     private final Properties properties;
@@ -47,19 +47,19 @@ public class OnceConfiguration implements RedundancyFinderConfiguration {
     }
 
     public String getSourceDir() {
-        return get(OnceProperty.SRC_DIR);
+        return get(OnceProperty.SOURCE_DIRECTORY);
     }
 
     public OnceConfiguration withSourceDir(String sourceDir) {
-        return put(OnceProperty.SRC_DIR, sourceDir);
+        return put(OnceProperty.SOURCE_DIRECTORY, sourceDir);
     }
 
     public String getSourceEncoding() {
-        return get(OnceProperty.SRC_ENCODING);
+        return get(OnceProperty.SOURCE_ENCODING);
     }
 
     public OnceConfiguration withSourceEncoding(String sourceEncoding) {
-        return put(OnceProperty.SRC_ENCODING, sourceEncoding);
+        return put(OnceProperty.SOURCE_ENCODING, sourceEncoding);
     }
 
     public OnceConfiguration withSource(String sourceDir, String sourceEncoding) {
@@ -77,14 +77,14 @@ public class OnceConfiguration implements RedundancyFinderConfiguration {
     
     public Class<? extends Reporting>  getReporting() {
         try {
-            return (Class<Reporting>) Class.forName(get(OnceProperty.REPORTING));
+            return (Class<Reporting>) Class.forName(get(OnceProperty.CLASS_REPORTING));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     public OnceConfiguration withReporting(Class<? extends Reporting>  reportingClass) {
-        return put(OnceProperty.REPORTING, reportingClass.getName());
+        return put(OnceProperty.CLASS_REPORTING, reportingClass.getName());
     }
 
     @Override

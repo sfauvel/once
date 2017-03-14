@@ -43,7 +43,7 @@ public class OnceConfigurationTest {
 	public void should_use_source_directory_given_into_properties_file_when_no_parameter() throws Exception {
 		OnceConfiguration properties = OnceConfiguration.load(
 				new String[] {}, 
-				createFile(OnceConfiguration.OnceProperty.SRC_DIR.getKey() + "=./src"));
+				createFile(OnceConfiguration.OnceProperty.SOURCE_DIRECTORY.getKey() + "=./src"));
 		
 		Assertions.assertThat(properties.getSourceDir()).isEqualTo("./src");
 	}
