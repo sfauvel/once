@@ -62,7 +62,7 @@ public class RedundancyFinder {
             Constructor<? extends CodeComparator> constructor = codeComparatorClass.getConstructor(Code.class);
             return constructor.newInstance(code);
         } catch (Exception e) {
-            throw new Error(e);
+            throw new RuntimeException(e);
         }
     }
 

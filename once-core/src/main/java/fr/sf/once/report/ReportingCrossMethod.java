@@ -34,8 +34,6 @@ public class ReportingCrossMethod extends ReportingImpl {
         multiPartRedundancyList.stream()
             .sorted( new ComparatorRedundancyMultiPartByTokenNumber())
             .forEach(redundancy ->  displayCrossMethodRedundancies(code, redundancy));
-        
-        super.displayRedundancy(code, minimalSize, redundancyList);
     }
 
     private List<Redundancy> removeOverlap(List<Redundancy> redundancyList) {

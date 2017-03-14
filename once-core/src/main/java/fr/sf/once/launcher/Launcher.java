@@ -20,7 +20,7 @@ import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.model.Code;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.report.Reporting;
-import fr.sf.once.report.ReportingImpl;
+import fr.sf.once.report.ReportingCrossMethod;
 
 /**
  * Application main class.
@@ -54,15 +54,22 @@ public class Launcher {
     public void execute(OnceConfiguration configuration) throws FileNotFoundException {
         Code code = retreiveCode(configuration);
         List<Redundancy> redundancies = findRedundancies(configuration, code);
-        formatResult(code, redundancies);
+        formatResult(configuration, code, redundancies);
     }
 
-    private void formatResult(Code code, List<Redundancy> listeRedondance) {
+    private void formatResult(OnceConfiguration configuration, Code code, List<Redundancy> listeRedondance) {
         LOG.info("Display results...");
-         Reporting reporting = new ReportingImpl();
-//        Reporting reporting = new ReportingCrossMethod();
+        Reporting reporting = buildReporting(configuration);
         reporting.display(code);
         reporting.displayRedundancy(code, 20, listeRedondance);
+    }
+
+    private Reporting buildReporting(OnceConfiguration configuration) {
+        try {
+            return configuration.getReporting().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<Redundancy> findRedundancies(OnceConfiguration configuration, Code code) {

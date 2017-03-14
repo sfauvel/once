@@ -15,6 +15,8 @@ import org.apache.log4j.Level;
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.core.RedundancyFinderConfiguration;
+import fr.sf.once.report.Reporting;
+import fr.sf.once.report.ReportingImpl;
 
 /**
  * 
@@ -31,8 +33,7 @@ public class OnceConfiguration implements RedundancyFinderConfiguration {
         public static final Property VERBOSE = new Property("once.verbose", Boolean.FALSE.toString());
         public static final Property MINIMAL_SIZE_DETECTION = new Property("once.minimalSizeDetection", "20");
         public static final Property CLASS_COMPARATOR = new Property("once.classComparator", ComparatorWithSubstitutionAndType.class.getName());
-        
-  
+        public static final Property REPORTING = new Property("once.reporting", ReportingImpl.class.getName());
     }
     
     private final Properties properties;
@@ -72,6 +73,18 @@ public class OnceConfiguration implements RedundancyFinderConfiguration {
 
     public OnceConfiguration withVerbose(boolean verbose) {
         return put(OnceProperty.VERBOSE, Boolean.toString(verbose));
+    }
+    
+    public Class<? extends Reporting>  getReporting() {
+        try {
+            return (Class<Reporting>) Class.forName(get(OnceProperty.REPORTING));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public OnceConfiguration withReporting(Class<? extends Reporting>  reportingClass) {
+        return put(OnceProperty.REPORTING, reportingClass.getName());
     }
 
     @Override

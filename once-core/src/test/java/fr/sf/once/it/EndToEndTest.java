@@ -15,6 +15,7 @@ import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.launcher.Launcher;
 import fr.sf.once.launcher.OnceConfiguration;
 import fr.sf.once.report.Reporting;
+import fr.sf.once.report.ReportingImpl;
 
 public class EndToEndTest {
     private StringWriter writer = new StringWriter();
@@ -32,6 +33,7 @@ public class EndToEndTest {
         launcher.execute( new OnceConfiguration()
                 .withSource("src/test/resources/exempleSeparateDuplication", "UTF-8")
                 .withCodeComparatorClass(ComparatorWithSubstitutionAndType.class)
+                .withReporting(ReportingImpl.class)
                 .withMinimalTokenNumberDetection(10));
 
         Comparator<? super String> comparator = new Comparator<String> () {
