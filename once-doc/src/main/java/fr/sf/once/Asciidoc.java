@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.MissingFormatArgumentException;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Asciidoc {
     private Writer writer;
 
@@ -34,7 +36,8 @@ public class Asciidoc {
     }
 
     public Asciidoc title(int level, String title) {
-        return writeln("\n= %s", title);
+        
+        return writeln("\n%s %s", StringUtils.leftPad("", level, "="), title);
     }
 
     public Asciidoc tableOfContent() throws IOException {
@@ -58,11 +61,15 @@ public class Asciidoc {
     }
 
     public Asciidoc link(String filename, String label) {
-        return writeln("link::%s[%s]", filename, label);
+        return writeln("link::%s[%s]\n", filename, label);
     }
 
     public Asciidoc javaComment(String comment) {
         return writeln(Arrays.stream(comment.split("\n")).map(t -> t.trim()).collect(Collectors.joining("\n\n")));
+    }
+
+    public Asciidoc list(String log) {
+        return writeln("* %s", log);
     }
 
 }

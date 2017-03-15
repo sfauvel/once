@@ -1,36 +1,30 @@
 package fr.sf.once;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.util.List;
+
+import fr.sf.once.Documentation.AsciidocWriter;
 
 public class ChangeLogDoc {
 
-    public static final String OUTPUT_FILE_NAME = "archi";
-    private void generateGraph(Path asciidocOutputPath, String filename) throws FileNotFoundException {
-        try (PrintWriter print = new PrintWriter(asciidocOutputPath.resolve(filename + ".dot").toFile())) {
-            print.println("digraph G {");
-            print.println("graph[splines=false];");
-            print.println("node [shape=box];");
-            // A simple dependance
-            print.println("Class_A -> Class_B");
-            print.println("}");
-        }
-        
-        // A simple file with a link to the image
-        try (PrintWriter print = new PrintWriter(asciidocOutputPath.resolve(OUTPUT_FILE_NAME + ".asciidoc").toFile())) {
-            print.println("\n\n= Archi\n");
-            print.println("Description de l'archi");
-            print.println("image:"+filename+".png[Archi]");
+    public static final String OUTPUT_FILE_NAME = "changelog";
+    private static FileWriter fileWriter;
+    private static File outputFile = Documentation.ASCIIDOC_OUTPUT_PATH.resolve(OUTPUT_FILE_NAME + ".asciidoc").toFile();
+
+    public void generate() throws FileNotFoundException {
+        List<String> logHistory = Documentation.getLogHistory();
+
+        try (AsciidocWriter adoc = new AsciidocWriter(outputFile)) {
+            for (String log : logHistory) {
+                adoc.list(log);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-
-    public void generateArchi() throws FileNotFoundException {
-        String filename = "sample";
-        generateGraph(Documentation.ASCIIDOC_OUTPUT_PATH, filename);
-        Documentation.generateDotToPng(Documentation.ASCIIDOC_OUTPUT_PATH, Documentation.HTML_OUTPUT_PATH, filename);
-        
-        Documentation.generateHtmlFromAsciidoc(Documentation.ASCIIDOC_OUTPUT_PATH, Documentation.HTML_OUTPUT_PATH, OUTPUT_FILE_NAME);
-    }
-
 }
