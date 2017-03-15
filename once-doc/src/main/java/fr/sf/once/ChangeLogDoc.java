@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 
-public class ArchiDoc {
+public class ChangeLogDoc {
 
     public static final String OUTPUT_FILE_NAME = "archi";
     private void generateGraph(Path asciidocOutputPath, String filename) throws FileNotFoundException {

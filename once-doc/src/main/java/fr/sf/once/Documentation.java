@@ -1,12 +1,14 @@
 package fr.sf.once;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 public class Documentation {
     public static final Path ASCIIDOC_OUTPUT_PATH = Paths.get("docs", "asciidoc");
@@ -19,16 +21,68 @@ public class Documentation {
         assertPathExists(ASCIIDOC_OUTPUT_PATH);
         assertPathExists(HTML_OUTPUT_PATH);
 
-        Documentation doc = new Documentation();
-       //  doc.generateTestDoc();
-         doc.generateConfigurationFile();
-         //doc.generateDomainDoc();
+//        getLogHistory();
+        
+        generateMainDocumentation();
 
         
-       // doc.generateArchi();
+        Documentation doc = new Documentation();
+         doc.generateTestDoc();
+         doc.generateConfigurationFile();
+         doc.generateDomainDoc();
+
+        
+         doc.generateArchi();
         // doc.allFiles(".\\src\\main\\java");
 
+         generateMainDocumentation();
     }
+
+    public static final String OUTPUT_FILE_NAME = "once";
+    
+    public static class AsciidocWriter extends Asciidoc implements Closeable {
+
+        public AsciidocWriter(File file) throws IOException {
+            super(new FileWriter(file));
+        }
+
+        @Override
+        public void close() throws IOException {
+           getWriter().close();
+        }
+        
+    }
+    
+    private static void generateMainDocumentation() throws IOException {
+        
+        try (AsciidocWriter adoc = new AsciidocWriter(Documentation.ASCIIDOC_OUTPUT_PATH.resolve(OUTPUT_FILE_NAME + ".asciidoc").toFile())) {
+            adoc
+                .title(1, "Once")
+                .tableOfContent()
+                .split()
+                .blankLine()
+                ;
+
+            adoc
+                .changeLevelOffset(1)
+                .include(DomainDoclet.OUTPUT_FILE_NAME + ".asciidoc")
+                .include(ConfigurationDoclet.OUTPUT_FILE_NAME + ".asciidoc")
+                .include(ArchiDoc.OUTPUT_FILE_NAME + ".asciidoc")
+                .changeLevelOffset(0);
+                
+            adoc
+                .title(2, "Dossier de test")
+                .link("../html/testdoc.html", "Dossier de test");
+
+            
+            adoc.blankLine();
+        
+        }
+        
+        generateHtmlFromAsciidoc(Documentation.ASCIIDOC_OUTPUT_PATH, Documentation.HTML_OUTPUT_PATH, OUTPUT_FILE_NAME);
+        
+    }
+
 
     private static void assertPathExists(Path path) {
         if (!path.toFile().exists()) {
@@ -112,6 +166,22 @@ public class Documentation {
         }
     }
 
+    public static List<String> getLogHistory() {
+        Runtime rt = Runtime.getRuntime();
+        try {
+            Path GRAPHVIZ_HOME = Paths.get("C:", "My Program Files", "Graphviz2.38", "bin");
+            Process p = rt.exec(new String[] { "git",
+                    "log",
+                    "--pretty=format:%s" });
+
+            // TODO
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    
     private Class<?> getClazz(String className) {
         try {
             return Class.forName(className);

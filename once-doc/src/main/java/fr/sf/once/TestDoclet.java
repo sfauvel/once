@@ -19,7 +19,8 @@ public class TestDoclet {
         
         try (FileWriter localFileWriter = new FileWriter(outputFile)) {
             fileWriter = localFileWriter;
-
+            write("\n\n= Tests\n\n");
+            
             for (ClassDoc classDoc : root.classes()) {
                 display(classDoc);
 

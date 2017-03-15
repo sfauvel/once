@@ -30,7 +30,7 @@ public class ConfigurationDoclet {
         try (FileWriter localFileWriter = new FileWriter(outputFile)) {
             fileWriter = localFileWriter;
 
-            write("\n= Domain \n"); 
+            write("\n\n= Configuration \n"); 
             for (ClassDoc classDoc : root.classes()) {
                 display(classDoc);
 

@@ -11,6 +11,8 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
 
+import fr.sf.once.Documentation.AsciidocWriter;
+
 public class DomainDoclet {
 
     public static final String OUTPUT_FILE_NAME = "domain";
@@ -19,14 +21,12 @@ public class DomainDoclet {
 
     public static boolean start(RootDoc root) {
 
-        System.out.println(outputFile.getAbsolutePath());
-        try (FileWriter localFileWriter = new FileWriter(outputFile)) {
-            fileWriter = localFileWriter;
+        try (AsciidocWriter adoc = new AsciidocWriter(outputFile)) {
 
-
-            write("\n= Domain \n"); 
+            adoc.title(1, "Domain"); 
+            
             for (ClassDoc classDoc : root.classes()) {
-                display(classDoc);
+                display(adoc, classDoc);
 
             }
         } catch (IOException e) {
@@ -36,50 +36,19 @@ public class DomainDoclet {
         return true;
     }
 
-    private static void display(ClassDoc classDoc) {
-        System.out.println(classDoc.name());
+    private static void display(AsciidocWriter adoc, ClassDoc classDoc) {
         if (!isADomainClass(classDoc)) {
             return;
         }
 
-        write("\n=== " + classDoc.name() + "\n");        
+        adoc.title(2, classDoc.name());        
         if (classDoc.commentText().isEmpty()) {
-            write("No documentation.");            
+            adoc.writeln("No documentation.");            
         } else {
-            write(formatComment(classDoc.commentText()));
+            adoc.javaComment(classDoc.commentText());
         }
-
-        // for (MethodDoc methodDoc : classDoc.methods()) {
-        // display(methodDoc);
-        // }
     }
 
-    private static String formatComment(String text) {
-        return Arrays.stream(text.split("\n")).map(t -> t.trim()).collect(Collectors.joining("\n\n"));
-    }
-
-    // private static void display(MethodDoc methodDoc) {
-    // if (containsTag(methodDoc, "Test")) {
-    //
-    //
-    // // for (AnnotationDesc annotationDesc : methodDoc.annotations()) {
-    // // write(" @" + annotationDesc.annotationType().simpleTypeName());
-    // // }
-    //
-    // String name = methodDoc.name();
-    // write(" * " + name
-    // .replaceAll("_", " ")
-    // .replaceAll("([a-z0-9])([A-Z])", "$1 $2"));
-    //
-    // if (!methodDoc.commentText().isEmpty()) {
-    // write("\n....\n");
-    // write(" " + methodDoc.commentText());
-    // write("\n....\n");
-    // }
-    //
-    // }
-    // }
-    //
     private static boolean isADomainClass(ClassDoc classDoc) {
         return containsTag(classDoc, "Domain");
     }
