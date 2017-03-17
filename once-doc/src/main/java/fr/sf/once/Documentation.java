@@ -7,11 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import fr.sf.asciidoc.Asciidoc;
 
 public class Documentation {
     public static final Path ASCIIDOC_OUTPUT_PATH = Paths.get("docs", "asciidoc");
@@ -43,7 +46,10 @@ public class Documentation {
     public static class AsciidocWriter extends Asciidoc implements Closeable {
 
         public AsciidocWriter(File file) throws IOException {
-            super(new FileWriter(file));
+            this(new FileWriter(file));
+        }
+        public AsciidocWriter(Writer writer) throws IOException {
+            super(writer);
         }
 
         @Override
@@ -91,31 +97,29 @@ public class Documentation {
     private void generateArchi() throws FileNotFoundException {
         new ArchiDoc().generateArchi();
         Documentation.generateHtmlFromAsciidoc(Documentation.ASCIIDOC_OUTPUT_PATH, Documentation.HTML_OUTPUT_PATH, "archi");
-        
+
     }
 
     private void generateConfigurationFile() throws Exception {
-        generateJavadoc("GenerateConfigurationDoc", ConfigurationDoclet.class, Paths.get("..", "once-core", "src", "main", "java"), "fr.sf");
-
+        ConfigurationDoclet.execute(Paths.get("..", "once-core", "src", "main", "java"), "fr.sf");
         Documentation.generateHtmlFromAsciidoc(Documentation.ASCIIDOC_OUTPUT_PATH, Documentation.HTML_OUTPUT_PATH, "configuration");
-        // new ConfigurationDoc().generateConfigurationFile();
     }
 
     public void generateDomainDoc() throws FileNotFoundException {
-        generateJavadoc("GenerateDomainDoc", DomainDoclet.class, Paths.get("..", "once-core", "src", "main", "java"), "fr.sf");
+        DomainDoclet.execute(Paths.get("..", "once-core", "src", "main", "java"), "fr.sf");
         generateHtmlFromAsciidoc(ASCIIDOC_OUTPUT_PATH, HTML_OUTPUT_PATH, DomainDoclet.OUTPUT_FILE_NAME);
     }
 
     public void generateTestDoc() {
-        generateJavadoc("GenerateTestDoc", TestDoclet.class, Paths.get("..", "once-core", "src", "test", "java"), "fr.sf");
+        TestDoclet.execute(Paths.get("..", "once-core", "src", "test", "java"), "fr.sf");
         generateHtmlFromAsciidoc(ASCIIDOC_OUTPUT_PATH, HTML_OUTPUT_PATH, TestDoclet.OUTPUT_FILE_NAME);
     }
-    
+
     private void generateChangeLog() throws FileNotFoundException {
         new ChangeLogDoc().generate();
         Documentation.generateHtmlFromAsciidoc(Documentation.ASCIIDOC_OUTPUT_PATH, Documentation.HTML_OUTPUT_PATH, "changelog");
     }
-    
+
     public void allFiles(String rootPath) {
         Path dir = Paths.get(rootPath);
         if (dir.toFile().isFile()) {

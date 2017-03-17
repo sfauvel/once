@@ -1,17 +1,19 @@
 package fr.sf.once;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.nio.file.Path;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.RootDoc;
 
-import fr.sf.once.Documentation.AsciidocWriter;
+import fr.sf.asciidoc.AsciiDoclet;
+import fr.sf.asciidoc.RunnerDoclet;
 import fr.sf.once.launcher.OnceConfiguration;
 import fr.sf.once.launcher.OnceConfiguration.OnceProperty;
 import fr.sf.once.launcher.Property;
@@ -21,25 +23,19 @@ public class ConfigurationDoclet extends AsciiDoclet {
     public static final String OUTPUT_FILE_NAME = "configuration";
     private static File outputFile = Documentation.ASCIIDOC_OUTPUT_PATH.resolve(OUTPUT_FILE_NAME + ".asciidoc").toFile();
 
-    private AsciidocWriter adoc;
 
-    public ConfigurationDoclet(AsciidocWriter adoc) {
-        this.adoc = adoc;
+    public static void execute(Path path, String packageName) {
+        new RunnerDoclet(new ConfigurationDoclet(), path, packageName).execute();
     }
     
-    public static boolean start(RootDoc root) {
-
-        try (AsciidocWriter adoc = new AsciidocWriter(outputFile)) {
-            new ConfigurationDoclet(adoc).display(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return true;
+    @Override
+    protected Writer newOutputWriter() throws IOException {
+        return new FileWriter(outputFile);
     }
 
-    private void display(RootDoc root) {
-        adoc.title(1, "Configuration"); 
+    @Override
+    protected void display(RootDoc root) {
+        adoc.title(1, "Configuration");         
         for (ClassDoc classDoc : root.classes()) {
             display(classDoc);
 
@@ -76,10 +72,6 @@ public class ConfigurationDoclet extends AsciiDoclet {
         }
     }
 
-    private static String formatComment(String text) {
-        return Arrays.stream(text.split("\n")).map(t -> t.trim()).collect(Collectors.joining("\n\n"));
-    }
-
     private static boolean isAConfigurationClass(ClassDoc classDoc) {
         if (classDoc.qualifiedName().equals(OnceConfiguration.OnceProperty.class.getCanonicalName())) {
             return true;
@@ -87,10 +79,8 @@ public class ConfigurationDoclet extends AsciiDoclet {
         return false;
     }
 
-
     public <T> void generateDefaultConfigurationFile(ClassDoc classDoc, Class<OnceProperty> clazz, Function<T, String> writer) throws IOException {
         adoc.title(2, clazz.getSimpleName() + " file example");
-        Field[] declaredFields = clazz.getDeclaredFields();
         for (FieldDoc field : classDoc.fields()) {
             adoc.write("." + field.name().replaceAll("_",  " ").toLowerCase() + "\n");
             if (!field.commentText().isEmpty()) {

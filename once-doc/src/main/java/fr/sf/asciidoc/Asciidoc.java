@@ -1,4 +1,4 @@
-package fr.sf.once;
+package fr.sf.asciidoc;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -61,7 +61,7 @@ public class Asciidoc {
     }
 
     public Asciidoc link(String filename, String label) {
-        return writeln("link::%s[%s]\n", filename, label);
+        return writeln("link:%s[%s]\n", filename, label);
     }
 
     public Asciidoc javaComment(String comment) {

@@ -30,7 +30,6 @@ public class ArchiDoc {
         generateGraph(Documentation.ASCIIDOC_OUTPUT_PATH, filename);
         Documentation.generateDotToPng(Documentation.ASCIIDOC_OUTPUT_PATH, Documentation.HTML_OUTPUT_PATH, filename);
         
-        Documentation.generateHtmlFromAsciidoc(Documentation.ASCIIDOC_OUTPUT_PATH, Documentation.HTML_OUTPUT_PATH, OUTPUT_FILE_NAME);
     }
 
 }

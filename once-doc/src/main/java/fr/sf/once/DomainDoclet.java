@@ -3,40 +3,37 @@ package fr.sf.once;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.io.Writer;
+import java.nio.file.Path;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.RootDoc;
 
-import fr.sf.once.Documentation.AsciidocWriter;
+import fr.sf.asciidoc.AsciiDoclet;
+import fr.sf.asciidoc.RunnerDoclet;
 
 public class DomainDoclet extends AsciiDoclet {
 
     public static final String OUTPUT_FILE_NAME = "domain";
     private static File outputFile = Documentation.ASCIIDOC_OUTPUT_PATH.resolve(OUTPUT_FILE_NAME + ".asciidoc").toFile();
-    private AsciidocWriter adoc;
-
-    public DomainDoclet(AsciidocWriter adoc) {
-        this.adoc = adoc;
+   
+    public static void execute(Path path, String packageName) {
+        new RunnerDoclet(new DomainDoclet(), path, packageName).execute();
     }
-
-    public static boolean start(RootDoc root) {
-
-        try (AsciidocWriter adoc = new AsciidocWriter(outputFile)) {
-            new DomainDoclet(adoc).display(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return true;
+    
+    @Override
+    protected Writer newOutputWriter() throws IOException {
+        return new FileWriter(outputFile);
     }
-
-    private void display(RootDoc root) {
+    
+    @Override
+    protected void display(RootDoc root) {
         adoc.title(1, "Domain"); 
         
         for (ClassDoc classDoc : root.classes()) {
             display(classDoc);
         }
+        adoc.blankLine();
     }
 
     private void display(ClassDoc classDoc) {
