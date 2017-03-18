@@ -12,7 +12,7 @@ import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.core.RedundancyFinderConfiguration;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
@@ -118,7 +118,7 @@ public class OncePane extends StackPane {
                     handler.compute(buffer, boxFileResultChoice.getAbsolutePath());
                     System.out.println(buffer.toString());
 
-                    Code code = handler.getCode();
+                    CodeAsATokenList code = handler.getCode();
                     tokenList = code.getTokenList();
                     methodList = code.getMethodList();
                     RedundancyFinder manager = new RedundancyFinder(code);

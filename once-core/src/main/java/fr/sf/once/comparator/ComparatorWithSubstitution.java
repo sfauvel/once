@@ -5,7 +5,7 @@ package fr.sf.once.comparator;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Token;
 
 /**
@@ -20,7 +20,7 @@ public class ComparatorWithSubstitution extends CodeComparator {
     private SubstitutionStringList substitutionList1 = new SubstitutionStringList();
     private SubstitutionStringList substitutionList2 = new SubstitutionStringList();
    
-    public ComparatorWithSubstitution(Code code) {
+    public ComparatorWithSubstitution(CodeAsATokenList code) {
         super(code);
     }
     

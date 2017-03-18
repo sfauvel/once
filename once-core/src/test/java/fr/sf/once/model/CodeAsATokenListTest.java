@@ -13,16 +13,16 @@ import org.junit.Test;
 
 import fr.sf.once.test.UtilsToken;
 
-public class CodeTest {
+public class CodeAsATokenListTest {
     @Test
     public void testGetCodeBasic() {
-        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A"));
+        CodeAsATokenList code = new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A"));
         assertEquals("A", code.getToken(0).getTokenValue());
     }
 
     @Test
     public void testGetCode() {
-        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D"));
+        CodeAsATokenList code = new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D"));
         assertEquals("A", code.getToken(0).getTokenValue());
         assertEquals("B", code.getToken(1).getTokenValue());
         assertEquals("C", code.getToken(2).getTokenValue());
@@ -33,7 +33,7 @@ public class CodeTest {
     public void testTokenListUnmodifiable() {
         // On rend la liste modifiable pour les besoins du test
         List<Token> tokenList = new ArrayList<Token>(UtilsToken.createUnmodifiableTokenList("A"));
-        Code code = new Code(tokenList);
+        CodeAsATokenList code = new CodeAsATokenList(tokenList);
       
         assertEquals(1, code.getTokenList().size());
         tokenList.clear();
@@ -53,16 +53,16 @@ public class CodeTest {
      */
     @Test
     public void testCodeSize() {
-        assertEquals(0, new Code(Collections.<Token> emptyList()).getSize());
-        assertEquals(1, new Code(UtilsToken.createUnmodifiableTokenList("A")).getSize());
-        assertEquals(4, new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D")).getSize());
+        assertEquals(0, new CodeAsATokenList(Collections.<Token> emptyList()).getSize());
+        assertEquals(1, new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A")).getSize());
+        assertEquals(4, new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D")).getSize());
     }
 
     @Test
     public void testGetMethodListUnmodifiable() {
         List<MethodLocation> methodList = new ArrayList<MethodLocation>();
         methodList.add(new MethodLocation(null, null, null));
-        Code code = new Code(Collections.<Token> emptyList(), methodList);
+        CodeAsATokenList code = new CodeAsATokenList(Collections.<Token> emptyList(), methodList);
 
         assertEquals(1, code.getMethodList().size());
         methodList.clear();
@@ -86,7 +86,7 @@ public class CodeTest {
         List<MethodLocation> methodList = new ArrayList<MethodLocation>();
         methodList.add(new MethodLocation("methodA", null, null));
         methodList.add(new MethodLocation("methodB", null, null));
-        Code code = new Code(Collections.<Token> emptyList(), methodList);
+        CodeAsATokenList code = new CodeAsATokenList(Collections.<Token> emptyList(), methodList);
 
         assertEquals("methodA", code.getMethodList().get(0).getMethodName());
         assertEquals("methodB", code.getMethodList().get(1).getMethodName());
@@ -100,7 +100,7 @@ public class CodeTest {
         List<MethodLocation> methodList = new ArrayList<MethodLocation>();
         methodList.add(new MethodLocation("methodA", new IntRange(2, 5)));
         methodList.add(new MethodLocation("methodB", new IntRange(8, 15)));
-        Code code = new Code(Collections.<Token> emptyList(), methodList);
+        CodeAsATokenList code = new CodeAsATokenList(Collections.<Token> emptyList(), methodList);
 
         assertNull(code.getMethodAtTokenPosition(1));
         

@@ -21,7 +21,7 @@ import org.junit.Test;
 import fr.sf.once.comparator.BasicComparator;
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
@@ -195,7 +195,7 @@ public class RedundancyFinderTest {
         List<MethodLocation> methodList = Arrays.asList(
                 new MethodLocation("method", new IntRange(2, 5)),
                 new MethodLocation("method", new IntRange(6, 11)));
-        RedundancyFinder managerToken = new RedundancyFinder(new Code(tokenList, methodList));
+        RedundancyFinder managerToken = new RedundancyFinder(new CodeAsATokenList(tokenList, methodList));
         List<Redundancy> redundancies = managerToken.findRedundancies(getConfigurationWithMinimalTokenNumber(3));
 
         assertThat(redundancies)
@@ -329,7 +329,7 @@ public class RedundancyFinderTest {
 
     @Test
     public void testRemoveRedundancyIncludedInAnotherOneListeVide() {
-        RedundancyFinder managerToken = new RedundancyFinder(new Code());
+        RedundancyFinder managerToken = new RedundancyFinder(new CodeAsATokenList());
         List<Redundancy> listeRedondance = new ArrayList<Redundancy>();
         List<Redundancy> listeObtenue = managerToken.removeRedundancyIncludedInAnotherOne(listeRedondance);
         assertEquals(true, listeObtenue.isEmpty());

@@ -16,7 +16,7 @@ import org.junit.Test;
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.core.RedundancyFinder;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Location;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
@@ -53,7 +53,7 @@ public class ManagerTokenSampleTest {
 //        LOG.setAdditivity(false);
 
 //        List<Token> listeTokenOrigine = createTokenList();
-        Code code = createCode();
+        CodeAsATokenList code = createCode();
         RedundancyFinder manager = new RedundancyFinder(code);
 
         CodeComparator comparator = new ComparatorWithSubstitution(code);
@@ -87,8 +87,8 @@ public class ManagerTokenSampleTest {
 
     }
 
-    private Code createCode() {
-        return new Code(Arrays.asList(
+    private CodeAsATokenList createCode() {
+        return new CodeAsATokenList(Arrays.asList(
                 createToken(27, 1, "class", Type.VALUE),
                 createToken(27, 6, "GestionGroupe", Type.VALUE),
                 createToken(29, 8, "{", Type.NOT_SIGNIFICANT),

@@ -32,7 +32,7 @@ import com.sun.net.httpserver.HttpHandler;
 import fr.sf.once.ast.ExtractCode;
 import fr.sf.once.core.RedundancyFinder;
 import fr.sf.once.launcher.OnceConfiguration;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Location;
 import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
@@ -121,7 +121,7 @@ public class OnceHandler implements HttpHandler {
         return buffer;
     }
 
-    private Code code = null;
+    private CodeAsATokenList code = null;
     
     public void compute(StringBuffer buffer, String srcDir) throws IOException {
         String ONCE_PROPERTY = "once.properties";
@@ -211,7 +211,7 @@ public class OnceHandler implements HttpHandler {
         buffer.append("</pre>");
     }
 
-    private void displayRedondancy(StringBuffer buffer, final Code code, Redundancy redundancy) {
+    private void displayRedondancy(StringBuffer buffer, final CodeAsATokenList code, Redundancy redundancy) {
         int line = 0;
 
         List<Token> tokenList = code.getTokenList();
@@ -251,7 +251,7 @@ public class OnceHandler implements HttpHandler {
         buffer.append("</pre>");
     }
 
-    public void afficherCodeRedondant(StringBuffer buffer, final Code code, Redundancy redondance) {
+    public void afficherCodeRedondant(StringBuffer buffer, final CodeAsATokenList code, Redundancy redondance) {
         List<Token> tokenList = code.getTokenList();
         List<MethodLocation> methodList = code.getMethodList();
 
@@ -395,7 +395,7 @@ public class OnceHandler implements HttpHandler {
         return result;
     }
 
-    public Code getCode() {
+    public CodeAsATokenList getCode() {
                 return code;
             }
 

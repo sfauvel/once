@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import fr.sf.once.AbstractComparatorTest;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.test.UtilsToken;
 
 public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
@@ -199,7 +199,7 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
      */
     @Test
     public void testTrierListeTokenSansModifierListeOrigine() {
-        Code code = createCode("A A B");
+        CodeAsATokenList code = createCode("A A B");
 
         List<Integer> positionList = range(code.getSize());
         Collections.sort(positionList, new ComparatorWithSubstitution(code));
@@ -220,7 +220,7 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
      */
     @Test
     public void testTrierSurPlusieursTokens() {
-        Code code = createCode("A E A B A C");
+        CodeAsATokenList code = createCode("A E A B A C");
         List<Integer> positionList = range(code.getSize());
 
         Collections.sort(positionList, new ComparatorWithSubstitution(code));
@@ -229,7 +229,7 @@ public class ComparatorWithSubstitutionTest extends AbstractComparatorTest {
         assertThat(tokensMapToPosition(code, positionList)).containsExactly("C", "A", "A", "A", "B", "E");
     }
 
-    private Stream<String> tokensMapToPosition(Code code, List<Integer> positionList) {
+    private Stream<String> tokensMapToPosition(CodeAsATokenList code, List<Integer> positionList) {
         return positionList.stream().map(p -> code.getToken(p).getTokenValue());
     }
 

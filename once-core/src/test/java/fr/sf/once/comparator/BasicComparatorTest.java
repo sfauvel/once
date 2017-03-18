@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.Test;
 
 import fr.sf.once.AbstractComparatorTest;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 import fr.sf.once.test.UtilsToken;
@@ -81,7 +81,7 @@ public class BasicComparatorTest extends AbstractComparatorTest {
         List<Token> tokenList = UtilsToken.createTokenList("a a X a a a X z");
         changeTokenType(tokenList, 2, Type.BREAK);
         changeTokenType(tokenList, 6, Type.BREAK);
-        CodeComparator comparateur = new BasicComparator(new Code(tokenList));
+        CodeComparator comparateur = new BasicComparator(new CodeAsATokenList(tokenList));
 
         // Break is at the same position.
         // 0: a a X a a a X z
@@ -105,7 +105,7 @@ public class BasicComparatorTest extends AbstractComparatorTest {
         List<Token> tokenList = UtilsToken.createTokenList("a a X a a a X z");
         changeTokenType(tokenList, 2, Type.BREAK);
         changeTokenType(tokenList, 6, Type.BREAK);
-        CodeComparator comparateur = new BasicComparator(new Code(tokenList));
+        CodeComparator comparateur = new BasicComparator(new CodeAsATokenList(tokenList));
         
         // The first break between 0 and 3 is on position 0. 0 is less than 3.
         // 0: a a X a a a X z
@@ -158,7 +158,7 @@ public class BasicComparatorTest extends AbstractComparatorTest {
     }
     
     private CodeComparator createComparatorWithCode(String stringTokenList) {
-        Code code = createCode(stringTokenList);
+        CodeAsATokenList code = createCode(stringTokenList);
         return new BasicComparator(code);
     }
 

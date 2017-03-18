@@ -12,7 +12,7 @@ import org.apache.commons.lang.math.IntRange;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.core.RedundancyFinder;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Location;
 import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Token;
@@ -72,16 +72,16 @@ public final class UtilsToken {
         return new RedundancyFinder(createCode(tokenList));
     }
     
-    public static Code createCode(final String... stringTokenList) {
+    public static CodeAsATokenList createCode(final String... stringTokenList) {
         return createCode(createTokenList(stringTokenList));
 //        List<MethodLocation> methodList = Arrays.asList(new MethodLocation("", new IntRange(0, tokenList.size()-1)));
 //        Code code = new Code(tokenList, methodList);
 //        return code;
     }
 
-    public static Code createCode(final List<Token> tokenList) {
+    public static CodeAsATokenList createCode(final List<Token> tokenList) {
         List<MethodLocation> methodList = Arrays.asList(new MethodLocation("", new IntRange(0, tokenList.size()-1)));
-        return new Code(tokenList, methodList);
+        return new CodeAsATokenList(tokenList, methodList);
     }
     
     public static RedundancyFinder createManagerToken(String... tokenValueList) {
@@ -116,7 +116,7 @@ public final class UtilsToken {
                 tokenRange);
     }
     
-    public static Code initCode(String... methodDefinition) {
+    public static CodeAsATokenList initCode(String... methodDefinition) {
         List<MethodLocation> methodList = new ArrayList<>();
         String codeText = "";
         int lastToken = 0;
@@ -133,7 +133,7 @@ public final class UtilsToken {
             codeText += prepareCode.substring(1);
             
         } 
-        return  new Code(
+        return  new CodeAsATokenList(
                 UtilsToken.createTokenList(codeText),
                 methodList);
     }

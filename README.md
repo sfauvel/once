@@ -1,5 +1,4 @@
-﻿once
-====
+﻿## once
 
 Vous chercher des duplications dans votre code ? Ce projet est pour vous.
 
@@ -52,8 +51,7 @@ Liste des substitutions
 	Nombre de valeurs dfférentes
 	Liste des valeurs qui ont fait l'objet d'une substitution
 
-====
-Reste à faire
+## Reste à faire
 
 - Paramétrer les critères de pertinence incluant les substitutions, le taux de redondance.
 - Calculer le taux de duplication entre 2 méthodes en comptant l'ensemble des redondance mêmes non consécutives 

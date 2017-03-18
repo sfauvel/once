@@ -2,15 +2,15 @@ package fr.sf.once.report;
 
 import java.util.Comparator;
 
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Redundancy;
 
 class ComparatorRedundancySubstitution implements Comparator<Redundancy> {
     /**
      * 
      */
-    final Code code;
-    public ComparatorRedundancySubstitution(final Code code) {
+    final CodeAsATokenList code;
+    public ComparatorRedundancySubstitution(final CodeAsATokenList code) {
         this.code = code;
     }
     

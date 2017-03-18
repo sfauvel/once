@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import com.github.javaparser.ast.stmt.ForeachStmt;
 
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Location;
 import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
@@ -23,7 +23,7 @@ import fr.sf.once.test.UtilsToken;
 
 public class ReportingImplTest {
 
-    private Code code;
+    private CodeAsATokenList code;
     Reporting reporting = new ReportingImpl();
 
     @Rule
@@ -70,7 +70,7 @@ public class ReportingImplTest {
 
     @Test
     public void should_show_method() throws Exception {
-        Code code =  new Code(
+        CodeAsATokenList code =  new CodeAsATokenList(
                 UtilsToken.createTokenList(
                     "A B C D E F G H I J",
                     "K L M N O P Q R S T",

@@ -1,56 +1,26 @@
 package fr.sf.once.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
+import fr.sf.commons.Domain;
 
 /**
- * Structure to handle source tokens.
+ * The text representing the code. 
+ * 
+ * It's a suite of *Tokens*.
+ *  
  */
-public class Code implements ICode {
-    
-    private final List<Token> tokenList;
-    private final List<MethodLocation> methodList;
-    
-    public Code() {
-        this(Collections.<Token> emptyList());
-    }
+@Domain
+public interface Code {
 
-    public Code(final List<Token> tokenList) {
-        this(tokenList, Collections.<MethodLocation>emptyList());
-    }
- 
-    public Code(List<Token> tokenList, List<MethodLocation> methodList) {
-        this.tokenList = Collections.unmodifiableList(new ArrayList<Token>(tokenList));
-        this.methodList = Collections.unmodifiableList(new ArrayList<MethodLocation>(methodList));
-    }
+    List<Token> getTokenList();
 
+    Token getToken(int position);
 
-    @Override
-    public List<Token> getTokenList() {
-        return tokenList;
-    }
-    
-    @Override
-    public Token getToken(int position) {
-        return tokenList.get(position);
-    }
+    int getSize();
 
-    @Override
-    public int getSize() {
-        return tokenList.size();
-    }
+    List<MethodLocation> getMethodList();
 
-    @Override
-    public List<MethodLocation> getMethodList() {
-        return methodList;
-    }
-
-    @Override
-    public MethodLocation getMethodAtTokenPosition(int tokenPosition) {
-        return MethodLocation.findMethod(methodList, tokenPosition);
-    }
+    MethodLocation getMethodAtTokenPosition(int tokenPosition);
 
 }

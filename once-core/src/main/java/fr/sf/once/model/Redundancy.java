@@ -24,10 +24,10 @@ public class Redundancy {
 
     private final int duplicatedTokenNumber;
     private final SortedSet<Integer> firstTokenList;
-    private final Code code;
+    private final CodeAsATokenList code;
     private List<Set<String>> substitutionListOfSubstitution = null;
     
-    public Redundancy(final Code code, final int duplicatedTokenNumber, final Collection<Integer> firstTokenList) {
+    public Redundancy(final CodeAsATokenList code, final int duplicatedTokenNumber, final Collection<Integer> firstTokenList) {
         this.code = code;
         this.duplicatedTokenNumber = duplicatedTokenNumber;
         this.firstTokenList = Collections.unmodifiableSortedSet(new TreeSet<Integer>(firstTokenList));

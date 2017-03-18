@@ -20,9 +20,13 @@ public class ArchiDoc {
         // A simple file with a link to the image
         try (PrintWriter print = new PrintWriter(asciidocOutputPath.resolve(OUTPUT_FILE_NAME + ".asciidoc").toFile())) {
             print.println("\n\n= Archi\n");
-            print.println("Description de l'archi");
+            print.println("Architecture sample. This is just an exemple");
+            print.println();
             print.println("image:"+filename+".png[Archi]");
+            print.println();
         }
+        
+        
     }
 
     public void generateArchi() throws FileNotFoundException {

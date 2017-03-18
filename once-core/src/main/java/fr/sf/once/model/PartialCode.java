@@ -10,11 +10,11 @@ import fr.sf.commons.CollectionsShortcuts;
 /**
  * Create a code that is compose of part of another code.
  */
-public class PartialCode implements ICode {
-    private Code code;
+public class PartialCode implements Code {
+    private CodeAsATokenList code;
     private List<Integer> mapToken = new ArrayList<>();
     
-    PartialCode(Code code, List<IntRange> rangeList) {
+    PartialCode(CodeAsATokenList code, List<IntRange> rangeList) {
         this.code = code;
         for (IntRange range : rangeList) {
             for (int originalPosition = range.getMinimumInteger(); originalPosition <= range.getMaximumInteger(); originalPosition++) {

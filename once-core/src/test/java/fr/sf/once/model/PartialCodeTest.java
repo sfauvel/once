@@ -13,7 +13,7 @@ public class PartialCodeTest {
 
     @Test
     public void should_return_code_token_when_all_code_is_selected() {
-        ICode code = new PartialCode(new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D")),
+        Code code = new PartialCode(new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D")),
                 Arrays.asList(new IntRange(0, 3)));
   
         assertTokenAt(code, 0, "A");
@@ -26,7 +26,7 @@ public class PartialCodeTest {
     
     @Test
     public void should_return_only_token_given_by_the_range_when_range_start_at_0() {
-        ICode code = new PartialCode(new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D")),
+        Code code = new PartialCode(new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D")),
                 Arrays.asList(new IntRange(0, 1)));
         
         assertTokenAt(code, 0, "A");
@@ -37,7 +37,7 @@ public class PartialCodeTest {
     
     @Test
     public void should_return_only_token_given_by_the_range_when_range_not_start_at_0() {
-        ICode code = new PartialCode(new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D")),
+        Code code = new PartialCode(new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D")),
                 Arrays.asList(new IntRange(1, 2)));
         
         assertTokenAt(code, 0, "B");
@@ -48,7 +48,7 @@ public class PartialCodeTest {
 
     @Test
     public void should_return_only_token_given_by_the_ranges_when_2_ranges() {
-        ICode code = new PartialCode(new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G", "H")),
+        Code code = new PartialCode(new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G", "H")),
                 Arrays.asList(new IntRange(1, 2), new IntRange(4, 6)));
         
         assertTokenAt(code, 0, "B");
@@ -62,7 +62,7 @@ public class PartialCodeTest {
     
     @Test
     public void should_return_original_position() {
-        PartialCode code = new PartialCode(new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G", "H")),
+        PartialCode code = new PartialCode(new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "E", "F", "G", "H")),
                 Arrays.asList(new IntRange(1, 2), new IntRange(4, 6)));
         
         assertEquals(1, code.getOriginalPosition(0));
@@ -71,13 +71,13 @@ public class PartialCodeTest {
     
     
     
-    private void assertTokenAt(ICode code, int position, String expectedValue) {
+    private void assertTokenAt(Code code, int position, String expectedValue) {
         assertEquals(expectedValue, code.getToken(position).getTokenValue());
         assertEquals(expectedValue, code.getTokenList().get(position).getTokenValue());
     }
     
     
-    private void assertTokenListSize(ICode code, int expectedSize) {
+    private void assertTokenListSize(Code code, int expectedSize) {
         assertEquals(expectedSize, code.getSize());
         assertEquals(expectedSize, code.getTokenList().size());
     }

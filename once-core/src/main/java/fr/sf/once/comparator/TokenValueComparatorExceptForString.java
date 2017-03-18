@@ -6,7 +6,7 @@ package fr.sf.once.comparator;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.ast.TypeJava;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Token;
 
 
@@ -18,7 +18,7 @@ public class TokenValueComparatorExceptForString extends CodeComparator {
         
     public static final Logger LOG = Logger.getLogger(TokenValueComparatorExceptForString.class);
     
-    public TokenValueComparatorExceptForString(Code code) {
+    public TokenValueComparatorExceptForString(CodeAsATokenList code) {
         super(code);
     }
     

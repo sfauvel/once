@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.IntRange;
 
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
 
 public class ReportingCrossMethod extends ReportingImpl {
     
     @Override
-    public void displayRedundancy(final Code code, final int minimalSize, List<Redundancy> redundancyList) {
+    public void displayRedundancy(final CodeAsATokenList code, final int minimalSize, List<Redundancy> redundancyList) {
         Map<Set<String>, List<Redundancy>> mapMethodRedundancy = getRedundanciesByMethodGroup(code, redundancyList);
         List<RedundancyMultiPart> multiPartRedundancyList = new ArrayList<>();
         for (Entry<Set<String>, List<Redundancy>> methodRedundancies : mapMethodRedundancy.entrySet()) {
@@ -47,7 +47,7 @@ public class ReportingCrossMethod extends ReportingImpl {
         return nonOverlapRedundancy;
     }
 
-    private Map<Set<String>, List<Redundancy>> getRedundanciesByMethodGroup(final Code code, List<Redundancy> redundancyList) {
+    private Map<Set<String>, List<Redundancy>> getRedundanciesByMethodGroup(final CodeAsATokenList code, List<Redundancy> redundancyList) {
         Map<Set<String>, List<Redundancy>> mapMethodRedundancy = new HashMap<>();
         for (Redundancy redundancy : redundancyList) {
             Set<String> methodList = getMethods(code, redundancy);
@@ -103,7 +103,7 @@ public class ReportingCrossMethod extends ReportingImpl {
 
     }
     
-    private void displayCrossMethodRedundancies(Code code, RedundancyMultiPart redundancyMultiPart) {
+    private void displayCrossMethodRedundancies(CodeAsATokenList code, RedundancyMultiPart redundancyMultiPart) {
         Set<MethodLocation> methodList = redundancyMultiPart.getMethodList();
 
         int totalDuplicatedNumber = redundancyMultiPart.getDuplicatedTokenNumber();
@@ -117,7 +117,7 @@ public class ReportingCrossMethod extends ReportingImpl {
         }
     }
 
-    private String tokenRangeDescription(Code code, List<Redundancy> redundancyList, MethodLocation method) {
+    private String tokenRangeDescription(CodeAsATokenList code, List<Redundancy> redundancyList, MethodLocation method) {
         List<IntRange> partList = new ArrayList<>();
         for (Redundancy redundancy : redundancyList) {
             partList.addAll(redundancy.getStartRedundancyList().parallelStream()
@@ -144,7 +144,7 @@ public class ReportingCrossMethod extends ReportingImpl {
         return buffer.toString().substring(2);
     }
 
-    private void appendCodeDetails(Code code, StringBuffer buffer, Redundancy redundancy, Integer start) {
+    private void appendCodeDetails(CodeAsATokenList code, StringBuffer buffer, Redundancy redundancy, Integer start) {
         if (LOG_RESULT.isDebugEnabled()) {
             for (int i = start; i < start + redundancy.getDuplicatedTokenNumber(); i++) {
                 buffer.append(" " + code.getToken(i).getTokenValue());
@@ -153,7 +153,7 @@ public class ReportingCrossMethod extends ReportingImpl {
         }
     }
 
-    private Set<MethodLocation> getMethodIntoRedundancies(Code code, List<Redundancy> redundancyList) {
+    private Set<MethodLocation> getMethodIntoRedundancies(CodeAsATokenList code, List<Redundancy> redundancyList) {
         Set<MethodLocation> methodList = new HashSet<>();
         // for (Redundancy redundancy : redundancyList) {
         Redundancy redundancy = redundancyList.get(0);
@@ -165,7 +165,7 @@ public class ReportingCrossMethod extends ReportingImpl {
         return methodList;
     }
 
-    private Set<String> getMethods(Code code, Redundancy redundancy) {
+    private Set<String> getMethods(CodeAsATokenList code, Redundancy redundancy) {
         return redundancy.getStartRedundancyList().stream()
                 .map(position -> code.getMethodAtTokenPosition(position).getMethodName())
                 .collect(Collectors.toSet());

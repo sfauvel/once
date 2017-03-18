@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Location;
 import fr.sf.once.model.MethodLocation;
 import fr.sf.once.model.Redundancy;
@@ -22,7 +22,7 @@ public class ReportingImpl implements Reporting {
         this.tokenLogger = TRACE_TOKEN;
     }
 
-    public void displayRedundancy(final Code code, final int minimalSize, List<Redundancy> redundancyList) {
+    public void displayRedundancy(final CodeAsATokenList code, final int minimalSize, List<Redundancy> redundancyList) {
          LOG_CSV.info("Redundancy size;Redundancy number;Note");
 
          redundancyList.stream()
@@ -32,7 +32,7 @@ public class ReportingImpl implements Reporting {
          
     }
 
-    private void displayRedundancy(final Code code, final int minimalSize, Redundancy redudancy) {
+    private void displayRedundancy(final CodeAsATokenList code, final int minimalSize, Redundancy redudancy) {
         Collection<Integer> firstTokenList = redudancy.getStartRedundancyList();
         Integer firstTokenPosition = firstTokenList.iterator().next();
         if (isLineNumberGreaterThan(code, firstTokenPosition, redudancy.getDuplicatedTokenNumber(), 0)) {
@@ -44,7 +44,7 @@ public class ReportingImpl implements Reporting {
         }
     }
 
-    private void displayCsvRedundancy(final Code code, Redundancy redundancy, long score) {
+    private void displayCsvRedundancy(final CodeAsATokenList code, Redundancy redundancy, long score) {
         if (LOG_CSV.isInfoEnabled()) {
             StringBuffer bufferCsv = new StringBuffer();
             appendCsvInformation(bufferCsv, code, redundancy, score);
@@ -52,7 +52,7 @@ public class ReportingImpl implements Reporting {
         }
     }
 
-    private void appendCsvInformation(StringBuffer bufferCsv, final Code code, Redundancy redundancy, long score) {
+    private void appendCsvInformation(StringBuffer bufferCsv, final CodeAsATokenList code, Redundancy redundancy, long score) {
         Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
         int redundancyNumber = redundancy.getRedundancyNumber();
 
@@ -84,7 +84,7 @@ public class ReportingImpl implements Reporting {
             .collect(Collectors.toList());
     }
 
-    private boolean isLineNumberGreaterThan(Code code, Integer firstTokenPosition, int redundantTokenNumber, int minimalLineNumber) {
+    private boolean isLineNumberGreaterThan(CodeAsATokenList code, Integer firstTokenPosition, int redundantTokenNumber, int minimalLineNumber) {
         Location startingLocation = code.getToken(firstTokenPosition).getLocation();
         Location edingLocation = code.getToken(firstTokenPosition + redundantTokenNumber - 1).getLocation();
 
@@ -93,7 +93,7 @@ public class ReportingImpl implements Reporting {
         return lineNumber > minimalLineNumber;
     }
 
-    public void displayRedundantCode(final Code code, Redundancy redundancy) {
+    public void displayRedundantCode(final CodeAsATokenList code, Redundancy redundancy) {
         if (LOG_RESULT.isInfoEnabled()) {
 
             List<String> substitutionList = getSubstitution(redundancy);
@@ -127,7 +127,7 @@ public class ReportingImpl implements Reporting {
         }
     }
 
-    private void appendOneRedundancyDescription(final Code code, Redundancy redundancy, Integer firstTokenPosition, StringBuffer buffer, Integer startingLine,
+    private void appendOneRedundancyDescription(final CodeAsATokenList code, Redundancy redundancy, Integer firstTokenPosition, StringBuffer buffer, Integer startingLine,
             Integer endingLine) {
         MethodLocation method = code.getMethodAtTokenPosition(firstTokenPosition);
         if (method != null) {
@@ -161,7 +161,7 @@ public class ReportingImpl implements Reporting {
         }
     }
 
-    private void appendTokens(StringBuffer buffer, final Code code, Redundancy redundancy, Integer firstTokenPosition) {
+    private void appendTokens(StringBuffer buffer, final CodeAsATokenList code, Redundancy redundancy, Integer firstTokenPosition) {
      
         if (LOG_RESULT.isDebugEnabled()) {
             final int NB_MAX_DISPLAY = 200;
@@ -177,13 +177,13 @@ public class ReportingImpl implements Reporting {
         }
     }
 
-    public void displayDuplicatedMethodWithSubstitution(final Code code, Redundancy redundancy) {
+    public void displayDuplicatedMethodWithSubstitution(final CodeAsATokenList code, Redundancy redundancy) {
         if (redundancy.getStartRedundancyList().size() > 0 && isFullMethodDuplicated(code, redundancy)) {
             displayRedundantCode(code, redundancy);
         }
     }
 
-    private boolean isFullMethodDuplicated(final Code code, Redundancy redundancy) {
+    private boolean isFullMethodDuplicated(final CodeAsATokenList code, Redundancy redundancy) {
         Collection<Integer> firstTokenList = redundancy.getStartRedundancyList();
         for (Integer firstTokenPosition : firstTokenList) {
             Integer startingLine = code.getToken(firstTokenPosition).getStartingLine();
@@ -255,7 +255,7 @@ public class ReportingImpl implements Reporting {
         }
     }
 
-    public void display(final Code code) {
+    public void display(final CodeAsATokenList code) {
         display(code.getTokenList());
     }
 
@@ -265,7 +265,7 @@ public class ReportingImpl implements Reporting {
         }
     }
 
-    public void checkLocalisation(final Code code) {
+    public void checkLocalisation(final CodeAsATokenList code) {
         int lastLine = 0;
         int lastColumn = 0;
         for (Token token : code.getTokenList()) {

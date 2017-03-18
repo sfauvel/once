@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.comparator.CodeComparator;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
@@ -27,9 +27,9 @@ import fr.sf.once.report.ReportingImpl;
 public class RedundancyFinder {
 
     public static final Logger LOG = Logger.getLogger(RedundancyFinder.class);
-    private final Code code;
+    private final CodeAsATokenList code;
 
-    public RedundancyFinder(Code code) {
+    public RedundancyFinder(CodeAsATokenList code) {
         this.code = code;
     }
 
@@ -57,9 +57,9 @@ public class RedundancyFinder {
 
     }
     
-    public CodeComparator buildComparator(Class<? extends CodeComparator> codeComparatorClass, Code code) {
+    public CodeComparator buildComparator(Class<? extends CodeComparator> codeComparatorClass, CodeAsATokenList code) {
         try {
-            Constructor<? extends CodeComparator> constructor = codeComparatorClass.getConstructor(Code.class);
+            Constructor<? extends CodeComparator> constructor = codeComparatorClass.getConstructor(CodeAsATokenList.class);
             return constructor.newInstance(code);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -10,14 +10,14 @@ import org.assertj.core.api.AbstractListAssert;
 
 import fr.sf.once.comparator.CodeComparator;
 import fr.sf.once.comparator.ComparatorWithSubstitution;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 import fr.sf.once.test.UtilsToken;
 
 public abstract class AbstractComparatorTest {
 
-    protected void assertSortList(Integer[] positionListExpected, Code code) {
+    protected void assertSortList(Integer[] positionListExpected, CodeAsATokenList code) {
         ComparatorWithSubstitution comparator = new ComparatorWithSubstitution(code);
         List<Integer> positionList = UtilsToken.createPositionList(positionListExpected.length);
         comparator.sortList(positionList);
@@ -53,8 +53,8 @@ public abstract class AbstractComparatorTest {
         tokenList.set(position, new Token(token.getLocation(), token.getTokenValue(), newType));
     }    
     
-    protected Code createCode(String... tokenList) {
-        return new Code(UtilsToken.createTokenList(tokenList));
+    protected CodeAsATokenList createCode(String... tokenList) {
+        return new CodeAsATokenList(UtilsToken.createTokenList(tokenList));
     }
 
     

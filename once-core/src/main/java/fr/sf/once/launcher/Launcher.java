@@ -17,7 +17,7 @@ import fr.sf.once.comparator.ComparatorWithSubstitution;
 import fr.sf.once.comparator.ComparatorWithSubstitutionAndType;
 import fr.sf.once.comparator.TokenValueComparatorExceptForString;
 import fr.sf.once.core.RedundancyFinder;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.report.Reporting;
 import fr.sf.once.report.ReportingCrossMethod;
@@ -52,12 +52,12 @@ public class Launcher {
     }
 
     public void execute(OnceConfiguration configuration) throws FileNotFoundException {
-        Code code = retreiveCode(configuration);
+        CodeAsATokenList code = retreiveCode(configuration);
         List<Redundancy> redundancies = findRedundancies(configuration, code);
         formatResult(configuration, code, redundancies);
     }
 
-    private void formatResult(OnceConfiguration configuration, Code code, List<Redundancy> listeRedondance) {
+    private void formatResult(OnceConfiguration configuration, CodeAsATokenList code, List<Redundancy> listeRedondance) {
         LOG.info("Display results...");
         Reporting reporting = buildReporting(configuration);
         reporting.display(code);
@@ -72,14 +72,14 @@ public class Launcher {
         }
     }
 
-    private List<Redundancy> findRedundancies(OnceConfiguration configuration, Code code) {
+    private List<Redundancy> findRedundancies(OnceConfiguration configuration, CodeAsATokenList code) {
         RedundancyFinder manager = new RedundancyFinder(code);
         List<Redundancy> listeRedondance = manager.findRedundancies(configuration);
         return listeRedondance;
     }
 
-    private Code retreiveCode(OnceConfiguration configuration) throws FileNotFoundException {
-        Code code = new ExtractCode().extract(configuration.getSourceDir(), configuration.getSourceEncoding());
+    private CodeAsATokenList retreiveCode(OnceConfiguration configuration) throws FileNotFoundException {
+        CodeAsATokenList code = new ExtractCode().extract(configuration.getSourceDir(), configuration.getSourceEncoding());
         return code;
     }
 

@@ -25,7 +25,11 @@ public class Asciidoc {
     
     public Asciidoc write(String format, Object... args) {
         try {
-            writer.write(String.format(format, args));
+            if (args.length == 0) {
+                writer.write(format);
+            } else {
+                writer.write(String.format(format, args));
+            }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         } catch (MissingFormatArgumentException e) {

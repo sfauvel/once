@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.sf.once.ast.TokenJava;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Token;
 
 public class ComparatorWithSubstitutionAndType extends CodeComparator {
@@ -40,7 +40,7 @@ public class ComparatorWithSubstitutionAndType extends CodeComparator {
     private SubstitutionTokenListWithBasicArray substitutionList1 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
     private SubstitutionTokenListWithBasicArray substitutionList2 = new SubstitutionTokenListWithBasicArray(substitutionListRef);
 
-    public ComparatorWithSubstitutionAndType(Code code) {
+    public ComparatorWithSubstitutionAndType(CodeAsATokenList code) {
         super(code);
     }
 

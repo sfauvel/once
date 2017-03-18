@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import fr.sf.once.ast.TypeJava;
 import fr.sf.once.comparator.TokenValueComparatorExceptForString;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
@@ -27,7 +27,7 @@ public class TokenValueComparatorExceptForStringTest {
         tokenList.add(new Token(null, "B", TypeJava.STRING));
         tokenList.add(new Token(null, ";", Type.BREAK));
         
-        TokenValueComparatorExceptForString comparator = new TokenValueComparatorExceptForString(new Code(tokenList));
+        TokenValueComparatorExceptForString comparator = new TokenValueComparatorExceptForString(new CodeAsATokenList(tokenList));
         assertEquals(-1, comparator.compare(0, 1));
         assertEquals(0, comparator.compare(2, 4));
     }

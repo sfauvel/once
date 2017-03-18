@@ -9,13 +9,13 @@ import java.util.List;
 import org.junit.Test;
 
 import fr.sf.once.core.RedundancyFinder;
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.MethodDefinition;
 import fr.sf.once.model.Redundancy;
 
 public class ReportingMethodPercentageTest {
 
-    private final RedundancyFinder EMPTY_MANAGER = new RedundancyFinder(new Code());
+    private final RedundancyFinder EMPTY_MANAGER = new RedundancyFinder(new CodeAsATokenList());
 
     @Test
     public void purcentage_redundancy_is_0_when_there_is_no_redundency() {

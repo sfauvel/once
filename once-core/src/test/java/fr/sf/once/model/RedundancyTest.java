@@ -153,7 +153,7 @@ public class RedundancyTest {
 
     @Test
     public void should_have_no_substitution_when_all_token_are_identical() throws Exception {
-        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "A", "B", "C", "D"));
+        CodeAsATokenList code = new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "A", "B", "C", "D"));
         Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(1, 5));
 
         assertThat(redundancy.getSubstitutionList()).isEmpty();
@@ -161,7 +161,7 @@ public class RedundancyTest {
 
     @Test
     public void should_have_one_substitution_when_only_one_token_is_different() throws Exception {
-        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "A", "b", "C", "D"));
+        CodeAsATokenList code = new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "A", "b", "C", "D"));
         Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(1, 5));
 
         assertThat(redundancy.getSubstitutionList().get(0)).containsOnly("B", "b");
@@ -169,7 +169,7 @@ public class RedundancyTest {
 
     @Test
     public void should_have_all_substitutions_when_several_tokens_are_differents() throws Exception {
-        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "a", "b", "c", "d"));
+        CodeAsATokenList code = new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "C", "D", "a", "b", "c", "d"));
         Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(0, 4));
 
         assertThat(redundancy.getSubstitutionList().get(0)).containsOnly("A", "a");
@@ -179,7 +179,7 @@ public class RedundancyTest {
 
     @Test
     public void should_no_repeat_a_substitutions_when_there_is_the_same_twice() throws Exception {
-        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "B", "A", "D", "a", "B", "a", "D"));
+        CodeAsATokenList code = new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "B", "A", "D", "a", "B", "a", "D"));
         Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(0, 4));
 
         assertThat(redundancy.getSubstitutionList()).hasSize(1);
@@ -188,7 +188,7 @@ public class RedundancyTest {
 
     @Test
     public void should_have_3_substitutions_when_redundancy_contains_3_redundancies_on_different_token() throws Exception {
-        Code code = new Code(UtilsToken.createUnmodifiableTokenList("A", "X", "C", "D", "A", "Y", "C", "D", "A", "Z", "C", "D"));
+        CodeAsATokenList code = new CodeAsATokenList(UtilsToken.createUnmodifiableTokenList("A", "X", "C", "D", "A", "Y", "C", "D", "A", "Z", "C", "D"));
         Redundancy redundancy = new Redundancy(code, 3, Arrays.asList(0, 4, 8));
 
         assertThat(redundancy.getSubstitutionList().get(0)).containsOnly("X", "Y", "Z");
@@ -267,7 +267,7 @@ public class RedundancyTest {
     @Test
     public void should_return_method_for_the_first_token_given() {
         //                                       123456789012345678901234567890
-        Code code = UtilsToken.initCode("methodA:........................",
+        CodeAsATokenList code = UtilsToken.initCode("methodA:........................",
                                         "methodB:........................");
 
         Redundancy redundancy = new Redundancy(code, 6, Arrays.asList(2, 28));
@@ -281,7 +281,7 @@ public class RedundancyTest {
     @Test
     public void should_return_method_name_even_token_is_outside_redundancy() {
         //                                       123456789012345678901234567890
-        Code code = UtilsToken.initCode("methodA:........................",
+        CodeAsATokenList code = UtilsToken.initCode("methodA:........................",
                                         "methodB:........................");
 
         Redundancy redundancy = new Redundancy(code, 6, Arrays.asList(2, 28));

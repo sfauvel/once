@@ -5,7 +5,7 @@ package fr.sf.once.comparator;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Token;
 
 /**
@@ -14,7 +14,7 @@ import fr.sf.once.model.Token;
 public class BasicComparator extends CodeComparator {
     public static final Logger LOG = Logger.getLogger(BasicComparator.class);
     
-    public BasicComparator(Code code) {
+    public BasicComparator(CodeAsATokenList code) {
         super(code);
     }
     

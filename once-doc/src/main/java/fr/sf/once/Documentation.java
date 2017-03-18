@@ -11,6 +11,7 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ public class Documentation {
         generateMainDocumentation();
 
         Documentation doc = new Documentation();
+        doc.generateIntroductionDoc();
         doc.generateTestDoc();
         doc.generateConfigurationFile();
         doc.generateDomainDoc();
@@ -39,6 +41,11 @@ public class Documentation {
         // doc.allFiles(".\\src\\main\\java");
 
         generateMainDocumentation();
+    }
+
+    private void generateIntroductionDoc() {
+        new IntroDoc().generate();
+        
     }
 
     public static final String OUTPUT_FILE_NAME = "once";
@@ -70,6 +77,7 @@ public class Documentation {
 
             adoc
                     .changeLevelOffset(1)
+                    .include(IntroDoc.OUTPUT_FILE_NAME + ".asciidoc")
                     .include(DomainDoclet.OUTPUT_FILE_NAME + ".asciidoc")
                     .include(ConfigurationDoclet.OUTPUT_FILE_NAME + ".asciidoc")
                     .include(ArchiDoc.OUTPUT_FILE_NAME + ".asciidoc")

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Token;
 import fr.sf.once.model.Type;
 
@@ -15,14 +15,14 @@ public abstract class CodeComparator implements Comparator<Integer> {
     public static final Logger LOG = Logger.getLogger(CodeComparator.class);
 
     private int depth;
-    private Code code;
+    private CodeAsATokenList code;
     private StringBuffer traceDebug = new StringBuffer();
 
     public CodeComparator(List<Token> listeToken) {
-        this.code = new Code(listeToken);
+        this.code = new CodeAsATokenList(listeToken);
     }
 
-    public CodeComparator(Code code) {
+    public CodeComparator(CodeAsATokenList code) {
         this.code = code;
     }
 

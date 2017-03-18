@@ -11,7 +11,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 
-import fr.sf.once.model.Code;
+import fr.sf.once.model.CodeAsATokenList;
 import fr.sf.once.model.Redundancy;
 import fr.sf.once.test.StringWriterLogRule;
 import fr.sf.once.test.UtilsToken;
@@ -33,7 +33,7 @@ public class ReportingCrossMethodTest {
     @Test
     public void should_merge_2_redundancies_in_2_same_methods() throws Exception {
         //                                       1234567890123456789012345678901234567890123456789
-        Code code = UtilsToken.initCode("methodA:........................",
+        CodeAsATokenList code = UtilsToken.initCode("methodA:........................",
                                         "methodB:....................................");
         
         reporting.displayRedundancy(code, 1, Arrays.asList(
@@ -52,7 +52,7 @@ public class ReportingCrossMethodTest {
     @Test
     public void should_not_merge_2_redundancies_in_2_same_methods_when_overlap() throws Exception {
         //                                       1234567890123456789012345678901234567890123456789
-        Code code = UtilsToken.initCode("methodA:........................",
+        CodeAsATokenList code = UtilsToken.initCode("methodA:........................",
                                         "methodB:....................................");
         
         reporting.displayRedundancy(code, 1, Arrays.asList(
@@ -67,7 +67,7 @@ public class ReportingCrossMethodTest {
     @Test
     public void should_merge_only_range_that_not_overlap() throws Exception {
         //                                       1234567890123456789012345678901234567890123456789
-        Code code = UtilsToken.initCode("methodA:........................",
+        CodeAsATokenList code = UtilsToken.initCode("methodA:........................",
                                         "methodB:....................................",
                                         "methodC:....................................");
         
@@ -87,7 +87,7 @@ public class ReportingCrossMethodTest {
     @Test
     public void should_display_redundancies_in_order() throws Exception {
         //                                       1234567890123456789012345678901234567890123456789
-        Code code = UtilsToken.initCode("methodA:........................",
+        CodeAsATokenList code = UtilsToken.initCode("methodA:........................",
                                         "methodB:....................................",
                                         "methodC:....................................",
                                         "methodD:..............................");
@@ -108,7 +108,7 @@ public class ReportingCrossMethodTest {
     @Test
     public void should_remove_overlap_when_redundancy_do_not_have_same_token_number() throws Exception {
         //                            1234567890123456789012345678901234567890123456789
-        Code code = UtilsToken.initCode("methodA:........................................",
+        CodeAsATokenList code = UtilsToken.initCode("methodA:........................................",
                                         "methodB:........................................");
         
         reporting.displayRedundancy(code, 1, Arrays.asList(
